@@ -1,6 +1,7 @@
 pragma solidity ^0.5.0;
 
 contract Marketplace {
+    string ta3dil;
     string public name;
     uint public productCount = 0;
     //to store the products on blockchain
