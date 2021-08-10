@@ -12,9 +12,10 @@ contract Marketplace {
     struct Product {
         uint id;
         string name;
-        uint price;
-        string image;
         string description;
+        uint price;
+        string imgipfshash;
+        string fileipfshash;
         address payable owner;
         bool purchased;
     }
@@ -22,9 +23,10 @@ contract Marketplace {
     event ProductCreated(
         uint id,
         string name,
-        uint price,
-        string image,
         string description,
+        uint price,
+        string imgipfshash,
+        string fileipfshash,
         address payable owner,
         bool purchased
     );
@@ -32,7 +34,10 @@ contract Marketplace {
     event ProductPurchased(
     uint id,
     string name,
+    string description,
     uint price,
+    string imgipfshash,
+    string fileipfshash,
     address payable owner,
     bool purchased
 );
@@ -44,21 +49,23 @@ contract Marketplace {
     // Create a new product with a struct
     // Add the struct to the mapping, and store it on the blockchain
     // Trigger an event that lets someone know a product was creatd
-    function createProduct(string memory _name,string memory _image,string memory _description, uint _price) public {
+    function createProduct(string memory _name,string memory _description, uint _price,string memory _imgipfshash,string memory _fileipfshash) public {
     // Require a valid name
     require(bytes(_name).length > 0);
-    // Require a valid image
-    require(bytes(_image).length > 0);
     // Require a valid description
     require(bytes(_description).length > 0);
     // Require a valid price
     require(_price > 0);
+    // Require a valid image hash
+    require(bytes(_imgipfshash).length > 0);
+    // Require a valid file hash
+    require(bytes(_fileipfshash).length > 0);
     // Increment product count
     productCount ++;
     // Create the product
-    products[productCount] = Product(productCount, _name, _price,_image,_description, msg.sender, false);
+    products[productCount] = Product(productCount, _name,_description, _price,_imgipfshash,_fileipfshash, msg.sender, false);
     // Trigger an event
-    emit ProductCreated(productCount, _name, _price, _image, _description, msg.sender, false);
+    emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
     }
 
     function purchaseProduct(uint _id) public payable {
@@ -83,7 +90,7 @@ contract Marketplace {
     // Pay the seller by sending them Ether
     address(_seller).transfer(msg.value);
     // Trigger an event
-    emit ProductPurchased(productCount, _product.name, _product.price, msg.sender, true);
+    emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
     }
 
     /** 
@@ -104,9 +111,10 @@ contract Marketplace {
         public returns (
         uint _id, 
         string memory _name, 
+        string memory _description,
         uint _price,
-        string memory image,
-        string memory _description
+        string memory imgipfshash,
+        string memory fileipfshash
     ) {
 
         require(_owner != address(0));
@@ -118,9 +126,10 @@ contract Marketplace {
         return (
             product.id, 
             product.name,
+            product.description,
             product.price,
-            product.image,
-            product.description
+            product.imgipfshash,
+            product.fileipfshash
         );
     }
 

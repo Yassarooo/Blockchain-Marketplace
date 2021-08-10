@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import logo from "../logo.png";
 import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
@@ -9,6 +8,9 @@ import Main from "./Main";
 import Products from "./Products";
 import AddProduct from "./AddProduct";
 import UploadImage from "./UploadImage";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+toast.configure();
 
 class App extends Component {
   async componentWillMount() {
@@ -67,13 +69,20 @@ class App extends Component {
     }
   }
 
-  createProduct(name, image, description, price) {
+  createProduct(name, description, price, imgipfsHash, fileipfsHash) {
     this.setState({
       loading: true,
-      successmessage: "",
     });
+    console.log(
+      "name:",
+      name + "desc:",
+      description + "price:",
+      price + "imgipfshash:",
+      imgipfsHash + "fileipfshash:",
+      fileipfsHash
+    );
     this.state.marketplace.methods
-      .createProduct(name, image, description, price)
+      .createProduct(name, description, price, imgipfsHash, fileipfsHash)
       .send({
         from: this.state.account,
       })
@@ -82,6 +91,7 @@ class App extends Component {
           loading: false,
           successmessage: "Product Added Successfully !",
         });
+        toast.success("Product Added Successfully !");
         this.loadBlockchainData();
       });
   }

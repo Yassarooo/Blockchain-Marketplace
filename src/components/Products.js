@@ -6,21 +6,24 @@ class Products extends Component {
   renderCards(product, index) {
     return product.purchased ? null : (
       <Col md="3" className="pt-5">
-        <div className="card h-100">
+        <div className="card h-100 rounded  animate__animated animate__fadeInUp card">
           <div
             class="badge bg-success text-white position-absolute"
             style={{ top: "0.5rem", right: "0.5rem" }}
           >
             {product.owner.toString().substring(0, 8)}
           </div>
-          <img className="card-img-top" src={product.image} alt="..." />
+          <img
+            className="card-img-top centered-and-cropped"
+            src={`https://ipfs.io/ipfs/${product.imgipfshash}`}
+            alt="..."
+          />
 
           <div className="card-body bg-dark">
             <div className="text-center">
               <h2 className="fw-bolder">{product.name}</h2>
               <h5 className="fw-bolder text-success">
-                {window.web3.utils.fromWei(product.price.toString(), "Ether")}{" "}
-                Eth
+                {product.price.toString()} Eth
                 <FaEthereum className="text-primary" />
               </h5>
             </div>

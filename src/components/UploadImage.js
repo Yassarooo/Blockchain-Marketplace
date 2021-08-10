@@ -1,44 +1,85 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
-
-import { create } from "ipfs-http-client";
-const client = create("https://ipfs.infura.io:5001/api/v0");
+import ipfs from "./ipfs";
+import { toast } from "react-toastify";
 
 class UploadImage extends Component {
   state = {
-    title: "",
+    name: "",
     description: "",
-    tags: "",
-    buffer: null,
-    file: null,
+    price: "",
+    imgipfshash: "",
+    fileipfshash: "",
+    imgbuffer: null,
+    filebuffer: null,
   };
 
-  handleChange = (event) => {
+  handleChange = (e) => {
     this.setState({
-      [event.target.id]: event.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
+  captureImage = (event) => {
+    event.preventDefault();
+    const file = event.target.files[0];
+    if (file.type.match("image/*")) {
+      const reader = new window.FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onloadend = () => {
+        this.setState({
+          imgbuffer: Buffer(reader.result),
+        });
+      };
+    } else {
+      toast.error("you can only select image for the product");
+    }
+  };
+
   captureFile = (event) => {
+    event.preventDefault();
     const file = event.target.files[0];
     const reader = new window.FileReader();
     reader.readAsArrayBuffer(file);
     reader.onloadend = () => {
       this.setState({
-        buffer: Buffer(reader.result),
-        file: file,
+        filebuffer: Buffer(reader.result),
       });
     };
   };
 
-  handleUploadImage = async (event) => {
-    try {
-      const added = await client.add(this.state.file);
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      console.log("uploaded successfully" + url);
-    } catch (error) {
-      console.log("Error uploading file: ", error);
-    }
+  onSubmit = async (event) => {
+    event.preventDefault();
+
+    toast.info("Uploading Image...");
+    ipfs.files.add(this.state.imgbuffer, (error, result) => {
+      if (error) {
+        toast.error(error);
+        return;
+      }
+      this.setState({ imgipfsHash: result[0].hash });
+      toast.success("Image Uploaded Successfully");
+      console.log("image ipfshash:", this.state.imgipfsHash.toString());
+
+      toast.info("Uploading File...");
+      ipfs.files.add(this.state.filebuffer, (error, result) => {
+        if (error) {
+          toast.error(error);
+          return;
+        }
+        this.setState({ fileipfsHash: result[0].hash });
+        toast.success("File Uploaded Successfully");
+        console.log("File ipfsHash", this.state.fileipfsHash.toString());
+        console.log("naaaaaaaaaaame :", this.state.name);
+        this.props.createProduct(
+          this.state.name,
+          this.state.description,
+          this.state.price,
+          this.state.imgipfsHash.toString(),
+          this.state.fileipfsHash.toString()
+        );
+      });
+    });
   };
 
   render() {
@@ -47,65 +88,73 @@ class UploadImage extends Component {
         <fieldset disabled={this.props.loading}>
           <div className="row">
             <div className="col-md-8 m-auto">
-              <h1 className="display-4 text-center mt-4">Upload an image</h1>
+              <h1 className="display-4 text-center mt-4">Sell a Product</h1>
               <p className="lead text-center">
-                Let's get some information before uploading your image to IPFS
-                and the Blockchain
+                Let's get some information about your Product
               </p>
-              <form
-                className="needs-validation"
-                onSubmit={this.handleUploadImage}
-              >
+              <form className="needs-validation" onSubmit={this.onSubmit}>
                 <div className="form-group">
-                  <label htmlFor="title">Title *</label>
+                  <label htmlFor="name">Product Name *</label>
                   <input
                     type="text"
                     className="form-control"
-                    id="title"
-                    placeholder="Title"
-                    value={this.state.title}
+                    id="name"
+                    name="name"
+                    placeholder="Ex:(Idm Source Code, Photoshop Subscription...)"
+                    value={this.state.name}
                     onChange={this.handleChange}
                     required
                   />
-                  <div className="invalid-feedback">Title is required.</div>
+                  <div className="invalid-feedback">Name is required.</div>
                 </div>
                 <div className="form-group">
                   <label htmlFor="description">Description</label>
                   <textarea
                     className="form-control"
                     id="description"
+                    name="description"
                     placeholder="Description"
-                    rows="3"
                     value={this.state.description}
                     onChange={this.handleChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="tags">Tags *</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="tags"
-                    placeholder="Tags"
-                    value={this.state.tags}
-                    onChange={this.handleChange}
+                    rows="3"
                     required
                   />
-                  <small id="tagsHelpBlock" className="form-text text-muted">
-                    Comma-delimited e.g Baseball, Softball, Soccer.
-                  </small>
-                  <div className="invalid-feedback">Tags are required.</div>
+                  <div className="invalid-feedback">
+                    Description is required.
+                  </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="file">Image *</label>
+                  <label htmlFor="tags">Price *</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="price"
+                    name="price"
+                    value={this.state.price}
+                    onChange={this.handleChange}
+                    placeholder="Product Price in Ethereum"
+                    required
+                  />
+                  <div className="invalid-feedback">Price is required.</div>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="file">Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="form-control-file"
+                    id="file"
+                    onChange={this.captureImage}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="file">File</label>
                   <input
                     type="file"
                     className="form-control-file"
                     id="file"
                     onChange={this.captureFile}
-                    required
                   />
-                  <div className="invalid-feedback">Image required.</div>
                 </div>
                 <small className="d-block pb-3">* = required fields</small>
                 <small className="d-block pb-3">
@@ -117,19 +166,15 @@ class UploadImage extends Component {
                     Cancel
                   </Link>
                   <button type="submit" className="btn btn-primary">
-                    Upload
+                    Add
                   </button>
                 </div>
               </form>
-              {this.state.file && (
-                <div className="text-center mt-3 mb-3">
-                  <img
-                    src={this.state.file}
-                    className="img-thumbnail"
-                    alt="Preview"
-                  />
+              {this.props.successmessage != "" ? (
+                <div className="alert alert-info mt-5">
+                  {this.props.successmessage}
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         </fieldset>
