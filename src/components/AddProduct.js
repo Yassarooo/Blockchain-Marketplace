@@ -11,13 +11,9 @@ class AddProduct extends Component {
           <div className="row">
             <div className="col-md-8 m-auto">
               <h1 className="display-4 text-center mt-4">Sell a Product</h1>
-              {this.props.loading ? (
-                <div />
-              ) : (
-                <p className="lead text-center">
-                  Let's get some information about your Product
-                </p>
-              )}
+              <p className="lead text-center">
+                Let's get some information about your Product
+              </p>
               <form
                 className="needs-validation"
                 onSubmit={(event) => {

@@ -12,7 +12,7 @@ class MyNavbar extends Component {
           <Navbar.Brand href="#home"> Navbar </Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="/"> Home </Nav.Link>
-            <Nav.Link href="/addproduct"> Sell Product </Nav.Link>
+            <Nav.Link href="/uploadimage"> Sell Product </Nav.Link>
             <Nav.Link href="/dashboard"> My Products </Nav.Link>
             <Nav.Link href="/about"> About us </Nav.Link>
             <Nav.Link href="/products"> Products </Nav.Link>

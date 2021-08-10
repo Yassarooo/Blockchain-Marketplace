@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Main from "./Main";
 import Products from "./Products";
 import AddProduct from "./AddProduct";
+import UploadImage from "./UploadImage";
 
 class App extends Component {
   async componentWillMount() {
@@ -155,6 +156,12 @@ class App extends Component {
           </Route>
           <Route path="/addproduct">
             <AddProduct
+              createProduct={this.createProduct}
+              successmessage={this.state.successmessage}
+            />
+          </Route>
+          <Route path="/uploadimage">
+            <UploadImage
               createProduct={this.createProduct}
               successmessage={this.state.successmessage}
             />
