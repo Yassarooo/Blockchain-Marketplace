@@ -2,19 +2,26 @@ import React, { Component } from "react";
 import { Nav } from "react-bootstrap";
 import { Container } from "react-bootstrap";
 import { Navbar } from "react-bootstrap";
-import "font-awesome/css/font-awesome.min.css";
+import { FaStore } from "react-icons/fa";
 
 class MyNavbar extends Component {
   render() {
     return (
-      <Navbar className="navbar navbar-expand-lg navbar-dark bg-gradient-dark">
-        <Container>
-          <Navbar.Brand href="#home"> Navbar </Navbar.Brand>
+      <Navbar className="navbar navbar-inverse navbar-expand-lg navbar-dark bg-gradient-dark animate-navbar">
+        <Container id="block_container">
+          <Navbar.Brand id="bloc1" style={{ color: "orange" }} href="#home">
+            <FaStore />
+            {""} Jazara Marketplace
+          </Navbar.Brand>
+
           <Nav className="me-auto">
-            <Nav.Link href="/"> Home </Nav.Link>
-            <Nav.Link href="/uploadimage"> Sell Product </Nav.Link>
-            <Nav.Link href="/dashboard"> My Products </Nav.Link>
-            <Nav.Link href="/about"> About us </Nav.Link>
+            <Nav.Link className="navlink" href="/">
+              {" "}
+              Home{" "}
+            </Nav.Link>
+            <Nav.Link href="/addproduct"> Sell Product </Nav.Link>
+            <Nav.Link href="/myproducts"> My Products </Nav.Link>
+            <Nav.Link href="/aboutus"> About us </Nav.Link>
             <Nav.Link href="/products"> Products </Nav.Link>
           </Nav>
         </Container>

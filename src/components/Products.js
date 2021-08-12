@@ -1,14 +1,18 @@
 import React, { Component } from "react";
-import { Row, Col } from "react-bootstrap";
-import { FaEthereum } from "react-icons/fa";
+import { Row, Col, Form, FormControl } from "react-bootstrap";
+import { FaEthereum, FaSearch } from "react-icons/fa";
 
 class Products extends Component {
+  searchForProduct = function () {
+    console.log("Searching...");
+  };
+
   renderCards(product, index) {
     return product.purchased ? null : (
       <Col md="3" className="pt-5">
-        <div className="card h-100 rounded  animate__animated animate__fadeInUp card">
+        <div className="card h-100 rounded card">
           <div
-            class="badge bg-success text-white position-absolute"
+            className="badge bg-success text-white position-absolute"
             style={{ top: "0.5rem", right: "0.5rem" }}
           >
             {product.owner.toString().substring(0, 8)}
@@ -18,22 +22,32 @@ class Products extends Component {
             src={`https://ipfs.io/ipfs/${product.imgipfshash}`}
             alt="..."
           />
-
-          <div className="card-body bg-dark">
+          <div className="card-body bg-dark pb-0 mb-0">
             <div className="text-center">
-              <h2 className="fw-bolder">{product.name}</h2>
-              <h5 className="fw-bolder text-success">
-                {product.price.toString()} Eth
+              <h2 href={`/product/${product.id}`}>{product.name}</h2>
+              <h3
+                className="text-warning"
+                style={{ "white-space": "nowrap", overflow: "hidden" }}
+              >
                 <FaEthereum className="text-primary" />
-              </h5>
+                {""}{" "}
+                {window.web3.utils.fromWei(product.price.toString(), "Ether")}{" "}
+                Eth
+              </h3>
             </div>
           </div>
-
-          <div className="card-footer p-4 pt-0 border-top-0 bg-dark">
+          <div className="card-footer pb-4 pt-0 border-top-0 bg-dark">
             <div className="text-center ">
-              <a className="btn btn-outline-light mt-2" href="#">
-                Add to card
-              </a>
+              <button
+                className="btn btn-outline-light mt-2 stretched-link"
+                name={product.id}
+                value={product.price}
+                onClick={(event) =>
+                  (window.location.href = `/product/${product.id}`)
+                }
+              >
+                More Details
+              </button>
             </div>
           </div>
         </div>
@@ -44,32 +58,31 @@ class Products extends Component {
   render() {
     return (
       <div>
-        <header className="bg-dark py-2">
-          <div className="container px-4 px-lg-5 my-5">
-            <h1 class="display-3 fw-bolder">
-              <img src={require("./cheers.png")} width="100" height="100" />{" "}
-              Welcome,{" "}
-              <a className="text-primary">
-                {this.props.account.substring(0, 9)}
-              </a>
-            </h1>
-            <div class="css-typing text-white">
-              <p>
-                This is a web marketplace project based on Blockchain technology
-                & smart contracts which are implemented by Ethereum .
-              </p>
-              <p>
-                Created By
-                <a className="text-primary"> Jazara Debuggers Team © </a>
-                ,Have a look at the sections below, feel free to contact us at :{" "}
-                <a className="text-success">jazaradebuggers@gmail.com</a>
-              </p>
-            </div>
-          </div>
-        </header>
-
-        <section className="py-5 px-4">
-          <Row>{this.props.products.map(this.renderCards)}</Row>
+        <div className="clearfix pt-5 mx-4">
+          <span className="float-left">
+            <h1>All Products ({this.props.products.length.toString()})</h1>
+          </span>
+          <span className="float-right">
+            {" "}
+            <Form
+              style={{ color: "orange" }}
+              inline
+              //onSubmit={console.log("submitted search form")}
+            >
+              <FormControl
+                onSubmit={(e) => this.searchForProduct()}
+                type="text"
+                name="seacrh"
+                //onChange={(e) => setSearchKey(e.target.value)}
+                placeholder="Search product..."
+                className="mr-sm-2"
+              />
+              <FaSearch onClick={() => this.searchForProduct()} />
+            </Form>
+          </span>
+        </div>
+        <section className="pb-4 pl-4 pr-4">
+          <Row>{this.props.products.map(this.renderCards, this)}</Row>
         </section>
       </div>
     );

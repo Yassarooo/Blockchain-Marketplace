@@ -1,9 +1,94 @@
 import React, { Component } from "react";
-import { Button } from "react-bootstrap";
-import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import ipfs from "./ipfs";
+import { toast } from "react-toastify";
 
 class AddProduct extends Component {
+  state = {
+    name: "",
+    description: "",
+    price: "",
+    imgipfshash: "",
+    fileipfshash: "",
+    imgbuffer: null,
+    filebuffer: null,
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  captureImage = (event) => {
+    event.preventDefault();
+    const file = event.target.files[0];
+    if (file.type.match("image/*")) {
+      const reader = new window.FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onloadend = () => {
+        this.setState({
+          imgbuffer: Buffer(reader.result),
+        });
+      };
+    } else {
+      toast.error("you can only select image for the product");
+    }
+  };
+
+  captureFile = (event) => {
+    event.preventDefault();
+    const file = event.target.files[0];
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = () => {
+      this.setState({
+        filebuffer: Buffer(reader.result),
+      });
+    };
+  };
+
+  onSubmit = async (event) => {
+    event.preventDefault();
+    if (
+      this.state.name.length > 20 &&
+      (this.state.price.toString() > 999999) &
+        (this.state.description.length > 120)
+    ) {
+      toast.error("please enter correct info");
+    } else {
+      toast.info("Uploading Image...");
+      ipfs.files.add(this.state.imgbuffer, (error, result) => {
+        if (error) {
+          toast.error(error);
+          return;
+        }
+        this.setState({ imgipfsHash: result[0].hash });
+        toast.success("Image Uploaded Successfully");
+        console.log("image ipfshash:", this.state.imgipfsHash.toString());
+
+        toast.info("Uploading File...");
+        ipfs.files.add(this.state.filebuffer, (error, result) => {
+          if (error) {
+            toast.error(error);
+            return;
+          }
+          this.setState({ fileipfsHash: result[0].hash });
+          toast.success("File Uploaded Successfully");
+          console.log("File ipfsHash", this.state.fileipfsHash.toString());
+          console.log("naaaaaaaaaaame :", this.state.name);
+          this.props.createProduct(
+            this.state.name,
+            this.state.description,
+            window.web3.utils.toWei(this.state.price.toString(), "Ether"),
+            this.state.imgipfsHash.toString(),
+            this.state.fileipfsHash.toString()
+          );
+        });
+      });
+    }
+  };
+
   render() {
     return (
       <div className="container">
@@ -14,43 +99,30 @@ class AddProduct extends Component {
               <p className="lead text-center">
                 Let's get some information about your Product
               </p>
-              <form
-                className="needs-validation"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const name = this.productName.value;
-                  const image = this.productImage.value;
-                  const description = this.productDescription.value;
-                  const price = window.web3.utils.toWei(
-                    this.productPrice.value.toString(),
-                    "Ether"
-                  );
-                  this.props.createProduct(name, image, description, price);
-                }}
-              >
+              <form className="needs-validation" onSubmit={this.onSubmit}>
                 <div className="form-group">
-                  <label htmlFor="title">Title *</label>
+                  <label htmlFor="name">Product Name *</label>
                   <input
                     type="text"
                     className="form-control"
-                    id="productName"
-                    placeholder="Title"
-                    ref={(input) => {
-                      this.productName = input;
-                    }}
+                    id="name"
+                    name="name"
+                    placeholder="Ex:(Idm Source Code, Photoshop Subscription...)"
+                    value={this.state.name}
+                    onChange={this.handleChange}
                     required
                   />
-                  <div className="invalid-feedback">Title is required.</div>
+                  <div className="invalid-feedback">Name is required.</div>
                 </div>
                 <div className="form-group">
                   <label htmlFor="description">Description</label>
                   <textarea
                     className="form-control"
                     id="description"
+                    name="description"
                     placeholder="Description"
-                    ref={(input) => {
-                      this.productDescription = input;
-                    }}
+                    value={this.state.description}
+                    onChange={this.handleChange}
                     rows="3"
                     required
                   />
@@ -61,33 +133,29 @@ class AddProduct extends Component {
                 <div className="form-group">
                   <label htmlFor="tags">Price *</label>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
-                    id="ProductPrice"
-                    ref={(input) => {
-                      this.productPrice = input;
-                    }}
+                    id="price"
+                    name="price"
+                    value={this.state.price}
+                    onChange={this.handleChange}
                     placeholder="Product Price in Ethereum"
                     required
                   />
                   <div className="invalid-feedback">Price is required.</div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="tags">Image *</label>
+                  <label htmlFor="file">Image</label>
                   <input
-                    type="text"
-                    className="form-control"
-                    id="ProductImage"
-                    ref={(input) => {
-                      this.productImage = input;
-                    }}
-                    placeholder="Product Image Link"
-                    required
+                    type="file"
+                    accept="image/*"
+                    className="form-control-file"
+                    id="file"
+                    onChange={this.captureImage}
                   />
-                  <div className="invalid-feedback">Image is required.</div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="file">Image</label>
+                  <label htmlFor="file">File</label>
                   <input
                     type="file"
                     className="form-control-file"
@@ -110,7 +178,7 @@ class AddProduct extends Component {
                 </div>
               </form>
               {this.props.successmessage != "" ? (
-                <div class="alert alert-info mt-5">
+                <div className="alert alert-info mt-5">
                   {this.props.successmessage}
                 </div>
               ) : null}
@@ -121,5 +189,4 @@ class AddProduct extends Component {
     );
   }
 }
-
 export default AddProduct;

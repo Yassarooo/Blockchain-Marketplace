@@ -2,17 +2,33 @@ import React, { Component } from "react";
 import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
-import MyNavbar from "./Navbar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import MyNavbar from "./Navbar";
+import MyFooter from "./Footer";
 import Main from "./Main";
 import Products from "./Products";
 import AddProduct from "./AddProduct";
-import UploadImage from "./UploadImage";
+import AboutUs from "./AboutUs";
+import MyProducts from "./MyProducts";
+import ProductDetails from "./ProductDetails";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 toast.configure();
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.createProduct = this.createProduct.bind(this);
+    this.purchaseProduct = this.purchaseProduct.bind(this);
+    this.state = {
+      account: "",
+      productCount: 0,
+      products: [],
+      loading: true,
+      successmessage: "",
+    };
+  }
+
   async componentWillMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
@@ -110,21 +126,30 @@ class App extends Component {
         this.setState({
           loading: false,
         });
+        toast.success("Product Purchased Successfully !");
+        window.location.reload();
       });
   }
 
-  constructor(props) {
-    super(props);
-    this.createProduct = this.createProduct.bind(this);
-    this.purchaseProduct = this.purchaseProduct.bind(this);
-    this.state = {
-      account: "",
-      productCount: 0,
-      products: [],
-      loading: true,
-      successmessage: "",
-    };
-  }
+  ProductRoutesGenerator = () => {
+    return this.state.products.map((product) => {
+      return (
+        <Route
+          exact
+          path={`/product/${product.id}`}
+          key={product.id}
+          children={
+            <ProductDetails
+              product={product}
+              account={this.state.account}
+              products={this.state.products}
+              purchaseProduct={this.purchaseProduct}
+            />
+          }
+        />
+      );
+    });
+  };
 
   render() {
     return (
@@ -152,16 +177,21 @@ class App extends Component {
               </div>
             </div>
           </Route>
-          <Route path="/about">
-            <h1> About </h1>
+          <Route path="/aboutus">
+            <AboutUs account={this.state.account} />
           </Route>
-          <Route path="/dashboard">
-            <h1> Dashboard </h1>
+          <Route path="/myproducts">
+            <MyProducts
+              account={this.state.account}
+              products={this.state.products}
+            />
           </Route>
           <Route path="/products">
             <Products
               account={this.state.account}
               products={this.state.products}
+              purchaseProduct={this.purchaseProduct}
+              history={this.state.history}
             />
           </Route>
           <Route path="/addproduct">
@@ -170,13 +200,10 @@ class App extends Component {
               successmessage={this.state.successmessage}
             />
           </Route>
-          <Route path="/uploadimage">
-            <UploadImage
-              createProduct={this.createProduct}
-              successmessage={this.state.successmessage}
-            />
-          </Route>
+          {this.ProductRoutesGenerator()}
         </Switch>
+
+        <MyFooter />
       </Router>
     );
   }
