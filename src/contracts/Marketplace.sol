@@ -1,14 +1,18 @@
-pragma solidity ^0.5.0;
+// if purchased w bdi 27zfa
+// SPDX-License-Identifier: MIT
+pragma solidity  ^0.8.0;
 
 contract Marketplace {
-    string ta3dil3;
-    string public name;
+    //string public name;
     uint public productCount = 0;
     //to store the products on blockchain
+    bool public flag = false;
     mapping(uint => Product) public products;
     // Maps owner to their images
     mapping (address => Product[]) public ownerToProducts;
-
+    uint[] public emptySpaces;
+    uint public len; 
+    uint public ftt = 0;
     struct Product {
         uint id;
         string name;
@@ -16,7 +20,7 @@ contract Marketplace {
         uint price;
         string imgipfshash;
         string fileipfshash;
-        address payable owner;
+        address owner;
         bool purchased;
     }
 
@@ -27,7 +31,7 @@ contract Marketplace {
         uint price,
         string imgipfshash,
         string fileipfshash,
-        address payable owner,
+        address owner,
         bool purchased
     );
 
@@ -38,59 +42,119 @@ contract Marketplace {
     uint price,
     string imgipfshash,
     string fileipfshash,
-    address payable owner,
+    address owner,
     bool purchased
 );
 
-    constructor() public {
+    /*constructor() public {
         name = "Jazara Marketplace";
-    }
+    }*/
 
     // Create a new product with a struct
     // Add the struct to the mapping, and store it on the blockchain
     // Trigger an event that lets someone know a product was creatd
     function createProduct(string memory _name,string memory _description, uint _price,string memory _imgipfshash,string memory _fileipfshash) public {
-    // Require a valid name
-    require(bytes(_name).length > 0);
-    // Require a valid description
-    require(bytes(_description).length > 0);
-    // Require a valid price
-    require(_price > 0);
-    // Require a valid image hash
-    require(bytes(_imgipfshash).length > 0);
-    // Require a valid file hash
-    require(bytes(_fileipfshash).length > 0);
-    // Increment product count
-    productCount ++;
-    // Create the product
-    products[productCount] = Product(productCount, _name,_description, _price,_imgipfshash,_fileipfshash, msg.sender, false);
-    // Trigger an event
-    emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
+        // Require a valid name
+        require(bytes(_name).length > 0);
+        // Require a valid description
+        //require(bytes(_description).length > 0);
+        // Require a valid price
+        require(_price > 0);
+        // Require a valid image hash
+        //require(bytes(_imgipfshash).length > 0);
+        // Require a valid file hash
+        //require(bytes(_fileipfshash).length > 0);*/
+        // Increment product count
+        if(emptySpaces.length == 0 || emptySpaces[0]==0){
+            productCount ++;
+                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false );
+        
+                ownerToProducts[msg.sender].push(Product({
+                id: productCount,
+                name: _name,
+                description: _description,
+                price: _price,
+                imgipfshash: _imgipfshash,
+                fileipfshash:_fileipfshash,
+                owner: msg.sender,
+                purchased: false
+            }));
+            emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
+        }
+        else{
+            uint tmp = emptySpaces[0];
+            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false );
+            len = emptySpaces.length;
+            for(uint i = 0;i < emptySpaces.length - 1;i++){
+                emptySpaces[i] = emptySpaces[ i+1 ];
+            }
+            emptySpaces.pop();
+            ownerToProducts[msg.sender].push(Product({
+                id: tmp,
+                name: _name,
+                description: _description,
+                price: _price,
+                imgipfshash: _imgipfshash,
+                fileipfshash:_fileipfshash,
+                owner: msg.sender,
+                purchased: false
+                }));
+                emit ProductCreated(tmp, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
+        }
+        
     }
 
+    function removeProduct(uint id1) public {
+        removeNestedProduct(id1);
+        delete products [id1];
+        emptySpaces.push(id1);
+    }
+    function removeNestedProduct(uint id1) public {
+        uint index =0;
+        for(uint i=0;i<ownerToProducts[msg.sender].length;i++){
+            if(ownerToProducts[msg.sender][i].id == id1){
+                flag = true;
+                index = i;
+            }
+        }
+        if(flag){
+            if(index == ownerToProducts[msg.sender].length -1){
+                ownerToProducts[msg.sender].pop();
+                flag = false;
+            }
+            else{
+                for(uint i = index ;i <ownerToProducts[msg.sender].length - 1 ; i++){
+                    ownerToProducts[msg.sender][i] = ownerToProducts[msg.sender][ i+1 ];
+                }
+                ownerToProducts[msg.sender].pop();
+                flag = false;
+            }
+        }
+    }
     function purchaseProduct(uint _id) public payable {
-    // Fetch the product
-    Product memory _product = products[_id];
-    // Fetch the owner
-    address payable _seller = _product.owner;
-    // Make sure the product has a valid id
-    require(_product.id > 0 && _product.id <= productCount);
-    // Require that there is enough Ether in the transaction
-    require(msg.value >= _product.price);
-    // Require that the product has not been purchased already
-    require(!_product.purchased);
-    // Require that the buyer is not the seller
-    require(_seller != msg.sender);
-    // Transfer ownership to the buyer
-    _product.owner = msg.sender;
-    // Mark as purchased
-    _product.purchased = true;
-    // Update the product
-    products[_id] = _product;
-    // Pay the seller by sending them Ether
-    address(_seller).transfer(msg.value);
-    // Trigger an event
-    emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
+        // Fetch the product
+        Product memory _product = products[_id];
+        // Fetch the owner
+        address _seller = _product.owner;
+        /*// Make sure the product has a valid id
+        require(_product.id > 0 && _product.id <= productCount);
+        // Require that there is enough Ether in the transaction
+        require(msg.value >= _product.price);
+        // Require that the product has not been purchased already
+        require(!_product.purchased);
+        // Require that the buyer is not the seller
+        require(_seller != msg.sender);
+        // Transfer ownership to the buyer*/
+        _product.owner = msg.sender;
+        // Mark as purchased
+        _product.purchased = true;
+        // Update the product
+        products[_id] = _product;
+        // Pay the seller by sending them Ether
+        payable(_seller).transfer(msg.value);
+        removeNestedProduct(_id);
+        // Trigger an event
+        emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
     }
 
     /** 
@@ -99,7 +163,7 @@ contract Marketplace {
     * @param _owner The owner address
     * @return The number of products associated with a given address
     */
-    function getProductCount(address _owner) 
+    function getProductCount(address _owner) view
         public
         returns (uint256) 
     {
@@ -107,7 +171,7 @@ contract Marketplace {
         return ownerToProducts[_owner].length;
     }
 
-    function getProduct(address _owner, uint8 _index) 
+    function getProduct(address _owner, uint8 _index) view
         public returns (
         uint _id, 
         string memory _name, 
