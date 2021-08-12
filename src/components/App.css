@@ -1,8 +1,16 @@
 /* Styles go here */
 footer {
   font-size: small;
+  margin-top: auto;
 }
 
+body {
+  background: #191c22;
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 #block_container {
   text-align: center;
 }
@@ -31,16 +39,9 @@ footer {
 .nav-link:hover {
   color: orange !important;
 }
-.btn-outline-light {
-}
 .btn-outline-light:hover {
   color: white !important;
   background-color: orange !important;
-}
-
-body {
-  background: #191c22;
-  color: #ffffff;
 }
 
 .list-group-item {
@@ -105,7 +106,7 @@ h3 {
   width: calc(100% - 0px);
   height: calc(100% - 0px);
   border: 8px solid #162534;
-  border-top: 8px solid #09f;
+  border-top: 8px solid orange;
   border-radius: 50%;
   animation: rotate 5s linear infinite;
 }

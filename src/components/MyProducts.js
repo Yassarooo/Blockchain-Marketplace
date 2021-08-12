@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { GrView } from "react-icons/gr";
+import { BsCheckCircle } from "react-icons/bs";
 
 class MyProducts extends Component {
   render() {
@@ -19,28 +23,35 @@ class MyProducts extends Component {
           <thead>
             <tr>
               <th scope="col"> # </th> <th scope="col"> Name </th>
-              <th scope="col"> Price </th> <th scope="col"> Owner </th>
-              <th scope="col"></th>
+              <th scope="col"> Price </th> <th scope="col"> Purchased </th>
+              <th scope="col"> Actions</th>
             </tr>
           </thead>
           <tbody id="productList">
             {this.props.products.map((product, key) => {
-              return product.owner == this.props.account ? (
+              return product.owner === this.props.account ? (
                 <tr key={key}>
                   <th scope="row"> {product.id.toString()}</th>
                   <td>{product.name} </td>
                   <td>
-                    {product.price.toString()}
+                    {window.web3.utils.fromWei(
+                      product.price.toString(),
+                      "Ether"
+                    )}
                     {""} Eth
                   </td>
-                  <td>{product.owner} </td>
+                  <td>{product.purchased ? <BsCheckCircle /> : null}</td>
                   <td>
-                    <button
-                      name={product.id}
-                      value={product.price}
-                      onClick={(event) => {}}
-                    >
-                      Edit
+                    <button type="button" className="btn btn-primary">
+                      <GrView />
+                    </button>{" "}
+                    {""}
+                    <button type="button" className="btn btn-success">
+                      <FaEdit />
+                    </button>{" "}
+                    {""}
+                    <button type="button" className="btn btn-danger">
+                      <MdDelete />
                     </button>
                   </td>
                 </tr>

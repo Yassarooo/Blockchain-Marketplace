@@ -107,7 +107,10 @@ class App extends Component {
           loading: false,
           successmessage: "Product Added Successfully !",
         });
-        toast.success("Product Added Successfully !");
+        toast.success("Product Added Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
         this.loadBlockchainData();
       });
   }
@@ -126,7 +129,10 @@ class App extends Component {
         this.setState({
           loading: false,
         });
-        toast.success("Product Purchased Successfully !");
+        toast.success("Product Purchased Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
         window.location.reload();
       });
   }

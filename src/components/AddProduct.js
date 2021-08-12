@@ -32,7 +32,10 @@ class AddProduct extends Component {
         });
       };
     } else {
-      toast.error("you can only select image for the product");
+      toast.error("Choose valid image file ", {
+        position: "bottom-right",
+        closeOnClick: true,
+      });
     }
   };
 
@@ -55,28 +58,47 @@ class AddProduct extends Component {
       (this.state.price.toString() > 999999) &
         (this.state.description.length > 120)
     ) {
-      toast.error("please enter correct info");
+      toast.error("please enter correct info", {
+        position: "bottom-right",
+        closeOnClick: true,
+      });
     } else {
-      toast.info("Uploading Image...");
+      toast.info("Uploading Image...", {
+        position: "bottom-right",
+        closeOnClick: true,
+      });
       ipfs.files.add(this.state.imgbuffer, (error, result) => {
         if (error) {
-          toast.error(error);
+          toast.error(error, {
+            position: "bottom-right",
+            closeOnClick: true,
+          });
           return;
         }
         this.setState({ imgipfsHash: result[0].hash });
-        toast.success("Image Uploaded Successfully");
+        toast.success("Image Uploaded Successfully", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
         console.log("image ipfshash:", this.state.imgipfsHash.toString());
 
-        toast.info("Uploading File...");
+        toast.info("Uploading File...", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
         ipfs.files.add(this.state.filebuffer, (error, result) => {
           if (error) {
-            toast.error(error);
+            toast.error(error, {
+              position: "bottom-right",
+              closeOnClick: true,
+            });
             return;
           }
           this.setState({ fileipfsHash: result[0].hash });
-          toast.success("File Uploaded Successfully");
-          console.log("File ipfsHash", this.state.fileipfsHash.toString());
-          console.log("naaaaaaaaaaame :", this.state.name);
+          toast.success("File Uploaded Successfully", {
+            position: "bottom-right",
+            closeOnClick: true,
+          });
           this.props.createProduct(
             this.state.name,
             this.state.description,

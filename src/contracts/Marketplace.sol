@@ -17,10 +17,8 @@ contract Marketplace {
     uint public ftt = 0;
 
     struct Customer {
-        uint id;
         address adr;
         bytes32 name;
-        uint256 balance;
         Cart cart;
     }
 
@@ -38,7 +36,7 @@ contract Marketplace {
         string fileipfshash;
         address owner;
         bool purchased;
-        Customer[] owners;
+        address[] owners;
     }
 
     event ProductCreated(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner, bool purchased);
@@ -70,10 +68,9 @@ contract Marketplace {
         // Require a valid file hash
         //require(bytes(_fileipfshash).length > 0);*/
         // Increment product count
-        Customer[] memory owners;
         if(emptySpaces.length == 0 || emptySpaces[0]==0){
                 productCount ++;
-                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false ,owners);
+                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false ,new address[](0));
         
                 ownerToProducts[msg.sender].push(Product({
                 id: productCount,
@@ -84,13 +81,13 @@ contract Marketplace {
                 fileipfshash:_fileipfshash,
                 owner: msg.sender,
                 purchased: false,
-                owners: owners
+                owners: new address[](0)
             }));
             emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
         else{
             uint tmp = emptySpaces[0];
-            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false,owners );
+            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false,new address[](0) );
             len = emptySpaces.length;
             for(uint i = 0;i < emptySpaces.length - 1;i++){
                 emptySpaces[i] = emptySpaces[ i+1 ];
@@ -105,7 +102,7 @@ contract Marketplace {
                 fileipfshash:_fileipfshash,
                 owner: msg.sender,
                 purchased: false,
-                owners: owners
+                owners: new address[](0)
                 }));
                 emit ProductCreated(tmp, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
@@ -182,7 +179,6 @@ contract Marketplace {
     }
 
     function removeProductFromCart(uint256 prod_pos_in_mapping) public {
-      /*if (msg.sender != owner) {*/
         uint256[] memory new_product_list = new uint256[](customers[msg.sender]
                                                     .cart.products.length - 1);
         uint256[] memory customerProds = customers[msg.sender].cart.products;
@@ -196,17 +192,27 @@ contract Marketplace {
           }
         }
         customers[msg.sender].cart.products = new_product_list;
-      /*}*/
     }
 
     function emptyCart() public returns (bool success) {
-      /*if (msg.sender != owner) {*/
         Customer storage customer = customers[msg.sender];
         customer.cart = Cart(new uint256[](0), 0);
         emit CartEmptied(customer.adr);
         return true;
-      /*}*/
-      /*return false;*/
+    }
+
+    function registerCustomer(address _address, bytes32 _name, uint256 _balance)
+                                        public returns (bool success) {
+      if (_address != address(0)) {
+        Customer memory customer = Customer({ adr: _address, name: _name,
+                                              cart: Cart(new uint256[](0), 0)
+                                            });
+        customers[_address] = customer;
+        emit CustomerRegistered(_address);
+        return true;
+      }
+      emit CustomerRegistrationFailed(_address);
+      return false;
     }
 
     function getProductCount(address _owner) view

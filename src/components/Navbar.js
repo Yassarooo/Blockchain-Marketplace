@@ -28,13 +28,7 @@ class MyNavbar extends Component {
         {this.props.loading ? (
           <div className="preloader">
             <div id="circle">
-              <div className="loader">
-                <div className="loader">
-                  <div className="loader">
-                    <div className="loader"> </div>
-                  </div>
-                </div>
-              </div>
+              <div className="loader"></div>
             </div>
           </div>
         ) : null}
