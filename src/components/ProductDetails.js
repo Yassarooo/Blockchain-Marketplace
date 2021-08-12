@@ -42,7 +42,12 @@ class ProductDetails extends Component {
               </div>
               <div className="list-group-item">
                 Price: <FaEthereum className="text-primary" />
-                {""} {this.props.product.price} Eth
+                {""}
+                {window.web3.utils.fromWei(
+                  this.props.product.price.toString(),
+                  "Ether"
+                )}{" "}
+                Eth
               </div>
               <div className="list-group-item">
                 Description: {this.props.product.description}
@@ -64,7 +69,12 @@ class ProductDetails extends Component {
                     <div className="col">
                       <strong>
                         <FaEthereum className="text-primary" />
-                        {""} {this.props.product.price} Eth
+                        {""}{" "}
+                        {window.web3.utils.fromWei(
+                          this.props.product.price.toString(),
+                          "Ether"
+                        )}{" "}
+                        Eth
                       </strong>
                     </div>
                   </div>
