@@ -8,11 +8,27 @@ contract Marketplace {
     //to store the products on blockchain
     bool public flag = false;
     mapping(uint => Product) public products;
+    //to store the customers on blockchain
+    mapping(address  => Customer) public customers;
     // Maps owner to their images
     mapping (address => Product[]) public ownerToProducts;
     uint[] public emptySpaces;
     uint public len; 
     uint public ftt = 0;
+
+    struct Customer {
+        uint id;
+        address adr;
+        bytes32 name;
+        uint256 balance;
+        Cart cart;
+    }
+
+    struct Cart {
+      uint256[] products;
+      uint256 completeSum;
+    }
+
     struct Product {
         uint id;
         string name;
@@ -22,29 +38,18 @@ contract Marketplace {
         string fileipfshash;
         address owner;
         bool purchased;
+        Customer[] owners;
     }
 
-    event ProductCreated(
-        uint id,
-        string name,
-        string description,
-        uint price,
-        string imgipfshash,
-        string fileipfshash,
-        address owner,
-        bool purchased
-    );
+    event ProductCreated(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner, bool purchased);
+    event ProductPurchased(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner, bool purchased);
+    event CustomerRegistered(address customer);
+    event CustomerRegistrationFailed(address customer);
+    event CartProductInserted(address customer, uint256 prodId, uint256 prodPrice, uint256 completeSum);
+    event CartProductInsertionFailed(address customer, uint256 prodId);
+    event CartProductRemoved(address customer, uint256 prodId);
+    event CartEmptied(address customer);
 
-    event ProductPurchased(
-    uint id,
-    string name,
-    string description,
-    uint price,
-    string imgipfshash,
-    string fileipfshash,
-    address owner,
-    bool purchased
-);
 
     /*constructor() public {
         name = "Jazara Marketplace";
@@ -65,9 +70,10 @@ contract Marketplace {
         // Require a valid file hash
         //require(bytes(_fileipfshash).length > 0);*/
         // Increment product count
+        Customer[] memory owners;
         if(emptySpaces.length == 0 || emptySpaces[0]==0){
-            productCount ++;
-                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false );
+                productCount ++;
+                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false ,owners);
         
                 ownerToProducts[msg.sender].push(Product({
                 id: productCount,
@@ -77,13 +83,14 @@ contract Marketplace {
                 imgipfshash: _imgipfshash,
                 fileipfshash:_fileipfshash,
                 owner: msg.sender,
-                purchased: false
+                purchased: false,
+                owners: owners
             }));
             emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
         else{
             uint tmp = emptySpaces[0];
-            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false );
+            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false,owners );
             len = emptySpaces.length;
             for(uint i = 0;i < emptySpaces.length - 1;i++){
                 emptySpaces[i] = emptySpaces[ i+1 ];
@@ -97,7 +104,8 @@ contract Marketplace {
                 imgipfshash: _imgipfshash,
                 fileipfshash:_fileipfshash,
                 owner: msg.sender,
-                purchased: false
+                purchased: false,
+                owners: owners
                 }));
                 emit ProductCreated(tmp, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
@@ -157,12 +165,50 @@ contract Marketplace {
         emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
     }
 
-    /** 
-    * @notice Returns the number of products associated with the given address
-    * @dev Controlled by circuit breaker
-    * @param _owner The owner address
-    * @return The number of products associated with a given address
-    */
+    function insertProductIntoCart(uint256 id) public returns (bool success,
+                                                  uint256 pos_in_prod_mapping) {
+        Customer storage cust = customers[msg.sender];
+        Product memory prod = products[id];
+        uint256 prods_prev_len = cust.cart.products.length;
+        cust.cart.products.push(prod.id);
+        uint256 current_sum = cust.cart.completeSum;
+        cust.cart.completeSum = current_sum + prod.price;
+        if (cust.cart.products.length > prods_prev_len) {
+          emit CartProductInserted(msg.sender, id, prod.price, cust.cart.completeSum);
+          return (true, cust.cart.products.length - 1);
+        }
+        emit CartProductInsertionFailed(msg.sender, id);
+        return (false, 0);
+    }
+
+    function removeProductFromCart(uint256 prod_pos_in_mapping) public {
+      /*if (msg.sender != owner) {*/
+        uint256[] memory new_product_list = new uint256[](customers[msg.sender]
+                                                    .cart.products.length - 1);
+        uint256[] memory customerProds = customers[msg.sender].cart.products;
+        for (uint256 i = 0; i < customerProds.length; i++) {
+          if (i != prod_pos_in_mapping) {
+            new_product_list[i] = customerProds[i];
+          } else {
+            customers[msg.sender].cart.completeSum -=
+                                               products[customerProds[i]].price;
+            emit CartProductRemoved(msg.sender, customerProds[i]);
+          }
+        }
+        customers[msg.sender].cart.products = new_product_list;
+      /*}*/
+    }
+
+    function emptyCart() public returns (bool success) {
+      /*if (msg.sender != owner) {*/
+        Customer storage customer = customers[msg.sender];
+        customer.cart = Cart(new uint256[](0), 0);
+        emit CartEmptied(customer.adr);
+        return true;
+      /*}*/
+      /*return false;*/
+    }
+
     function getProductCount(address _owner) view
         public
         returns (uint256) 
