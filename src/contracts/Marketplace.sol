@@ -5,11 +5,13 @@ pragma solidity  ^0.8.0;
 contract Marketplace {
     //string public name;
     uint public productCount = 0;
+    uint public customerCount = 0;
     //to store the products on blockchain
     bool public flag = false;
     mapping(uint => Product) public products;
     //to store the customers on blockchain
     mapping(address  => Customer) public customers;
+    address[] public addressLUT;
     // Maps owner to their images
     mapping (address => Product[]) public ownerToProducts;
     uint[] public emptySpaces;
@@ -18,7 +20,7 @@ contract Marketplace {
 
     struct Customer {
         address adr;
-        bytes32 name;
+        string name;
         Cart cart;
     }
 
@@ -201,18 +203,24 @@ contract Marketplace {
         return true;
     }
 
-    function registerCustomer(address _address, bytes32 _name, uint256 _balance)
+    function registerCustomer(address _address, string memory _name)
                                         public returns (bool success) {
-      if (_address != address(0)) {
+      if (_address != address(0) && customers[_address].adr == address(0x0)) {
         Customer memory customer = Customer({ adr: _address, name: _name,
                                               cart: Cart(new uint256[](0), 0)
                                             });
+        customerCount++;
+        addressLUT[customerCount] = customer.adr;
         customers[_address] = customer;
         emit CustomerRegistered(_address);
         return true;
       }
       emit CustomerRegistrationFailed(_address);
       return false;
+    }
+
+    function getCustomer(address _adr) view public returns(Customer memory){
+    	return customers[_adr];
     }
 
     function getProductCount(address _owner) view

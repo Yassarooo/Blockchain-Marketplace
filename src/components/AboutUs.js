@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { Row, Col } from "react-bootstrap";
-import { FaEthereum } from "react-icons/fa";
 
 class AboutUs extends Component {
   render() {
@@ -8,23 +6,34 @@ class AboutUs extends Component {
       <div>
         <header className="bg-dark py-2">
           <div className="container px-4 px-lg-5 my-5">
-            <h1 class="display-3 fw-bolder">
-              <img src={require("./cheers.png")} width="100" height="100" />{" "}
+            <h1 className="display-3 fw-bolder">
+              <img
+                src={require("./cheers.png")}
+                alt=""
+                width="100"
+                height="100"
+              />{" "}
               Welcome,{" "}
-              <a className="text-primary">
+              <li className="text-primary">
                 {this.props.account.substring(0, 9)}
-              </a>
+              </li>
             </h1>
-            <div class="css-typing text-white">
+            <div className="css-typing text-white">
               <p>
                 This is a web marketplace project based on Blockchain technology
                 & smart contracts which are implemented by Ethereum .
               </p>
               <p>
                 Created By
-                <a className="text-primary"> Jazara Debuggers Team © </a>
+                <a className="text-primary" href="//">
+                  {" "}
+                  Jazara Debuggers Team ©{" "}
+                </a>
                 ,Have a look at the sections below, feel free to contact us at :{" "}
-                <a className="text-success">jazaradebuggers@gmail.com</a>
+                <a className="text-success" href="//">
+                  {" "}
+                  jazaradebuggers@gmail.com
+                </a>
               </p>
             </div>
           </div>

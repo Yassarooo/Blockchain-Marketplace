@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import "./App.css";
+import "./style/App.css";
+import "./style/Modal.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -20,14 +21,79 @@ class App extends Component {
     super(props);
     this.createProduct = this.createProduct.bind(this);
     this.purchaseProduct = this.purchaseProduct.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
     this.state = {
+      show: false,
       account: "",
       productCount: 0,
+      customerCount: 0,
       products: [],
+      addressLUT: [],
+      customers: [],
       loading: true,
       successmessage: "",
     };
   }
+
+  showModal = () => {
+    this.setState({ show: true });
+  };
+
+  hideModal = () => {
+    this.setState({ show: false });
+  };
+
+  Modal = ({ handleClose, children }) => {
+    const showHideClassName = this.state.show
+      ? "modal display-block"
+      : "modal display-none";
+
+    return (
+      <div className={showHideClassName}>
+        <div id="myModal" className="modal fade">
+          <div className="modal-dialog modal-newsletter">
+            <div className="modal-content">
+              <form action="confirmation.php" method="post">
+                <div className="modal-header">
+                  <button
+                    type="button"
+                    className="close"
+                    data-dismiss="modal"
+                    aria-hidden="true"
+                  >
+                    <span>×</span>
+                  </button>
+                </div>
+                <div className="modal-body text-center">
+                  <h4>Subscribe to our newsletter</h4>
+                  <p>
+                    Sugnup for our weekly newsletter to get the latest news,
+                    updates and amazong offers delivered direcly in your inbox.
+                  </p>
+                  <div className="input-group">
+                    <input
+                      type="email"
+                      className="form-control"
+                      placeholder="Enter your email"
+                      required
+                    />
+                    <span className="input-group-btn">
+                      <input
+                        type="submit"
+                        className="btn btn-primary"
+                        value="Subscribe"
+                      />
+                    </span>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   async componentWillMount() {
     await this.loadWeb3();
@@ -49,6 +115,7 @@ class App extends Component {
 
   async loadBlockchainData() {
     this.state.products = [];
+    this.state.customers = [];
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
     this.setState({
@@ -64,11 +131,37 @@ class App extends Component {
       this.setState({
         marketplace,
       });
-      const productCount = await marketplace.methods.productCount().call();
+      // const cust = await marketplace.methods
+      //   .customers(this.state.account)
+      //   .call();
+      // console.log("jazaraaaaaaaa ", cust.adr);
 
-      //console.log(productCount.toString())
+      // if (cust.name === "") {
+      //   console.log("if (cust===null)  ", cust.name);
+      //   //this.showModal();
+      //   marketplace.methods
+      //     .registerCustomer(this.state.account, "Seller")
+      //     .call({ from: this.state.account })
+      //     .then("receipt", (receipt) => {
+      //       toast.success("Customer Registered Successfully !", {
+      //         position: "bottom-right",
+      //         closeOnClick: true,
+      //       });
+      //     });
+      // } else {
+      //   console.log("else", cust.name);
+      //   toast.success("Customer", cust.name, " Already Registered !", {
+      //     position: "bottom-right",
+      //     closeOnClick: true,
+      //   });
+      // }
+      const productCount = await marketplace.methods.productCount().call();
       this.setState({
         productCount,
+      });
+      const customerCount = await marketplace.methods.customerCount().call();
+      this.setState({
+        customerCount,
       });
       // Load products
       for (var i = 1; i <= productCount; i++) {
@@ -76,6 +169,42 @@ class App extends Component {
         this.setState({
           products: [...this.state.products, product],
         });
+      }
+      for (var j = 1; j <= customerCount; j++) {
+        const adr = await marketplace.methods.addressLUT(j).call();
+        this.setState({
+          addressLUT: [...this.state.addressLUT, adr],
+        });
+      }
+      for (var k = 1; k <= customerCount; k++) {
+        const cust = await marketplace.methods
+          .customers(this.state.addressLUT(j))
+          .call();
+        this.setState({
+          customers: [...this.state.customers, cust],
+        });
+      }
+      if (
+        this.state.addressLUT.find((element) => {
+          return element === this.state.account;
+        })
+      ) {
+        toast.success(this.state.customers[this.state.account].name, {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+      } else {
+        marketplace.methods
+          .registerCustomer(this.state.account, "Seller")
+          .send({
+            from: this.state.account,
+          })
+          .once("receipt", (receipt) => {
+            toast.success("Product Added Successfully !", {
+              position: "bottom-right",
+              closeOnClick: true,
+            });
+          });
       }
       this.setState({
         loading: false,
@@ -160,6 +289,10 @@ class App extends Component {
   render() {
     return (
       <Router>
+        <this.Modal show={this.state.show} handleClose={this.hideModal}>
+          <p>Modal</p>
+        </this.Modal>
+
         <MyNavbar
           loading={this.state.loading}
           account={this.state.account}

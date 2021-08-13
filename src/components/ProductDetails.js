@@ -124,13 +124,13 @@ class ProductDetails extends Component {
             </div>
           </div>
         </div>
-        <div class="row py-4">
-          <div class="col-md-6">
+        <div className="row py-4">
+          <div className="col-md-6">
             <h2>REVIEWS(7)</h2>
-            <div class="list-group list-group-flush">
-              <div class="list-group-item">
+            <div className="list-group list-group-flush">
+              <div className="list-group-item">
                 <strong>Rajesh Khadka</strong>
-                <div class="rating">
+                <div className="rating">
                   <span>
                     <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
                   </span>
@@ -151,9 +151,9 @@ class ProductDetails extends Component {
                 <p>2020-10-30</p>
                 <p>This is a amazing site</p>
               </div>
-              <div class="list-group-item">
+              <div className="list-group-item">
                 <strong>yan</strong>
-                <div class="rating">
+                <div className="rating">
                   <span>
                     <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
                   </span>
@@ -174,9 +174,9 @@ class ProductDetails extends Component {
                 <p>2020-10-30</p>
                 <p>yfgyfy</p>
               </div>
-              <div class="list-group-item">
+              <div className="list-group-item">
                 <strong>Umer</strong>
-                <div class="rating">
+                <div className="rating">
                   <span>
                     <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
                   </span>
@@ -189,13 +189,13 @@ class ProductDetails extends Component {
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      class="far fa-star"
+                      className="far fa-star"
                     ></i>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      class="far fa-star"
+                      className="far fa-star"
                     ></i>
                   </span>
                   <span></span>
@@ -203,34 +203,34 @@ class ProductDetails extends Component {
                 <p>2020-11-07</p>
                 <p>s</p>
               </div>
-              <div class="list-group-item">
+              <div className="list-group-item">
                 <strong>tfs123</strong>
-                <div class="rating">
+                <div className="rating">
                   <span>
                     <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      class="far fa-star"
+                      className="far fa-star"
                     ></i>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      class="far fa-star"
+                      className="far fa-star"
                     ></i>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      class="far fa-star"
+                      className="far fa-star"
                     ></i>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      class="far fa-star"
+                      className="far fa-star"
                     ></i>
                   </span>
                   <span></span>
@@ -238,9 +238,9 @@ class ProductDetails extends Component {
                 <p>2020-12-14</p>
                 <p>ghh</p>
               </div>
-              <div class="list-group-item">
+              <div className="list-group-item">
                 <strong>test</strong>
-                <div class="rating">
+                <div className="rating">
                   <span>
                     <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
                   </span>
@@ -256,7 +256,7 @@ class ProductDetails extends Component {
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      class="far fa-star"
+                      className="far fa-star"
                     ></i>
                   </span>
                   <span></span>
@@ -264,9 +264,9 @@ class ProductDetails extends Component {
                 <p>2021-03-04</p>
                 <p>jhhhkhkh</p>
               </div>
-              <div class="list-group-item">
+              <div className="list-group-item">
                 <strong>hassan</strong>
-                <div class="rating">
+                <div className="rating">
                   <span>
                     <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
                   </span>
@@ -287,9 +287,9 @@ class ProductDetails extends Component {
                 <p>2021-03-26</p>
                 <p>assasd</p>
               </div>
-              <div class="list-group-item">
+              <div className="list-group-item">
                 <strong>Waleed Saifi</strong>
-                <div class="rating">
+                <div className="rating">
                   <span>
                     <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
                   </span>
@@ -310,7 +310,7 @@ class ProductDetails extends Component {
                 <p>2021-06-28</p>
                 <p>Great</p>
               </div>
-              <div class="list-group-item">
+              <div className="list-group-item">
                 <h2>Write a Customer Review</h2>Please{" "}
                 <a href="/login">sign in</a> to write a review{" "}
               </div>

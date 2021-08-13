@@ -199,7 +199,7 @@ class AddProduct extends Component {
                   </button>
                 </div>
               </form>
-              {this.props.successmessage != "" ? (
+              {this.props.successmessage !== "" ? (
                 <div className="alert alert-info mt-5">
                   {this.props.successmessage}
                 </div>

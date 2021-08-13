@@ -1,16 +1,16 @@
 import React, { Component } from "react";
-import { Jumbotron, Button, Table } from "react-bootstrap";
+import { Jumbotron, Table } from "react-bootstrap";
 
 class Main extends Component {
   render() {
     return (
       <div id="content">
         <Jumbotron>
-          <h1 class="display-3">
-            <img src={require("./cheers.png")} width="75" height="75" />
+          <h1 className="display-3">
+            <img src={require("./cheers.png")} alt="" width="75" height="75" />
             Welcome, {this.props.account.substring(0, 5)}
           </h1>
-          <div class="css-typing">
+          <div className="css-typing">
             <p> This is a project for a Blockchain based marketplace. </p>
             <p>
               Created By Jazara Debuggers Team.Have a look at the sections
@@ -76,8 +76,10 @@ class Main extends Component {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th scope="col"> # </th> <th scope="col"> Name </th>
-              <th scope="col"> Price </th> <th scope="col"> Owner </th>
+              <th scope="col"> # </th>
+              <th scope="col"> Name </th>
+              <th scope="col"> Price </th>
+              <th scope="col"> Owner </th>
               <th scope="col"></th>
             </tr>
           </thead>
