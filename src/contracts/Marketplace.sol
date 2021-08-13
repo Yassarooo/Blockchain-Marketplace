@@ -21,7 +21,6 @@ contract Marketplace {
     struct Customer {
         address adr;
         string name;
-        Cart cart;
     }
 
     struct Cart {
@@ -164,59 +163,53 @@ contract Marketplace {
         emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
     }
 
-    function insertProductIntoCart(uint256 id) public returns (bool success,
-                                                  uint256 pos_in_prod_mapping) {
-        Customer storage cust = customers[msg.sender];
-        Product memory prod = products[id];
-        uint256 prods_prev_len = cust.cart.products.length;
-        cust.cart.products.push(prod.id);
-        uint256 current_sum = cust.cart.completeSum;
-        cust.cart.completeSum = current_sum + prod.price;
-        if (cust.cart.products.length > prods_prev_len) {
-          emit CartProductInserted(msg.sender, id, prod.price, cust.cart.completeSum);
-          return (true, cust.cart.products.length - 1);
-        }
-        emit CartProductInsertionFailed(msg.sender, id);
-        return (false, 0);
-    }
+    // function insertProductIntoCart(uint256 id) public returns (bool success,
+    //                                               uint256 pos_in_prod_mapping) {
+    //     Customer storage cust = customers[msg.sender];
+    //     Product memory prod = products[id];
+    //     uint256 prods_prev_len = cust.cart.products.length;
+    //     cust.cart.products.push(prod.id);
+    //     uint256 current_sum = cust.cart.completeSum;
+    //     cust.cart.completeSum = current_sum + prod.price;
+    //     if (cust.cart.products.length > prods_prev_len) {
+    //       emit CartProductInserted(msg.sender, id, prod.price, cust.cart.completeSum);
+    //       return (true, cust.cart.products.length - 1);
+    //     }
+    //     emit CartProductInsertionFailed(msg.sender, id);
+    //     return (false, 0);
+    // }
 
-    function removeProductFromCart(uint256 prod_pos_in_mapping) public {
-        uint256[] memory new_product_list = new uint256[](customers[msg.sender]
-                                                    .cart.products.length - 1);
-        uint256[] memory customerProds = customers[msg.sender].cart.products;
-        for (uint256 i = 0; i < customerProds.length; i++) {
-          if (i != prod_pos_in_mapping) {
-            new_product_list[i] = customerProds[i];
-          } else {
-            customers[msg.sender].cart.completeSum -=
-                                               products[customerProds[i]].price;
-            emit CartProductRemoved(msg.sender, customerProds[i]);
-          }
-        }
-        customers[msg.sender].cart.products = new_product_list;
-    }
+    // function removeProductFromCart(uint256 prod_pos_in_mapping) public {
+    //     uint256[] memory new_product_list = new uint256[](customers[msg.sender]
+    //                                                 .cart.products.length - 1);
+    //     uint256[] memory customerProds = customers[msg.sender].cart.products;
+    //     for (uint256 i = 0; i < customerProds.length; i++) {
+    //       if (i != prod_pos_in_mapping) {
+    //         new_product_list[i] = customerProds[i];
+    //       } else {
+    //         customers[msg.sender].cart.completeSum -=
+    //                                            products[customerProds[i]].price;
+    //         emit CartProductRemoved(msg.sender, customerProds[i]);
+    //       }
+    //     }
+    //     customers[msg.sender].cart.products = new_product_list;
+    // }
 
-    function emptyCart() public returns (bool success) {
-        Customer storage customer = customers[msg.sender];
-        customer.cart = Cart(new uint256[](0), 0);
-        emit CartEmptied(customer.adr);
-        return true;
-    }
+    // function emptyCart() public returns (bool success) {
+    //     Customer storage customer = customers[msg.sender];
+    //     customer.cart = Cart(new uint256[](0), 0);
+    //     emit CartEmptied(customer.adr);
+    //     return true;
+    // }
 
     function registerCustomer(address _address, string memory _name)
                                         public returns (bool success) {
-      if (_address != address(0) && customers[_address].adr == address(0x0)) {
-        Customer memory customer = Customer({ adr: _address, name: _name,
-                                              cart: Cart(new uint256[](0), 0)
-                                            });
+        Customer memory customer = Customer(_address, _name);
         customerCount++;
         addressLUT[customerCount] = customer.adr;
         customers[_address] = customer;
         emit CustomerRegistered(_address);
         return true;
-      }
-      emit CustomerRegistrationFailed(_address);
-      return false;
     }
 
     function getCustomer(address _adr) view public returns(Customer memory){
