@@ -170,15 +170,15 @@ class App extends Component {
           products: [...this.state.products, product],
         });
       }
-      for (var j = 1; j <= customerCount; j++) {
+      for (var j = 0; j <= customerCount; j++) {
         const adr = await marketplace.methods.addressLUT(j).call();
         this.setState({
           addressLUT: [...this.state.addressLUT, adr],
         });
       }
-      for (var k = 1; k <= customerCount; k++) {
+      for (var k = 0; k <= customerCount; k++) {
         const cust = await marketplace.methods
-          .customers(this.state.addressLUT(j))
+          .customers(this.state.addressLUT[k])
           .call();
         this.setState({
           customers: [...this.state.customers, cust],
@@ -200,7 +200,7 @@ class App extends Component {
             from: this.state.account,
           })
           .once("receipt", (receipt) => {
-            toast.success("Product Added Successfully !", {
+            toast.success("Customer Registered Successfully !", {
               position: "bottom-right",
               closeOnClick: true,
             });

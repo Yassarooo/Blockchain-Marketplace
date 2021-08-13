@@ -21,6 +21,7 @@ contract Marketplace {
     struct Customer {
         address adr;
         string name;
+        Cart cart;
     }
 
     struct Cart {
@@ -38,6 +39,7 @@ contract Marketplace {
         address owner;
         bool purchased;
         address[] owners;
+        //bytes32 uploadedOn;
     }
 
     event ProductCreated(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner, bool purchased);
@@ -48,11 +50,6 @@ contract Marketplace {
     event CartProductInsertionFailed(address customer, uint256 prodId);
     event CartProductRemoved(address customer, uint256 prodId);
     event CartEmptied(address customer);
-
-
-    /*constructor() public {
-        name = "Jazara Marketplace";
-    }*/
 
     // Create a new product with a struct
     // Add the struct to the mapping, and store it on the blockchain
@@ -94,17 +91,17 @@ contract Marketplace {
                 emptySpaces[i] = emptySpaces[ i+1 ];
             }
             emptySpaces.pop();
-            ownerToProducts[msg.sender].push(Product({
-                id: tmp,
-                name: _name,
-                description: _description,
-                price: _price,
-                imgipfshash: _imgipfshash,
-                fileipfshash:_fileipfshash,
-                owner: msg.sender,
-                purchased: false,
-                owners: new address[](0)
-                }));
+            ownerToProducts[msg.sender][tmp] = Product(
+                tmp,
+                _name,
+                _description,
+                _price,
+                _imgipfshash,
+                _fileipfshash,
+                msg.sender,
+                false,
+                new address[](0)
+                );
                 emit ProductCreated(tmp, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
         
@@ -116,26 +113,7 @@ contract Marketplace {
         emptySpaces.push(id1);
     }
     function removeNestedProduct(uint id1) public {
-        uint index =0;
-        for(uint i=0;i<ownerToProducts[msg.sender].length;i++){
-            if(ownerToProducts[msg.sender][i].id == id1){
-                flag = true;
-                index = i;
-            }
-        }
-        if(flag){
-            if(index == ownerToProducts[msg.sender].length -1){
-                ownerToProducts[msg.sender].pop();
-                flag = false;
-            }
-            else{
-                for(uint i = index ;i <ownerToProducts[msg.sender].length - 1 ; i++){
-                    ownerToProducts[msg.sender][i] = ownerToProducts[msg.sender][ i+1 ];
-                }
-                ownerToProducts[msg.sender].pop();
-                flag = false;
-            }
-        }
+        delete ownerToProducts[msg.sender][id1];
     }
     function purchaseProduct(uint _id) public payable {
         // Fetch the product
@@ -162,51 +140,81 @@ contract Marketplace {
         // Trigger an event
         emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
     }
+    function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , string memory _imgipfshash , string memory _fileipfshash) public{
+        Product memory _product = products[_id];
+        _product.name = _name;
+        _product.description = _des;
+        _product.price = _price;
+        _product.imgipfshash = _imgipfshash;
+        _product.fileipfshash = _fileipfshash;
+        products[_id] = _product;
+        Product memory _ownerToProducts = ownerToProducts[msg.sender][_id];
+        _ownerToProducts.name = _name;
+        _ownerToProducts.description = _des;
+        _ownerToProducts.price = _price;
+        _ownerToProducts.imgipfshash = _imgipfshash;
+        _ownerToProducts.fileipfshash = _fileipfshash;
+        ownerToProducts[msg.sender][_id] = _ownerToProducts;
+        
+    }
 
-    // function insertProductIntoCart(uint256 id) public returns (bool success,
-    //                                               uint256 pos_in_prod_mapping) {
-    //     Customer storage cust = customers[msg.sender];
-    //     Product memory prod = products[id];
-    //     uint256 prods_prev_len = cust.cart.products.length;
-    //     cust.cart.products.push(prod.id);
-    //     uint256 current_sum = cust.cart.completeSum;
-    //     cust.cart.completeSum = current_sum + prod.price;
-    //     if (cust.cart.products.length > prods_prev_len) {
-    //       emit CartProductInserted(msg.sender, id, prod.price, cust.cart.completeSum);
-    //       return (true, cust.cart.products.length - 1);
-    //     }
-    //     emit CartProductInsertionFailed(msg.sender, id);
-    //     return (false, 0);
-    // }
+    function insertProductIntoCart(uint256 id) public returns (bool success,
+                                                  uint256 pos_in_prod_mapping) {
+        Customer storage cust = customers[msg.sender];
+        Product memory prod = products[id];
+        uint256 prods_prev_len = cust.cart.products.length;
+        cust.cart.products.push(prod.id);
+        uint256 current_sum = cust.cart.completeSum;
+        cust.cart.completeSum = current_sum + prod.price;
+        if (cust.cart.products.length > prods_prev_len) {
+          emit CartProductInserted(msg.sender, id, prod.price, cust.cart.completeSum);
+          return (true, cust.cart.products.length - 1);
+        }
+        emit CartProductInsertionFailed(msg.sender, id);
+        return (false, 0);
+    }
 
-    // function removeProductFromCart(uint256 prod_pos_in_mapping) public {
-    //     uint256[] memory new_product_list = new uint256[](customers[msg.sender]
-    //                                                 .cart.products.length - 1);
-    //     uint256[] memory customerProds = customers[msg.sender].cart.products;
-    //     for (uint256 i = 0; i < customerProds.length; i++) {
-    //       if (i != prod_pos_in_mapping) {
-    //         new_product_list[i] = customerProds[i];
-    //       } else {
-    //         customers[msg.sender].cart.completeSum -=
-    //                                            products[customerProds[i]].price;
-    //         emit CartProductRemoved(msg.sender, customerProds[i]);
-    //       }
-    //     }
-    //     customers[msg.sender].cart.products = new_product_list;
-    // }
+    function removeProductFromCart(uint256 prod_pos_in_mapping) public {
+        uint256[] memory new_product_list = new uint256[](customers[msg.sender]
+                                                    .cart.products.length - 1);
+        uint256[] memory customerProds = customers[msg.sender].cart.products;
+        for (uint256 i = 0; i < customerProds.length; i++) {
+          if (i != prod_pos_in_mapping) {
+            new_product_list[i] = customerProds[i];
+          } else {
+            customers[msg.sender].cart.completeSum -=
+                                               products[customerProds[i]].price;
+            emit CartProductRemoved(msg.sender, customerProds[i]);
+          }
+        }
+        customers[msg.sender].cart.products = new_product_list;
+    }
 
-    // function emptyCart() public returns (bool success) {
-    //     Customer storage customer = customers[msg.sender];
-    //     customer.cart = Cart(new uint256[](0), 0);
-    //     emit CartEmptied(customer.adr);
-    //     return true;
-    // }
+    function emptyCart() public returns (bool success) {
+        Customer storage customer = customers[msg.sender];
+        customer.cart = Cart(new uint256[](0), 0);
+        emit CartEmptied(customer.adr);
+        return true;
+    }
 
     function registerCustomer(address _address, string memory _name)
                                         public returns (bool success) {
-        Customer memory customer = Customer(_address, _name);
+                                            ownerToProducts[msg.sender].push(Product({
+                id: 0,
+                name: "dummy",
+                description: "dummy",
+                price: 0,
+                imgipfshash: "dummy",
+                fileipfshash:"dummy",
+                owner: 0x0000000000000000000000000000000000000000,
+                purchased: false,
+                owners: new address[](0)
+        }));
+
+        addressLUT.push(address(0));
+        Customer memory customer = Customer(_address, _name,Cart(new uint256[](0), 0) );
         customerCount++;
-        addressLUT[customerCount] = customer.adr;
+        addressLUT.push(customer.adr);
         customers[_address] = customer;
         emit CustomerRegistered(_address);
         return true;
