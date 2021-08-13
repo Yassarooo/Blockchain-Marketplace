@@ -4,7 +4,8 @@ import "./style/Modal.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import MyNavbar from "./Navbar";
+import MyNavbar from "./MyNavbar";
+import MyModal from "./MyModal";
 import MyFooter from "./Footer";
 import Main from "./Main";
 import Products from "./Products";
@@ -21,11 +22,12 @@ class App extends Component {
     super(props);
     this.createProduct = this.createProduct.bind(this);
     this.purchaseProduct = this.purchaseProduct.bind(this);
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
+    this.registerCustomer = this.registerCustomer.bind(this);
+    this.handleModal = this.handleModal.bind(this);
     this.state = {
-      show: false,
+      showModal: false,
       account: "",
+      customer: null,
       productCount: 0,
       customerCount: 0,
       products: [],
@@ -36,64 +38,30 @@ class App extends Component {
     };
   }
 
-  showModal = () => {
-    this.setState({ show: true });
-  };
+  handleModal() {
+    this.setState({ showModal: !this.state.showModal });
+  }
 
-  hideModal = () => {
-    this.setState({ show: false });
-  };
-
-  Modal = ({ handleClose, children }) => {
-    const showHideClassName = this.state.show
-      ? "modal display-block"
-      : "modal display-none";
-
-    return (
-      <div className={showHideClassName}>
-        <div id="myModal" className="modal fade">
-          <div className="modal-dialog modal-newsletter">
-            <div className="modal-content">
-              <form action="confirmation.php" method="post">
-                <div className="modal-header">
-                  <button
-                    type="button"
-                    className="close"
-                    data-dismiss="modal"
-                    aria-hidden="true"
-                  >
-                    <span>×</span>
-                  </button>
-                </div>
-                <div className="modal-body text-center">
-                  <h4>Subscribe to our newsletter</h4>
-                  <p>
-                    Sugnup for our weekly newsletter to get the latest news,
-                    updates and amazong offers delivered direcly in your inbox.
-                  </p>
-                  <div className="input-group">
-                    <input
-                      type="email"
-                      className="form-control"
-                      placeholder="Enter your email"
-                      required
-                    />
-                    <span className="input-group-btn">
-                      <input
-                        type="submit"
-                        className="btn btn-primary"
-                        value="Subscribe"
-                      />
-                    </span>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  registerCustomer(name) {
+    this.handleModal();
+    this.setState({
+      loading: true,
+    });
+    this.state.marketplace.methods
+      .registerCustomer(this.state.account, name)
+      .send({
+        from: this.state.account,
+      })
+      .once("receipt", (receipt) => {
+        toast.success("Customer Registered Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        this.setState({
+          loading: false,
+        });
+      });
+  }
 
   async componentWillMount() {
     await this.loadWeb3();
@@ -131,30 +99,6 @@ class App extends Component {
       this.setState({
         marketplace,
       });
-      // const cust = await marketplace.methods
-      //   .customers(this.state.account)
-      //   .call();
-      // console.log("jazaraaaaaaaa ", cust.adr);
-
-      // if (cust.name === "") {
-      //   console.log("if (cust===null)  ", cust.name);
-      //   //this.showModal();
-      //   marketplace.methods
-      //     .registerCustomer(this.state.account, "Seller")
-      //     .call({ from: this.state.account })
-      //     .then("receipt", (receipt) => {
-      //       toast.success("Customer Registered Successfully !", {
-      //         position: "bottom-right",
-      //         closeOnClick: true,
-      //       });
-      //     });
-      // } else {
-      //   console.log("else", cust.name);
-      //   toast.success("Customer", cust.name, " Already Registered !", {
-      //     position: "bottom-right",
-      //     closeOnClick: true,
-      //   });
-      // }
       const productCount = await marketplace.methods.productCount().call();
       this.setState({
         productCount,
@@ -189,22 +133,15 @@ class App extends Component {
           return element === this.state.account;
         })
       ) {
-        toast.success(this.state.customers[this.state.account].name, {
+        this.state.customer = await marketplace.methods
+          .customers(this.state.account)
+          .call();
+        toast.success(this.state.customer.name, {
           position: "bottom-right",
           closeOnClick: true,
         });
       } else {
-        marketplace.methods
-          .registerCustomer(this.state.account, "Seller")
-          .send({
-            from: this.state.account,
-          })
-          .once("receipt", (receipt) => {
-            toast.success("Customer Registered Successfully !", {
-              position: "bottom-right",
-              closeOnClick: true,
-            });
-          });
+        this.handleModal();
       }
       this.setState({
         loading: false,
@@ -289,10 +226,6 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <this.Modal show={this.state.show} handleClose={this.hideModal}>
-          <p>Modal</p>
-        </this.Modal>
-
         <MyNavbar
           loading={this.state.loading}
           account={this.state.account}
@@ -300,7 +233,11 @@ class App extends Component {
           createProduct={this.state.createProduct}
           purchaseProduct={this.state.purchaseProduct}
         />
-
+        <MyModal
+          showModal={this.state.showModal}
+          handleModal={this.handleModal}
+          registerCustomer={this.registerCustomer}
+        />
         <Switch>
           <Route exact path="/">
             <div className="container-fluid mt-5">

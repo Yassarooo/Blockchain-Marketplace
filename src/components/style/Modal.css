@@ -1,82 +1,45 @@
-body {
-  font-family: "Varela Round", sans-serif;
+.modal-open .modal {
+  overflow: auto;
+  overflow-y: auto;
+  background-color: #000000be;
 }
-.modal-newsletter {
-  color: #999;
-  font-size: 15px;
+
+.modal-content {
+  background-color: #191c22;
+  color: white;
+  padding: 13px;
 }
-.modal-newsletter .modal-content {
-  padding: 40px;
-  border-radius: 0;
-  border: none;
+
+.btn.focus,
+.btn:focus {
+  outline: 0;
+  box-shadow: none !important;
 }
-.modal-newsletter .modal-header {
-  border-bottom: none;
+.center-block {
   position: relative;
-  text-align: center;
-  border-radius: 5px 5px 0 0;
+  left: 30%;
 }
-.modal-newsletter h4 {
-  color: #000;
-  text-align: center;
-  font-size: 30px;
-  margin: 0 0 25px;
-  font-weight: bold;
-  text-transform: capitalize;
+input {
+  width: 50%;
+  height: 60px;
+  background-color: #151414;
+  border-radius: 7px;
+  padding-left: 16px;
+  color: orange;
 }
-.modal-newsletter .close {
-  background: #c0c3c8;
-  position: absolute;
-  top: -15px;
-  right: -15px;
-  color: #fff;
-  text-shadow: none;
-  opacity: 0.5;
-  width: 22px;
-  height: 22px;
-  border-radius: 20px;
-  font-size: 16px;
+.create {
+  border: 0.5px solid orange;
+  background: #151414;
+  color: orange;
+  width: 30%;
 }
-.modal-newsletter .close span {
-  position: relative;
-  top: -1px;
+.create:hover {
+  border: 0.5px solid orange;
+  background: #151414;
+  color: orange;
+  width: 30%;
 }
-.modal-newsletter .close:hover {
-  opacity: 0.8;
-}
-.modal-newsletter .form-control,
-.modal-newsletter .btn {
-  min-height: 46px;
-  border-radius: 3px;
-}
-.modal-newsletter .form-control {
-  box-shadow: none;
-  border-color: #dbdbdb;
-}
-.modal-newsletter .form-control:focus {
-  border-color: #19bc9c;
-  box-shadow: 0 0 8px rgba(114, 101, 234, 0.5);
-}
-.modal-newsletter .btn {
-  color: #fff;
-  border-radius: 4px;
-  background: #19bc9c;
-  text-decoration: none;
-  transition: all 0.4s;
-  line-height: normal;
-  padding: 6px 20px;
-  min-width: 150px;
-  border: none;
-}
-.modal-newsletter .btn:hover,
-.modal-newsletter .btn:focus {
-  background: #4e3de4;
-  outline: none;
-}
-.modal-newsletter .input-group {
-  margin: 30px 0 15px;
-}
-.hint-text {
-  margin: 100px auto;
-  text-align: center;
+
+.modal-footer {
+  justify-content: space-between;
 }
