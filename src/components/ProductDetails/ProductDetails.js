@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { FaStar, FaEthereum } from "react-icons/fa";
 import { BsPersonFill } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
+import "./ProductDetails.css";
 
 class ProductDetails extends Component {
   render() {

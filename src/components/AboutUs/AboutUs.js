@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./style/About.css";
+import "./AboutUs.css";
 import {
   FaCopyright,
   FaFacebook,
@@ -13,46 +13,11 @@ class AboutUs extends Component {
   render() {
     return (
       <div>
-        {/* <header className="bg-dark py-2">
-          <div className="container px-4 px-lg-5 my-5">
-            <h1 className="display-3 fw-bolder">
-              <img
-                src={require("./Assets/cheers.png")}
-                alt=""
-                width="100"
-                height="100"
-              />{" "}
-              Welcome,{" "}
-              <a href="//" className="text-primary">
-                {this.props.customer !== null ? this.props.customer.name : ""}
-              </a>
-            </h1>
-            <div className="css-typing text-white">
-              <p>
-                This is a web marketplace project based on Blockchain technology
-                & smart contracts which are implemented by Ethereum .
-              </p>
-              <p>
-                Created By
-                <a className="text-primary" href="//">
-                  {" "}
-                  Jazara Debuggers Team ©{" "}
-                </a>
-                ,Have a look at the sections below, feel free to contact us at :{" "}
-                <a className="text-warning" href="//">
-                  {" "}
-                  jazaradebuggers@gmail.com
-                </a>
-              </p>
-            </div>
-          </div>
-        </header> */}
-
         <div className="jumbotron">
           <div className="container px-lg-5 my-2">
             <h1 className="display-3 text-warning">
               <img
-                src={require("./Assets/carrot.png")}
+                src={require("../Assets/carrot.png")}
                 alt="logo"
                 width="100"
                 height="100"
@@ -86,7 +51,7 @@ class AboutUs extends Component {
           <ul className="hash-list cols-4 cols-1-xs pad-30-all align-center text-sm">
             <li className="bg-dark">
               <img
-                src={require("./Assets/avatar1.png")}
+                src={require("../Assets/avatar1.png")}
                 className="wpx-100 img-round mgb-20"
                 title=""
                 alt=""
@@ -134,7 +99,7 @@ class AboutUs extends Component {
             </li>
             <li className="bg-dark">
               <img
-                src={require("./Assets/avatar2.png")}
+                src={require("../Assets/avatar2.png")}
                 className="wpx-100 img-round mgb-20"
                 title=""
                 alt=""
@@ -182,7 +147,7 @@ class AboutUs extends Component {
             </li>
             <li className="bg-dark">
               <img
-                src={require("./Assets/avatar3.png")}
+                src={require("../Assets/avatar3.png")}
                 className="wpx-100 img-round mgb-20"
                 title=""
                 alt=""
@@ -230,7 +195,7 @@ class AboutUs extends Component {
             </li>
             <li className="bg-dark">
               <img
-                src={require("./Assets/avatar4.png")}
+                src={require("../Assets/avatar4.png")}
                 className="wpx-100 img-round mgb-20"
                 title=""
                 alt=""

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
+import "./MyModal.css";
 
 class MyModal extends Component {
   state = {
@@ -28,7 +29,7 @@ class MyModal extends Component {
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
             <img
-              src={require("./Assets/cheers.png")}
+              src={require("../Assets/cheers.png")}
               alt=""
               width="50"
               height="50"

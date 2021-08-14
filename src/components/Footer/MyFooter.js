@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { FaHeart } from "react-icons/fa";
+import "./MyFooter.css";
 
 class MyFooter extends Component {
   render() {

@@ -12,6 +12,8 @@ class AddProduct extends Component {
     fileipfshash: "",
     imgbuffer: null,
     filebuffer: null,
+    validFile: false,
+    fileErrorMessage: "",
   };
 
   handleChange = (e) => {
@@ -51,7 +53,28 @@ class AddProduct extends Component {
     };
   };
 
+  CheckIPFS() {
+    if (this.props.products.length === 0) {
+      this.setState({
+        validFile: true,
+      });
+    } else {
+      for (var i = 0; i < this.props.products.length; i++) {
+        if (this.props.products[i].fileipfshash === this.state.fileipfshash) {
+          this.setState({
+            validFile: false,
+          });
+        } else {
+          this.setState({
+            validFile: true,
+          });
+        }
+      }
+    }
+  }
+
   onSubmit = async (event) => {
+    this.props.handleLoading();
     event.preventDefault();
     if (
       this.state.name.length > 20 &&
@@ -75,12 +98,12 @@ class AddProduct extends Component {
           });
           return;
         }
-        this.setState({ imgipfsHash: result[0].hash });
+        this.setState({ imgipfshash: result[0].hash });
         toast.success("Image Uploaded Successfully", {
           position: "bottom-right",
           closeOnClick: true,
         });
-        console.log("image ipfshash:", this.state.imgipfsHash.toString());
+        console.log("image ipfshash:", this.state.imgipfshash.toString());
 
         toast.info("Uploading File...", {
           position: "bottom-right",
@@ -94,18 +117,34 @@ class AddProduct extends Component {
             });
             return;
           }
-          this.setState({ fileipfsHash: result[0].hash });
+          this.setState({ fileipfshash: result[0].hash });
           toast.success("File Uploaded Successfully", {
             position: "bottom-right",
             closeOnClick: true,
           });
-          this.props.createProduct(
-            this.state.name,
-            this.state.description,
-            window.web3.utils.toWei(this.state.price.toString(), "Ether"),
-            this.state.imgipfsHash.toString(),
-            this.state.fileipfsHash.toString()
-          );
+          toast.info("Checking File...", {
+            position: "bottom-right",
+            closeOnClick: true,
+          });
+          this.CheckIPFS();
+          if (this.state.validFile) {
+            this.props.createProduct(
+              this.state.name,
+              this.state.description,
+              window.web3.utils.toWei(this.state.price.toString(), "Ether"),
+              this.state.imgipfshash.toString(),
+              this.state.fileipfshash.toString()
+            );
+          } else {
+            toast.error("File Privacy Violence Detected !", {
+              position: "bottom-right",
+              closeOnClick: true,
+            });
+            this.props.handleLoading();
+            this.setState({
+              fileErrorMessage: "Please Choose Another File",
+            });
+          }
         });
       });
     }
@@ -117,7 +156,9 @@ class AddProduct extends Component {
         <fieldset disabled={this.props.loading}>
           <div className="row">
             <div className="col-md-8 m-auto">
-              <h1 className="display-4 text-center mt-4">Sell a Product</h1>
+              <h1 className="display-4 text-center mt-4 text-warning">
+                Sell a Product
+              </h1>
               <p className="lead text-center">
                 Let's get some information about your Product
               </p>
@@ -137,7 +178,7 @@ class AddProduct extends Component {
                   <div className="invalid-feedback">Name is required.</div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="description">Description</label>
+                  <label htmlFor="description">Description *</label>
                   <textarea
                     className="form-control"
                     id="description"
@@ -167,7 +208,7 @@ class AddProduct extends Component {
                   <div className="invalid-feedback">Price is required.</div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="file">Image</label>
+                  <label htmlFor="file">Image *</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -177,13 +218,19 @@ class AddProduct extends Component {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="file">File</label>
+                  <label htmlFor="file">File *</label>
                   <input
                     type="file"
                     className="form-control-file"
                     id="file"
                     onChange={this.captureFile}
                   />
+                  <div
+                    className="text-danger"
+                    hidden={this.state.fileErrorMessage === "" ? true : false}
+                  >
+                    {this.state.fileErrorMessage}
+                  </div>
                 </div>
                 <small className="d-block pb-3">* = required fields</small>
                 <small className="d-block pb-3">
@@ -194,7 +241,7 @@ class AddProduct extends Component {
                   <Link to="/" className="btn btn-secondary mr-2">
                     Cancel
                   </Link>
-                  <button type="submit" className="btn btn-primary">
+                  <button type="submit" className="btn btn-warning">
                     Add
                   </button>
                 </div>

@@ -4,6 +4,7 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { GrView } from "react-icons/gr";
 import { BsCheckCircle } from "react-icons/bs";
+import "./MyProducts.css";
 
 class MyProducts extends Component {
   render() {

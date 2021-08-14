@@ -11,9 +11,9 @@ import {
 } from "react-icons/fa";
 import { IoSpeedometerSharp } from "react-icons/io5";
 import { GiBreakingChain, GiGroupedDrops } from "react-icons/gi";
-import "./style/Home.css";
+import "./Home.css";
 
-class Main extends Component {
+class Home extends Component {
   render() {
     return (
       <section className="pt-3 mx-5">
@@ -22,7 +22,7 @@ class Main extends Component {
           <div className="container px-4 px-lg-5 my-5">
             <h1 className="display-3 fw-bolder">
               <img
-                src={require("./Assets/cheers.png")}
+                src={require("../Assets/cheers.png")}
                 alt=""
                 width="100"
                 height="100"
@@ -265,4 +265,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default Home;

@@ -1,0 +1,13 @@
+.table-striped > tbody > tr:nth-child(odd) > td,
+.table-striped > tbody > tr:nth-child(odd) > th {
+  background-color: #0a1b26;
+  color: white;
+}
+.table-striped > tbody > tr:nth-child(even) > td,
+.table-striped > tbody > tr:nth-child(even) > th {
+  background-color: #222222;
+  color: white;
+}
+.table-striped > thead {
+  color: white;
+}

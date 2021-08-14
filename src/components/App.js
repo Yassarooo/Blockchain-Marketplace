@@ -1,18 +1,17 @@
 import React, { Component } from "react";
-import "./style/App.css";
-import "./style/Modal.css";
+import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import MyNavbar from "./MyNavbar";
-import MyModal from "./MyModal";
-import MyFooter from "./Footer";
-import Main from "./Main";
-import Products from "./Products";
-import AddProduct from "./AddProduct";
-import AboutUs from "./AboutUs";
-import MyProducts from "./MyProducts";
-import ProductDetails from "./ProductDetails";
+import MyNavbar from "./Navbar/MyNavbar";
+import MyFooter from "./Footer/MyFooter";
+import Products from "./Products/Products";
+import AddProduct from "./AddProduct/AddProduct";
+import AboutUs from "./AboutUs/AboutUs";
+import MyProducts from "./MyProducts/MyProducts";
+import ProductDetails from "./ProductDetails/ProductDetails";
+import MyModal from "./MyModal/MyModal";
+import Home from "./Home/Home";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 toast.configure();
@@ -24,6 +23,7 @@ class App extends Component {
     this.purchaseProduct = this.purchaseProduct.bind(this);
     this.registerCustomer = this.registerCustomer.bind(this);
     this.handleModal = this.handleModal.bind(this);
+    this.handleLoading = this.handleLoading.bind(this);
     this.state = {
       showModal: false,
       account: "",
@@ -37,7 +37,11 @@ class App extends Component {
       successmessage: "",
     };
   }
-
+  handleLoading() {
+    this.setState({
+      loading: !this.state.loading,
+    });
+  }
   handleModal() {
     this.setState({ showModal: !this.state.showModal });
   }
@@ -149,7 +153,7 @@ class App extends Component {
     }
   }
 
-  createProduct(name, description, price, imgipfsHash, fileipfsHash) {
+  createProduct(name, description, price, imgipfshash, fileipfshash) {
     this.setState({
       loading: true,
     });
@@ -158,11 +162,11 @@ class App extends Component {
       name + "desc:",
       description + "price:",
       price + "imgipfshash:",
-      imgipfsHash + "fileipfshash:",
-      fileipfsHash
+      imgipfshash + "fileipfshash:",
+      fileipfshash
     );
     this.state.marketplace.methods
-      .createProduct(name, description, price, imgipfsHash, fileipfsHash)
+      .createProduct(name, description, price, imgipfshash, fileipfshash)
       .send({
         from: this.state.account,
       })
@@ -238,7 +242,7 @@ class App extends Component {
         />
         <Switch>
           <Route exact path="/">
-            <Main
+            <Home
               account={this.state.account}
               products={this.state.products}
               createProduct={this.createProduct}
@@ -268,8 +272,10 @@ class App extends Component {
           </Route>
           <Route path="/addproduct">
             <AddProduct
+              handleLoading={this.handleLoading}
               createProduct={this.createProduct}
               successmessage={this.state.successmessage}
+              products={this.state.products}
             />
           </Route>
           {this.ProductRoutesGenerator()}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Row, Col, Form, FormControl } from "react-bootstrap";
 import { FaEthereum, FaSearch } from "react-icons/fa";
+import "./Products.css";
 
 class Products extends Component {
   searchForProduct = function () {

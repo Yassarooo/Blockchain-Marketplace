@@ -1,9 +1,3 @@
-/* Styles go here */
-footer {
-  font-size: small;
-  margin-top: auto;
-}
-
 body {
   background: #191c22;
   color: #ffffff;
@@ -27,26 +21,12 @@ body {
 .jumbotron {
   background: #222222;
 }
-.navbar {
-  background-color: #222222;
-}
-.nav-link {
-  color: #f7f7f775 !important;
-}
 .text-warning {
-  color: orange !important;
-}
-.nav-link:hover {
   color: orange !important;
 }
 .btn-outline-light:hover {
   color: white !important;
   background-color: orange !important;
-}
-
-.list-group-item {
-  background-color: #191c22 !important;
-  color: #ffffff;
 }
 
 .panel {
@@ -68,21 +48,17 @@ h3 {
   line-height: 50px;
 }
 
-.table-striped > tbody > tr:nth-child(odd) > td,
-.table-striped > tbody > tr:nth-child(odd) > th {
-  background-color: #0a1b26;
+hr {
   color: white;
-}
-.table-striped > tbody > tr:nth-child(even) > td,
-.table-striped > tbody > tr:nth-child(even) > th {
-  background-color: #222222;
-  color: white;
-}
-.table-striped > thead {
-  color: white;
+  background-color: white;
 }
 
 .form-control {
+  background-color: #0a1b26;
+  color: #ffffff;
+}
+
+.form-control-file {
   background-color: #0a1b26;
   color: #ffffff;
 }
@@ -141,87 +117,6 @@ h3 {
 .page-content {
   max-width: 768px;
   margin: 0 auto;
-}
-
-.highlight {
-  color: #0275d8;
-}
-
-#content {
-  padding: 70px 0;
-}
-
-#content .features-list {
-  padding-top: 35px;
-}
-
-.features-list .feature-block {
-  margin-bottom: 18px;
-}
-
-.features-list .feature-block .ico {
-  font-size: 37px;
-  line-height: 70px;
-  width: 70px;
-  height: 70px;
-  background: #0275d8;
-  display: inline-block;
-  border-radius: 50%;
-  color: #ffffff;
-  margin-bottom: 10px;
-}
-
-.features-list .feature-block.bottom-line .ico {
-  width: auto;
-  height: auto;
-  background: transparent;
-  color: #0275d8;
-  text-align: center;
-  font-size: 41px;
-  vertical-align: top;
-  margin-top: -10px;
-}
-
-.features-list .feature-block.bottom-line .fa-github {
-  font-size: 50px;
-}
-
-.features-list .feature-block.bottom-line .fa-dashboard {
-  font-size: 45px;
-  margin-top: -15px;
-}
-
-.features-list .feature-block.bottom-line .ico {
-  float: left;
-  margin-right: 15px;
-  margin-left: 21px;
-}
-
-.features-list .feature-block.bottom-line .features-content {
-  padding-right: 15px;
-  display: table;
-}
-
-.features-list .feature-block.bottom-line .features-content .name {
-  margin-bottom: 5px;
-}
-
-.features-list .feature-block.bottom-line .features-content .subname {
-  font-size: 16px;
-  margin-bottom: 12px;
-}
-
-.features-list .feature-block .name {
-  font-size: 20px;
-  line-height: 1.25em;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.features-list .feature-block .text {
-  font-size: 12px;
-  line-height: normal;
-  margin-bottom: 15px;
 }
 
 .css-typing p {
