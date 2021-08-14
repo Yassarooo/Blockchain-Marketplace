@@ -52,6 +52,7 @@ class Home extends Component {
             </div>
           </div>
         </header>{" "}
+        <hr />
         <Row className="pt-5 text-center ">
           <Col md="3">
             <h2 className="text-warning">
@@ -154,7 +155,7 @@ class Home extends Component {
               }}
             >
               With {""}
-              <span className="highlight">Smart Contracts</span>
+              <span className="highlight text-primary">Smart Contracts</span>
             </h3>
             <p>All the features you need to create a safe website.</p>
           </Col>

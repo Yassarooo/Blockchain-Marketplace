@@ -86,6 +86,14 @@ class ProductDetails extends Component {
                     <div className="col">17/4/2021</div>
                   </div>
                 </div>
+                <div className="list-group-item">
+                  <div className="row">
+                    <div className="col">Image IPFS Hash:</div>
+                    <div className="col text-warning">
+                      {this.props.product.imgipfshash}
+                    </div>
+                  </div>
+                </div>
                 {this.props.product.owner === this.props.account ? (
                   <div className="list-group-item">
                     <button

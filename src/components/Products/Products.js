@@ -1,9 +1,23 @@
 import React, { Component } from "react";
-import { Row, Col, Form, FormControl } from "react-bootstrap";
+import { Row, Col, Form, FormControl, Pagination } from "react-bootstrap";
 import { FaEthereum, FaSearch } from "react-icons/fa";
-import "./Products.css";
 
 class Products extends Component {
+  constructor() {
+    super();
+    this.state = {
+      currentPage: 1,
+      productsPerPage: 12,
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
+    this.setState({
+      currentPage: Number(event.target.id),
+    });
+  }
+
   searchForProduct = function () {
     console.log("Searching...");
   };
@@ -28,11 +42,19 @@ class Products extends Component {
               <h2 href={`/product/${product.id}`}>{product.name}</h2>
               <h3
                 className="text-warning"
-                style={{ "white-space": "nowrap", overflow: "hidden" }}
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  fontWeight: "700",
+                  fontSize: "x-large",
+                  lineHeight: "50px",
+                }}
               >
-                <FaEthereum className="text-primary" />
-                {""}{" "}
-                {window.web3.utils.fromWei(product.price.toString(), "Ether")}{" "}
+                <FaEthereum className="text-primary pl-0 pr-2" />
+                {window.web3.utils.fromWei(
+                  product.price.toString(),
+                  "Ether"
+                )}{" "}
                 Eth
               </h3>
             </div>
@@ -57,6 +79,36 @@ class Products extends Component {
   }
 
   render() {
+    const indexOfLastProduct =
+      this.state.currentPage * this.state.productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - this.state.productsPerPage;
+    const currentProducts = this.props.products.slice(
+      indexOfFirstProduct,
+      indexOfLastProduct
+    );
+
+    const pageNumbers = [];
+    for (
+      let i = 1;
+      i <= Math.ceil(this.props.products.length / this.state.productsPerPage);
+      i++
+    ) {
+      pageNumbers.push(i);
+    }
+
+    const renderPageNumbers = pageNumbers.map((number) => {
+      return (
+        <Pagination.Item
+          id={number}
+          key={number}
+          active={number === this.state.currentPage}
+          onClick={this.handleClick}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    });
+
     return (
       <div>
         <div className="clearfix pt-5 mx-4">
@@ -83,7 +135,10 @@ class Products extends Component {
           </span>
         </div>
         <section className="pb-4 pl-4 pr-4">
-          <Row>{this.props.products.map(this.renderCards, this)}</Row>
+          <Row>{currentProducts.map(this.renderCards, this)}</Row>
+          <Pagination id="page-numbers" className="py-4">
+            {renderPageNumbers}
+          </Pagination>
         </section>
       </div>
     );
