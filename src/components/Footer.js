@@ -7,7 +7,7 @@ class MyFooter extends Component {
       <footer className="text-center pb-3 pt-5">
         Copyright &copy;2021 | Designed With{" "}
         <FaHeart style={{ color: "red" }}></FaHeart> by{" "}
-        <a className="text-warning" href="#/aboutus">
+        <a className="text-warning" href="/aboutus">
           Jazara Debuggers
         </a>
       </footer>

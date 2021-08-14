@@ -11,7 +11,7 @@ contract Marketplace {
     mapping(uint => Product) public products;
     //to store the customers on blockchain
     mapping(address  => Customer) public customers;
-    address[] public addressLUT;
+    mapping(uint => address) public addressLUT;
     // Maps owner to their images
     mapping (address => Product[]) public ownerToProducts;
     uint[] public emptySpaces;
@@ -199,7 +199,7 @@ contract Marketplace {
 
     function registerCustomer(address _address, string memory _name)
                                         public returns (bool success) {
-                                            ownerToProducts[msg.sender].push(Product({
+    ownerToProducts[msg.sender].push(Product({
                 id: 0,
                 name: "dummy",
                 description: "dummy",
@@ -210,11 +210,9 @@ contract Marketplace {
                 purchased: false,
                 owners: new address[](0)
         }));
-
-        addressLUT.push(address(0));
         Customer memory customer = Customer(_address, _name,Cart(new uint256[](0), 0) );
         customerCount++;
-        addressLUT.push(customer.adr);
+        addressLUT[customerCount]=customer.adr;
         customers[_address] = customer;
         emit CustomerRegistered(_address);
         return true;

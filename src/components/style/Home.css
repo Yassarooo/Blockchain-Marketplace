@@ -1,0 +1,151 @@
+h3 {
+  font-size: 50px;
+  font-weight: 300;
+  margin-bottom: 10px;
+  line-height: 50px;
+}
+hr {
+  color: white;
+  background-color: white;
+}
+
+.highlight {
+  color: orange;
+}
+
+#content {
+  padding: 70px 0;
+}
+
+#content .features-list {
+  padding-top: 35px;
+}
+
+.features-list .feature-block {
+  margin-bottom: 18px;
+}
+
+.features-list .feature-block .ico {
+  font-size: 37px;
+  line-height: 70px;
+  width: 70px;
+  height: 70px;
+  background: orange;
+  display: inline-block;
+  border-radius: 50%;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.features-list .feature-block.bottom-line .ico {
+  width: auto;
+  height: auto;
+  background: transparent;
+  color: #0275d8;
+  text-align: center;
+  font-size: 41px;
+  vertical-align: top;
+  margin-top: -10px;
+}
+
+.features-list .feature-block.bottom-line .fa-github {
+  font-size: 50px;
+}
+
+.features-list .feature-block.bottom-line .fa-dashboard {
+  font-size: 45px;
+  margin-top: -15px;
+}
+
+.features-list .feature-block.bottom-line .ico {
+  float: left;
+  margin-right: 15px;
+  margin-left: 21px;
+}
+
+.features-list .feature-block.bottom-line .features-content {
+  padding-right: 15px;
+  display: table;
+}
+
+.features-list .feature-block.bottom-line .features-content .name {
+  margin-bottom: 5px;
+}
+
+.features-list .feature-block.bottom-line .features-content .subname {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.features-list .feature-block .name {
+  font-size: 20px;
+  line-height: 1.25em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.features-list .feature-block .text {
+  font-size: 12px;
+  line-height: normal;
+  margin-bottom: 15px;
+}
+
+@keyframes type {
+  0% {
+    width: 0;
+  }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
+  100% {
+    border: none;
+  }
+}
+
+@-webkit-keyframes type {
+  0% {
+    width: 0;
+  }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
+  100% {
+    border: none;
+  }
+}
+
+@keyframes type2 {
+  0% {
+    width: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes type2 {
+  0% {
+    width: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+@-webkit-keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}

@@ -27,7 +27,12 @@ class MyModal extends Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            <img src={require("./cheers.png")} alt="" width="50" height="50" />
+            <img
+              src={require("./Assets/cheers.png")}
+              alt=""
+              width="50"
+              height="50"
+            />
             {""} Welcome To{" "}
             <a className="text-warning" href="//">
               Jazara Marketplace

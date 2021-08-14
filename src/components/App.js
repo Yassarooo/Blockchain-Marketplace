@@ -114,19 +114,21 @@ class App extends Component {
           products: [...this.state.products, product],
         });
       }
-      for (var j = 0; j <= customerCount; j++) {
-        const adr = await marketplace.methods.addressLUT(j).call();
-        this.setState({
-          addressLUT: [...this.state.addressLUT, adr],
-        });
-      }
-      for (var k = 0; k <= customerCount; k++) {
-        const cust = await marketplace.methods
-          .customers(this.state.addressLUT[k])
-          .call();
-        this.setState({
-          customers: [...this.state.customers, cust],
-        });
+      if (customerCount > 0) {
+        for (var j = 1; j <= customerCount; j++) {
+          const adr = await marketplace.methods.addressLUT(j).call();
+          this.setState({
+            addressLUT: [...this.state.addressLUT, adr],
+          });
+        }
+        for (var k = 0; k < customerCount; k++) {
+          const cust = await marketplace.methods
+            .customers(this.state.addressLUT[k])
+            .call();
+          this.setState({
+            customers: [...this.state.customers, cust],
+          });
+        }
       }
       if (
         this.state.addressLUT.find((element) => {
@@ -136,10 +138,6 @@ class App extends Component {
         this.state.customer = await marketplace.methods
           .customers(this.state.account)
           .call();
-        toast.success(this.state.customer.name, {
-          position: "bottom-right",
-          closeOnClick: true,
-        });
       } else {
         this.handleModal();
       }
@@ -240,21 +238,19 @@ class App extends Component {
         />
         <Switch>
           <Route exact path="/">
-            <div className="container-fluid mt-5">
-              <div className="row">
-                <main role="main" className="col-lg-12 d-flex">
-                  <Main
-                    account={this.state.account}
-                    products={this.state.products}
-                    createProduct={this.createProduct}
-                    purchaseProduct={this.purchaseProduct}
-                  />
-                </main>
-              </div>
-            </div>
+            <Main
+              account={this.state.account}
+              products={this.state.products}
+              createProduct={this.createProduct}
+              purchaseProduct={this.purchaseProduct}
+              customer={this.state.customer}
+            />
           </Route>
           <Route path="/aboutus">
-            <AboutUs account={this.state.account} />
+            <AboutUs
+              account={this.state.account}
+              customer={this.state.customer}
+            />
           </Route>
           <Route path="/myproducts">
             <MyProducts
