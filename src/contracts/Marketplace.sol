@@ -9,6 +9,8 @@ contract Marketplace {
     //to store the products on blockchain
     bool public flag = false;
     mapping(uint => Product) public products;
+    mapping(uint => uint[]) public productsRates;
+    mapping(uint => string[]) public productsReviews;
     //to store the customers on blockchain
     mapping(address  => Customer) public customers;
     mapping(uint => address) public addressLUT;
@@ -17,11 +19,19 @@ contract Marketplace {
     uint[] public emptySpaces;
     uint public len; 
     uint public ftt = 0;
-
+    enum Categories {
+        Tech,
+        Books,
+        AudioBooks,
+        image,
+        video,
+        file
+    }
     struct Customer {
         address adr;
         string name;
         Cart cart;
+        
     }
 
     struct Cart {
@@ -40,6 +50,7 @@ contract Marketplace {
         bool purchased;
         address[] owners;
         //bytes32 uploadedOn;
+        Categories categorie;
     }
 
     event ProductCreated(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner, bool purchased);
@@ -54,7 +65,7 @@ contract Marketplace {
     // Create a new product with a struct
     // Add the struct to the mapping, and store it on the blockchain
     // Trigger an event that lets someone know a product was creatd
-    function createProduct(string memory _name,string memory _description, uint _price,string memory _imgipfshash,string memory _fileipfshash) public {
+    function createProduct(string memory _name,string memory _description, uint _price,string memory _imgipfshash,string memory _fileipfshash , Categories _categorie ) public {
         // Require a valid name
         require(bytes(_name).length > 0);
         // Require a valid description
@@ -68,7 +79,7 @@ contract Marketplace {
         // Increment product count
         if(emptySpaces.length == 0 || emptySpaces[0]==0){
                 productCount ++;
-                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false ,new address[](0));
+                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false ,new address[](0), _categorie);
         
                 ownerToProducts[msg.sender].push(Product({
                 id: productCount,
@@ -79,13 +90,15 @@ contract Marketplace {
                 fileipfshash:_fileipfshash,
                 owner: msg.sender,
                 purchased: false,
-                owners: new address[](0)
+                owners: new address[](0),
+                categorie: _categorie
+                
             }));
             emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
         else{
             uint tmp = emptySpaces[0];
-            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false,new address[](0) );
+            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false,new address[](0), _categorie);
             len = emptySpaces.length;
             for(uint i = 0;i < emptySpaces.length - 1;i++){
                 emptySpaces[i] = emptySpaces[ i+1 ];
@@ -100,7 +113,8 @@ contract Marketplace {
                 _fileipfshash,
                 msg.sender,
                 false,
-                new address[](0)
+                new address[](0),
+                _categorie
                 );
                 emit ProductCreated(tmp, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
@@ -140,22 +154,28 @@ contract Marketplace {
         // Trigger an event
         emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
     }
-    function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , string memory _imgipfshash , string memory _fileipfshash) public{
+    function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , string memory _imgipfshash , Categories _categorie) public{
         Product memory _product = products[_id];
         _product.name = _name;
         _product.description = _des;
         _product.price = _price;
         _product.imgipfshash = _imgipfshash;
-        _product.fileipfshash = _fileipfshash;
+        _product.categorie = _categorie;
         products[_id] = _product;
         Product memory _ownerToProducts = ownerToProducts[msg.sender][_id];
         _ownerToProducts.name = _name;
         _ownerToProducts.description = _des;
         _ownerToProducts.price = _price;
         _ownerToProducts.imgipfshash = _imgipfshash;
-        _ownerToProducts.fileipfshash = _fileipfshash;
+        _ownerToProducts.categorie = _categorie;
         ownerToProducts[msg.sender][_id] = _ownerToProducts;
         
+    }
+    function giveRate(uint _rate ,uint pos_in_prod_mapping ) public {
+        productsRates[pos_in_prod_mapping].push(_rate);
+    }
+    function writeReview(string memory _review ,uint pos_in_prod_mapping) public {
+        productsReviews[pos_in_prod_mapping].push(_review);
     }
 
     function insertProductIntoCart(uint256 id) public returns (bool success,
@@ -208,9 +228,11 @@ contract Marketplace {
                 fileipfshash:"dummy",
                 owner: 0x0000000000000000000000000000000000000000,
                 purchased: false,
-                owners: new address[](0)
+                owners: new address[](0),
+                categorie: Categories.Tech
         }));
-        Customer memory customer = Customer(_address, _name,Cart(new uint256[](0), 0) );
+
+        Customer memory customer = Customer(_address, _name,Cart(new uint256[](0), 0));
         customerCount++;
         addressLUT[customerCount]=customer.adr;
         customers[_address] = customer;
@@ -257,3 +279,4 @@ contract Marketplace {
     }
 
 }
+
