@@ -116,12 +116,10 @@ class ProductDetails extends Component {
                   <div className="list-group-item">
                     <button
                       className="btn btn-lg btn-block btn-success"
-                      name={this.props.product.id}
-                      value={this.props.product.price}
                       onClick={(event) => {
                         this.props.purchaseProduct(
-                          event.target.name,
-                          event.target.value
+                          this.props.product.id,
+                          this.props.product.price
                         );
                       }}
                     >

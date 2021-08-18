@@ -166,7 +166,7 @@ class App extends Component {
       fileipfshash
     );
     this.state.marketplace.methods
-      .createProduct(name, description, price, imgipfshash, fileipfshash)
+      .createProduct(name, description, price, imgipfshash, fileipfshash, 1)
       .send({
         from: this.state.account,
       })
@@ -184,6 +184,7 @@ class App extends Component {
   }
 
   purchaseProduct(id, price) {
+    console.log("id= ", id, price);
     this.setState({
       loading: true,
     });
