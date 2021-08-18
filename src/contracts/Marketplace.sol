@@ -50,8 +50,8 @@ contract Marketplace {
         address owner;
         bool purchased;
         address[] owners;
-        //bytes32 uploadedOn;
         Categories categorie;
+        uint256 uploadedOn;
     }
 
     event ProductCreated(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner, bool purchased);
@@ -78,9 +78,10 @@ contract Marketplace {
         // Require a valid file hash
         //require(bytes(_fileipfshash).length > 0);*/
         // Increment product count
+        uint256 _uploadedOn = block.timestamp;
         if(emptySpaces.length == 0 || emptySpaces[0]==0){
                 productCount ++;
-                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false ,new address[](0), _categorie);
+                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false ,new address[](0), _categorie , _uploadedOn);
                 categorieToProduct[_categorie].push(productCount);
                 ownerToProducts[msg.sender].push(Product({
                 id: productCount,
@@ -92,14 +93,15 @@ contract Marketplace {
                 owner: msg.sender,
                 purchased: false,
                 owners: new address[](0),
-                categorie: _categorie
+                categorie: _categorie,
+                uploadedOn: _uploadedOn
                 
             }));
             emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
         else{
             uint tmp = emptySpaces[0];
-            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false,new address[](0), _categorie);
+            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false,new address[](0), _categorie, _uploadedOn);
             len = emptySpaces.length;
             for(uint i = 0;i < emptySpaces.length - 1;i++){
                 emptySpaces[i] = emptySpaces[ i+1 ];
@@ -116,18 +118,21 @@ contract Marketplace {
                 msg.sender,
                 false,
                 new address[](0),
-                _categorie
+                _categorie,
+                _uploadedOn
                 );
                 emit ProductCreated(tmp, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
         
     }
 
-    function removeProduct(uint id1 , Categories cat) public {
+    function removeProduct(uint id1) public {
         removeNestedProduct(id1);
         delete products [id1];
         delete productsRates[id1];
         delete productsReviews[id1];
+        Categories cat;
+        cat = products[id1].categorie;
         delete categorieToProduct[cat][id1-1];
         emptySpaces.push(id1);
     }
@@ -155,7 +160,7 @@ contract Marketplace {
         products[_id] = _product;
         // Pay the seller by sending them Ether
         payable(_seller).transfer(msg.value);
-        removeNestedProduct(_id);
+        //removeNestedProduct(_id);
         // Trigger an event
         emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
     }
@@ -234,7 +239,8 @@ contract Marketplace {
                 owner: 0x0000000000000000000000000000000000000000,
                 purchased: false,
                 owners: new address[](0),
-                categorie: Categories.Tech
+                categorie: Categories.Tech,
+                uploadedOn:0
         }));
 
         Customer memory customer = Customer(_address, _name,Cart(new uint256[](0), 0));
