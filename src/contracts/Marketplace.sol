@@ -11,6 +11,7 @@ contract Marketplace {
     mapping(uint => Product) public products;
     mapping(uint => uint[]) public productsRates;
     mapping(uint => string[]) public productsReviews;
+    mapping(Categories => uint[]) public categorieToProduct;
     //to store the customers on blockchain
     mapping(address  => Customer) public customers;
     mapping(uint => address) public addressLUT;
@@ -80,7 +81,7 @@ contract Marketplace {
         if(emptySpaces.length == 0 || emptySpaces[0]==0){
                 productCount ++;
                 products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false ,new address[](0), _categorie);
-        
+                categorieToProduct[_categorie].push(productCount);
                 ownerToProducts[msg.sender].push(Product({
                 id: productCount,
                 name: _name,
@@ -104,6 +105,7 @@ contract Marketplace {
                 emptySpaces[i] = emptySpaces[ i+1 ];
             }
             emptySpaces.pop();
+            categorieToProduct[_categorie][tmp-1] = tmp;
             ownerToProducts[msg.sender][tmp] = Product(
                 tmp,
                 _name,
@@ -121,9 +123,12 @@ contract Marketplace {
         
     }
 
-    function removeProduct(uint id1) public {
+    function removeProduct(uint id1 , Categories cat) public {
         removeNestedProduct(id1);
         delete products [id1];
+        delete productsRates[id1];
+        delete productsReviews[id1];
+        delete categorieToProduct[cat][id1-1];
         emptySpaces.push(id1);
     }
     function removeNestedProduct(uint id1) public {
@@ -279,4 +284,3 @@ contract Marketplace {
     }
 
 }
-
