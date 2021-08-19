@@ -22,11 +22,16 @@ contract Marketplace {
     uint public ftt = 0;
     enum Categories {
         Tech,
+        PCGames,
+        PS4Games,
+        XboxGames,
+        Movies,
+        Courses,
         Books,
         AudioBooks,
-        image,
-        video,
-        file
+        Images,
+        Videos,
+        Other
     }
     struct Customer {
         address adr;

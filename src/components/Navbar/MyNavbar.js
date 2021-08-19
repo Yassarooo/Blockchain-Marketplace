@@ -8,7 +8,7 @@ import "./MyNavbar.css";
 class MyNavbar extends Component {
   render() {
     return (
-      <Navbar className="navbar navbar-inverse navbar-expand-lg navbar-dark bg-gradient-dark animate-navbar">
+      <Navbar className="navbar navbar-expand">
         <Container id="block_container">
           <Navbar.Brand id="bloc1" style={{ color: "orange" }} href="#home">
             <FaStore />
@@ -25,6 +25,7 @@ class MyNavbar extends Component {
                 Explore Products
               </NavDropdown.Item>
               <NavDropdown.Divider />
+              <NavDropdown.Item href="#action5">Categories</NavDropdown.Item>
               <NavDropdown.Item href="#action5">
                 Most Sold Products
               </NavDropdown.Item>

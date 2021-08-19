@@ -2,18 +2,22 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import ipfs from "./ipfs";
 import { toast } from "react-toastify";
+import { Dropdown, DropdownButton } from "react-bootstrap";
+import "./AddProduct.css";
 
 class AddProduct extends Component {
   state = {
     name: "",
     description: "",
     price: "",
+    cat: "",
     imgipfshash: "",
     fileipfshash: "",
     imgbuffer: null,
     filebuffer: null,
     validFile: false,
     fileErrorMessage: "",
+    caterror: "",
   };
 
   handleChange = (e) => {
@@ -132,6 +136,7 @@ class AddProduct extends Component {
               this.state.name,
               this.state.description,
               window.web3.utils.toWei(this.state.price.toString(), "Ether"),
+              this.state.cat,
               this.state.imgipfshash.toString(),
               this.state.fileipfshash.toString()
             );
@@ -148,6 +153,13 @@ class AddProduct extends Component {
         });
       });
     }
+  };
+
+  handleSelect = (e) => {
+    console.log(e.target.value);
+    this.setState({
+      cat: e.target.value,
+    });
   };
 
   render() {
@@ -207,6 +219,38 @@ class AddProduct extends Component {
                   />
                   <div className="invalid-feedback">Price is required.</div>
                 </div>
+
+                <div className="form-group">
+                  <label htmlFor="tags">Category *</label>
+                  <select
+                    className="form-control"
+                    name="city"
+                    onChange={this.handleSelect}
+                  >
+                    <option value="0">Tech</option>
+                    <option value="1">PC Games</option>
+                    <option value="2">PS4 Games</option>
+                    <option value="3">Xbox Games</option>
+                    <option value="4">Movies</option>
+                    <option value="5">Courses</option>
+                    <option value="6">Books</option>
+                    <option value="7">AudioBooks</option>
+                    <option value="8">Images</option>
+                    <option value="9"> Videos</option>
+                    <option selected value="10">
+                      {" "}
+                      Other
+                    </option>
+                  </select>
+
+                  <div
+                    className="text-danger"
+                    hidden={this.state.caterror === "" ? true : false}
+                  >
+                    {this.state.caterror}
+                  </div>
+                </div>
+
                 <div className="form-group">
                   <label htmlFor="file">Image *</label>
                   <input

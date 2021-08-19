@@ -68,7 +68,7 @@ class Home extends Component {
             </p>
             <p>
               <a
-                href="//"
+                href="/addproduct"
                 className="btn btn-warning"
                 ui-sref="params"
                 role="button"
@@ -79,7 +79,7 @@ class Home extends Component {
           </Col>
           <Col md="3">
             <h2 className="text-warning">
-              <a href="//">
+              <a href="/products">
                 <FaEthereum />
               </a>{" "}
               Buy Product
@@ -90,7 +90,7 @@ class Home extends Component {
             </p>
             <p>
               <a
-                href="//"
+                href="/products"
                 className="btn btn-warning"
                 ui-sref="cars"
                 role="button"
@@ -112,7 +112,7 @@ class Home extends Component {
             </p>
             <p>
               <a
-                href="//"
+                href="/myproducts"
                 className="btn btn-warning"
                 ui-sref="sellcar"
                 role="button"
@@ -134,7 +134,7 @@ class Home extends Component {
             </p>
             <p>
               <a
-                href="//"
+                href="/products"
                 className="btn btn-warning"
                 ui-sref="MQ"
                 role="button"

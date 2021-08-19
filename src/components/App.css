@@ -41,6 +41,9 @@ h2 {
   font-size: large;
   color: white;
 }
+.bg-dark {
+  background-color: #222222 !important;
+}
 
 h3 {
   font-size: x-large;
@@ -54,12 +57,12 @@ hr {
 }
 
 .form-control {
-  background-color: #0a1b26;
+  background-color: #222222;
   color: #ffffff;
 }
 
 .form-control-file {
-  background-color: #0a1b26;
+  background-color: #222222;
   color: #ffffff;
 }
 

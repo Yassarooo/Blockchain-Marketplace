@@ -43,15 +43,30 @@ class MyProducts extends Component {
                   </td>
                   <td>{product.purchased ? <BsCheckCircle /> : null}</td>
                   <td>
-                    <button type="button" className="btn btn-primary">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      data-toggle="tooltip"
+                      title="View product"
+                    >
                       <GrView />
                     </button>{" "}
                     {""}
-                    <button type="button" className="btn btn-success">
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      data-toggle="tooltip"
+                      title="Edit product"
+                    >
                       <FaEdit />
                     </button>{" "}
                     {""}
-                    <button type="button" className="btn btn-danger">
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      data-toggle="tooltip"
+                      title="Delete product"
+                    >
                       <MdDelete />
                     </button>
                   </td>

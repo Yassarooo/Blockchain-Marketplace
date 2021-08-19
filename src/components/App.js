@@ -9,6 +9,7 @@ import Products from "./Products/Products";
 import AddProduct from "./AddProduct/AddProduct";
 import AboutUs from "./AboutUs/AboutUs";
 import MyProducts from "./MyProducts/MyProducts";
+import TestPage from "./TestPage/TestPage";
 import ProductDetails from "./ProductDetails/ProductDetails";
 import MyModal from "./MyModal/MyModal";
 import Home from "./Home/Home";
@@ -153,7 +154,7 @@ class App extends Component {
     }
   }
 
-  createProduct(name, description, price, imgipfshash, fileipfshash) {
+  createProduct(name, description, price, cat, imgipfshash, fileipfshash) {
     this.setState({
       loading: true,
     });
@@ -166,7 +167,7 @@ class App extends Component {
       fileipfshash
     );
     this.state.marketplace.methods
-      .createProduct(name, description, price, imgipfshash, fileipfshash, 1)
+      .createProduct(name, description, price, imgipfshash, fileipfshash, cat)
       .send({
         from: this.state.account,
       })
@@ -277,6 +278,14 @@ class App extends Component {
               createProduct={this.createProduct}
               successmessage={this.state.successmessage}
               products={this.state.products}
+            />
+          </Route>
+          <Route path="/test">
+            <TestPage
+              account={this.state.account}
+              products={this.state.products}
+              purchaseProduct={this.purchaseProduct}
+              history={this.state.history}
             />
           </Route>
           {this.ProductRoutesGenerator()}

@@ -82,8 +82,14 @@ class ProductDetails extends Component {
                 </div>
                 <div className="list-group-item">
                   <div className="row">
-                    <div className="col">Date:</div>
-                    <div className="col">17/4/2021</div>
+                    <div className="col">Uploaded On:</div>
+                    <div className="col">
+                      {Intl.DateTimeFormat("en-US", {
+                        year: "numeric",
+                        day: "2-digit",
+                        month: "2-digit",
+                      }).format(this.props.product.uploadedOn * 1000)}
+                    </div>
                   </div>
                 </div>
                 <div className="list-group-item">
