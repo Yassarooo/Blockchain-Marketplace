@@ -169,23 +169,21 @@ contract Marketplace {
         // Trigger an event
         emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
     }
-    function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , string memory _imgipfshash , Categories _categorie) public{
+    function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , Categories _categorie) public{
         Product memory _product = products[_id];
         _product.name = _name;
         _product.description = _des;
         _product.price = _price;
-        _product.imgipfshash = _imgipfshash;
         _product.categorie = _categorie;
         products[_id] = _product;
         Product memory _ownerToProducts = ownerToProducts[msg.sender][_id];
         _ownerToProducts.name = _name;
         _ownerToProducts.description = _des;
         _ownerToProducts.price = _price;
-        _ownerToProducts.imgipfshash = _imgipfshash;
         _ownerToProducts.categorie = _categorie;
         ownerToProducts[msg.sender][_id] = _ownerToProducts;
-        
     }
+    
     function giveRate(uint _rate ,uint pos_in_prod_mapping ) public {
         productsRates[pos_in_prod_mapping].push(_rate);
     }

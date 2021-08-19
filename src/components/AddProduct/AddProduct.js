@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import ipfs from "./ipfs";
 import { toast } from "react-toastify";
-import { Dropdown, DropdownButton } from "react-bootstrap";
 import "./AddProduct.css";
 
 class AddProduct extends Component {

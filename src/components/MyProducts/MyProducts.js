@@ -48,6 +48,10 @@ class MyProducts extends Component {
                       className="btn btn-primary"
                       data-toggle="tooltip"
                       title="View product"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.location.href = "/product/" + product.id;
+                      }}
                     >
                       <GrView />
                     </button>{" "}
@@ -66,6 +70,10 @@ class MyProducts extends Component {
                       className="btn btn-danger"
                       data-toggle="tooltip"
                       title="Delete product"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        this.props.removeProduct(product.id);
+                      }}
                     >
                       <MdDelete />
                     </button>

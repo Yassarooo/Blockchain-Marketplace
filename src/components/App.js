@@ -9,7 +9,7 @@ import Products from "./Products/Products";
 import AddProduct from "./AddProduct/AddProduct";
 import AboutUs from "./AboutUs/AboutUs";
 import MyProducts from "./MyProducts/MyProducts";
-import TestPage from "./TestPage/TestPage";
+import TestPage from "./Products/Products";
 import ProductDetails from "./ProductDetails/ProductDetails";
 import MyModal from "./MyModal/MyModal";
 import Home from "./Home/Home";
@@ -22,6 +22,7 @@ class App extends Component {
     super(props);
     this.createProduct = this.createProduct.bind(this);
     this.purchaseProduct = this.purchaseProduct.bind(this);
+    this.removeProduct = this.removeProduct.bind(this);
     this.registerCustomer = this.registerCustomer.bind(this);
     this.handleModal = this.handleModal.bind(this);
     this.handleLoading = this.handleLoading.bind(this);
@@ -207,6 +208,27 @@ class App extends Component {
       });
   }
 
+  removeProduct(id) {
+    this.setState({
+      loading: true,
+    });
+    this.state.marketplace.methods
+      .removeProduct(id)
+      .send({
+        from: this.state.account,
+      })
+      .once("receipt", (receipt) => {
+        this.setState({
+          loading: false,
+        });
+        toast.success("Product removed Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        window.location.reload();
+      });
+  }
+
   ProductRoutesGenerator = () => {
     return this.state.products.map((product) => {
       return (
@@ -262,6 +284,7 @@ class App extends Component {
             <MyProducts
               account={this.state.account}
               products={this.state.products}
+              removeProduct={this.removeProduct}
             />
           </Route>
           <Route path="/products">
@@ -269,7 +292,6 @@ class App extends Component {
               account={this.state.account}
               products={this.state.products}
               purchaseProduct={this.purchaseProduct}
-              history={this.state.history}
             />
           </Route>
           <Route path="/addproduct">
@@ -285,7 +307,6 @@ class App extends Component {
               account={this.state.account}
               products={this.state.products}
               purchaseProduct={this.purchaseProduct}
-              history={this.state.history}
             />
           </Route>
           {this.ProductRoutesGenerator()}
