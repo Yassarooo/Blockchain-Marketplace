@@ -12,12 +12,6 @@ body {
 #bloc2 {
   display: inline;
 }
-.centered-and-cropped {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-  margin-left: 0px;
-}
 .jumbotron {
   background: #222222;
 }
@@ -37,8 +31,8 @@ h1 {
   font-size: x-large;
 }
 h2 {
-  font-weight: normal;
-  font-size: large;
+  font-weight: bolder;
+  font-size: medium;
   color: white;
 }
 .bg-dark {
@@ -46,9 +40,11 @@ h2 {
 }
 
 h3 {
-  font-size: x-large;
-  font-weight: 700;
-  line-height: 50px;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  font-weight: 700 !important;
+  font-size: larger !important;
+  line-height: 50px !important;
 }
 
 hr {

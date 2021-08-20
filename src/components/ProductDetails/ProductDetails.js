@@ -2,12 +2,23 @@ import React, { Component } from "react";
 import { FaStar, FaEthereum } from "react-icons/fa";
 import { BsPersonFill } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
+import MetaTags from "react-meta-tags";
 import "./ProductDetails.css";
 
 class ProductDetails extends Component {
   render() {
     return (
-      <div id="content" className="py-5 mr-5 ml-5 px-5">
+      <div id="content" className="pt-5 mr-5 ml-5 px-5">
+        <MetaTags>
+          <title>{this.props.product.name}</title>
+          <meta name="description" content={this.props.product.description} />
+          <meta property="og:title" content="Jazara Blockchain" />
+          <meta
+            property="og:image"
+            content={`https://ipfs.io/ipfs/${this.props.product.imgipfshash}`}
+          />
+        </MetaTags>
+
         <div className="row">
           <div className="col-md-4">
             <img

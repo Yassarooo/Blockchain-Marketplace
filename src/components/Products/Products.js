@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import "./Products.css";
 import { Row, Col, Pagination, Button } from "react-bootstrap";
-import { FaEthereum, FaChevronDown, FaSearch } from "react-icons/fa";
+import { FaEthereum, FaChevronDown, FaSearch, FaEye } from "react-icons/fa";
 
 class Products extends Component {
   constructor() {
     super();
     this.state = {
       currentPage: 1,
-      productsPerPage: 12,
+      productsPerPage: 8,
       currentCats: [],
       searchText: "",
     };
@@ -48,9 +48,9 @@ class Products extends Component {
   }
 
   renderCards(product, index) {
-    return product.purchased ? null : (
-      <Col md="4" className="pt-3" key={index}>
-        <div className="card h-100 rounded card">
+    return (
+      <Col md="3" className="pt-3" key={index}>
+        <div className="card card h-100 rounded card ">
           <div
             className="badge bg-success text-white position-absolute"
             style={{ top: "0.5rem", right: "0.5rem" }}
@@ -64,17 +64,10 @@ class Products extends Component {
           />
           <div className="card-body bg-dark pb-0 mb-0">
             <div className="text-center">
-              <h2 href={`/product/${product.id}`}>{product.name}</h2>
-              <h3
-                className="text-warning"
-                style={{
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  fontWeight: "700",
-                  fontSize: "x-large",
-                  lineHeight: "50px",
-                }}
-              >
+              <h2 className="slid" href={`/product/${product.id}`}>
+                {product.name}
+              </h2>
+              <h3 className="text-warning">
                 <FaEthereum className="text-primary pl-0 pr-2" />
                 {window.web3.utils.fromWei(
                   product.price.toString(),
@@ -84,17 +77,18 @@ class Products extends Component {
               </h3>
             </div>
           </div>
-          <div className="card-footer pb-4 pt-0 border-top-0 bg-dark">
+          <div className="card-footer pb-3 pt-0 border-top-0 bg-dark">
             <div className="text-center ">
               <Button
-                className="btn btn-outline-light mt-2 stretched-link"
+                className="btn btn-outline-light btn-dark stretched-link"
                 name={product.id}
                 value={product.price}
                 onClick={(event) =>
                   (window.location.href = `/product/${product.id}`)
                 }
               >
-                More Details
+                More Details {""}
+                <FaEye className="text-warning" />
               </Button>
             </div>
           </div>
@@ -146,9 +140,10 @@ class Products extends Component {
         </Pagination.Item>
       );
     });
+
     return (
       <div>
-        <section className="section-content py-4 px-3">
+        <section className="section-content pt-4 px-3">
           <div className="row">
             <aside className="col-md-3">
               <div className="card bg-dark">
@@ -227,7 +222,7 @@ class Products extends Component {
                       aria-expanded="true"
                       className=""
                     >
-                      <i className="icon-control fa fa-chevron-down"></i>
+                      <FaChevronDown className="float-right text-warning"></FaChevronDown>
                       <h6 className="title text-warning">Categories </h6>
                     </a>
                   </header>
@@ -399,7 +394,7 @@ class Products extends Component {
                       aria-expanded="true"
                       className=""
                     >
-                      <i className="icon-control fa fa-chevron-down"></i>
+                      <FaChevronDown className="float-right text-warning"></FaChevronDown>
                       <h6 className="title text-warning">Price range </h6>
                     </a>
                   </header>
@@ -454,7 +449,7 @@ class Products extends Component {
               </header>
 
               <Row>{currentProducts.map(this.renderCards)}</Row>
-              <Pagination id="page-numbers" className="py-4">
+              <Pagination id="page-numbers" className="pt-4">
                 {renderPageNumbers}
               </Pagination>
             </main>

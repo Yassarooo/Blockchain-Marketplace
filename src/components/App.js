@@ -292,6 +292,7 @@ class App extends Component {
               account={this.state.account}
               products={this.state.products}
               purchaseProduct={this.purchaseProduct}
+              loading={this.state.loading}
             />
           </Route>
           <Route path="/addproduct">

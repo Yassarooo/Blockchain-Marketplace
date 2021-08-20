@@ -16,15 +16,17 @@ class MyProducts extends Component {
         </h2>
         <h2 id="bloc2" className="float-right pb-1">
           Your Address: {""}
-          <h2 id="bloc1" style={{ color: "orange" }}>
+          <span id="bloc1" style={{ color: "orange" }}>
             {this.props.account}
-          </h2>
+          </span>
         </h2>
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th scope="col"> # </th> <th scope="col"> Name </th>
-              <th scope="col"> Price </th> <th scope="col"> Purchased </th>
+              <th scope="col"> # </th>
+              <th scope="col"> Name </th>
+              <th scope="col"> Price </th>
+              <th scope="col"> Purchased </th>
               <th scope="col"> Actions</th>
             </tr>
           </thead>

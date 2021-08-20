@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import ipfs from "./ipfs";
 import { toast } from "react-toastify";
-import "./AddProduct.css";
+import Compressor from "compressorjs";
 
 class AddProduct extends Component {
   state = {
@@ -25,17 +25,22 @@ class AddProduct extends Component {
     });
   };
 
-  captureImage = (event) => {
+  captureImage = async (event) => {
     event.preventDefault();
     const file = event.target.files[0];
     if (file.type.match("image/*")) {
-      const reader = new window.FileReader();
-      reader.readAsArrayBuffer(file);
-      reader.onloadend = () => {
-        this.setState({
-          imgbuffer: Buffer(reader.result),
-        });
-      };
+      new Compressor(file, {
+        quality: 0.8, // 0.6 can also be used, but its not recommended to go below.
+        success: (compressed) => {
+          const reader = new window.FileReader();
+          reader.readAsArrayBuffer(compressed);
+          reader.onloadend = () => {
+            this.setState({
+              imgbuffer: Buffer(reader.result),
+            });
+          };
+        },
+      });
     } else {
       toast.error("Choose valid image file ", {
         position: "bottom-right",
