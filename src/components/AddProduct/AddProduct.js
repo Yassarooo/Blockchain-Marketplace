@@ -197,6 +197,7 @@ class AddProduct extends Component {
                   <label htmlFor="description">Description *</label>
                   <textarea
                     className="form-control"
+                    type="text"
                     id="description"
                     name="description"
                     placeholder="Description"

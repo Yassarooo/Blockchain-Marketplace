@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import "./Products.css";
 import { Row, Col, Pagination, Button } from "react-bootstrap";
 import { FaEthereum, FaChevronDown, FaSearch, FaEye } from "react-icons/fa";
+import { Categories, Colors } from "../Categories";
+import Typography from "@material-ui/core/Typography";
+import Slider from "@material-ui/core/Slider";
 
 class Products extends Component {
   constructor() {
@@ -11,33 +14,67 @@ class Products extends Component {
       productsPerPage: 8,
       currentCats: [],
       searchText: "",
+      max: 20,
+      cheapest: false,
+      latest: true,
     };
+    this.rangeSelector = this.rangeSelector.bind(this);
+    this.handleMaxChange = this.handleMaxChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleCheck = this.handleCheck.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+  }
+
+  rangeSelector = (event, newValue) => {
+    console.log(newValue);
+    this.setState({ max: newValue });
+  };
+
+  handleMaxChange(event) {
+    console.log("change", event.target.value);
+    this.setState({ max: Number(event.target.value) });
   }
 
   handleClick(event) {
-    this.setState({
-      currentPage: Number(event.target.id),
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
     });
+    if (event.target.id === "prev") {
+      this.setState({
+        currentPage: Number(this.state.currentPage - 1),
+      });
+    }
+    if (event.target.id === "next") {
+      this.setState({
+        currentPage: Number(this.state.currentPage + 1),
+      });
+    } else {
+      this.setState({
+        currentPage: Number(event.target.id),
+      });
+    }
   }
 
   handleChange(event) {
     console.log("change", event.target.value);
     this.setState({ searchText: event.target.value });
   }
+
   handleCheck(event) {
     if (event.target.checked) {
       this.setState({
         currentCats: [...this.state.currentCats, event.target.name],
+        currentPage: 1,
       });
     } else {
       this.setState({
         currentCats: this.state.currentCats.filter(function (cat) {
           return cat !== event.target.name;
         }),
+        currentPage: 1,
       });
     }
   }
@@ -47,15 +84,26 @@ class Products extends Component {
     console.log("Searching...");
   }
 
+  handleSelect(event) {
+    event.preventDefault();
+    console.log("Selected...", event.target.name);
+  }
+
   renderCards(product, index) {
     return (
       <Col md="3" className="pt-3" key={index}>
         <div className="card card h-100 rounded card ">
           <div
-            className="badge bg-success text-white position-absolute"
-            style={{ top: "0.5rem", right: "0.5rem" }}
+            className="badge text-white position-absolute"
+            style={{
+              top: "0.5rem",
+              right: "0.5rem",
+              fontSize: "15px",
+              backgroundColor: Colors[product.categorie],
+            }}
           >
-            {product.owner.toString().substring(0, 8)}
+            {/*product.owner.toString().substring(0, 8)*/}
+            {Categories[product.categorie]}
           </div>
           <img
             className="card-img-top centered-and-cropped"
@@ -64,9 +112,7 @@ class Products extends Component {
           />
           <div className="card-body bg-dark pb-0 mb-0">
             <div className="text-center">
-              <h2 className="slid" href={`/product/${product.id}`}>
-                {product.name}
-              </h2>
+              <h2 href={`/product/${product.id}`}>{product.name}</h2>
               <h3 className="text-warning">
                 <FaEthereum className="text-primary pl-0 pr-2" />
                 {window.web3.utils.fromWei(
@@ -101,7 +147,7 @@ class Products extends Component {
     const indexOfLastProduct =
       this.state.currentPage * this.state.productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - this.state.productsPerPage;
-    const currentProducts = this.props.products
+    const filteredProducts = this.props.products
       .filter((product) =>
         this.state.currentCats.length !== 0
           ? this.state.currentCats.includes(product.categorie)
@@ -117,12 +163,22 @@ class Products extends Component {
               .includes(this.state.searchText.toLowerCase())
           : true
       )
-      .slice(indexOfFirstProduct, indexOfLastProduct);
+      .filter(
+        (product) =>
+          Number(window.web3.utils.fromWei(product.price.toString(), "Ether")) <
+          Number(this.state.max)
+      )
+      .reverse();
+
+    const currentProducts = filteredProducts.slice(
+      indexOfFirstProduct,
+      indexOfLastProduct
+    );
 
     const pageNumbers = [];
     for (
       let i = 1;
-      i <= Math.ceil(this.props.products.length / this.state.productsPerPage);
+      i <= Math.ceil(filteredProducts.length / this.state.productsPerPage);
       i++
     ) {
       pageNumbers.push(i);
@@ -400,34 +456,28 @@ class Products extends Component {
                   </header>
                   <div className="filter-content collapse show" id="collapse_3">
                     <div className="card-body">
-                      <input
-                        type="range"
-                        className="custom-range"
-                        min="0"
-                        max="100"
-                        name=""
+                      <Typography id="range-slider" gutterBottom>
+                        Select Max Price:
+                      </Typography>
+                      <Slider
+                        value={this.state.max}
+                        onChange={this.rangeSelector}
+                        step={0.01}
+                        max={20}
+                        valueLabelDisplay="auto"
+                        aria-labelledby="range-slider"
                       />
                       <div className="form-row">
                         <div className="form-group col-md-6">
-                          <label className="text-warning">Min</label>
                           <input
-                            className="form-control"
-                            placeholder="0 Eth"
-                            type="number"
-                          />
-                        </div>
-                        <div className="form-group text-right col-md-6">
-                          <label className="text-warning">Max</label>
-                          <input
+                            value={this.state.max}
+                            onChange={this.handleMaxChange}
                             className="form-control"
                             placeholder="1,0000 Eth"
                             type="number"
                           />
                         </div>
                       </div>
-                      <Button className="btn btn-block btn-warning">
-                        Apply
-                      </Button>
                     </div>
                   </div>
                 </article>
@@ -437,10 +487,12 @@ class Products extends Component {
               <header className="border-bottom mb-2 pb-3">
                 <div className="form-inline">
                   <span className="mr-md-auto">
-                    {currentProducts.length.toString()} Items found{" "}
+                    {filteredProducts.length.toString()} Items found{" "}
                   </span>
                   <select className="mr-0 form-control bg-dark">
-                    <option>Latest items</option>
+                    <option name="latest" onSelect={this.handleSelect}>
+                      Latest items
+                    </option>
                     <option>Trending</option>
                     <option>Most Popular</option>
                     <option>Cheapest</option>
@@ -450,7 +502,23 @@ class Products extends Component {
 
               <Row>{currentProducts.map(this.renderCards)}</Row>
               <Pagination id="page-numbers" className="pt-4">
+                <Pagination.Item
+                  id="prev"
+                  key="prev"
+                  onClick={this.handleClick}
+                  disabled={this.state.currentPage === 1}
+                >
+                  prev
+                </Pagination.Item>
                 {renderPageNumbers}
+                <Pagination.Item
+                  id="next"
+                  key="next"
+                  onClick={this.handleClick}
+                  disabled={this.state.currentPage === pageNumbers.length}
+                >
+                  next
+                </Pagination.Item>
               </Pagination>
             </main>
           </div>

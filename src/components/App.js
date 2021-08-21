@@ -39,6 +39,7 @@ class App extends Component {
       successmessage: "",
     };
   }
+
   handleLoading() {
     this.setState({
       loading: !this.state.loading,

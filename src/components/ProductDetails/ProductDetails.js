@@ -4,6 +4,12 @@ import { BsPersonFill } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import MetaTags from "react-meta-tags";
 import "./ProductDetails.css";
+import { Categories, Colors } from "../Categories";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Typography from "@material-ui/core/Typography";
+import { MdExpandMore } from "react-icons/md";
 
 class ProductDetails extends Component {
   render() {
@@ -30,7 +36,20 @@ class ProductDetails extends Component {
           <div className="col-md-4">
             <div className="list-group list-group-flush">
               <div className="list-group-item">
-                <h3>{this.props.product.name}</h3>
+                <h3 id="bloc1" className="pr-2">
+                  {this.props.product.name}
+                </h3>
+                <div
+                  id="bloc2"
+                  className="badge text-white"
+                  style={{
+                    fontSize: "15px",
+                    backgroundColor: Colors[this.props.product.categorie],
+                  }}
+                >
+                  {/*product.owner.toString().substring(0, 8)*/}
+                  {Categories[this.props.product.categorie]}
+                </div>
               </div>
               <div className="list-group-item">
                 <div className="rating">
@@ -53,7 +72,8 @@ class ProductDetails extends Component {
                 </div>
               </div>
               <div className="list-group-item">
-                Price: <FaEthereum className="text-primary" />
+                <span className="text-warning">Price: </span>
+                <FaEthereum className="text-primary" />
                 {""}
                 {window.web3.utils.fromWei(
                   this.props.product.price.toString(),
@@ -61,9 +81,22 @@ class ProductDetails extends Component {
                 )}{" "}
                 Eth
               </div>
+
               <div className="list-group-item">
-                Description: {this.props.product.description}
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={<MdExpandMore />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography>Description</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>{this.props.product.description}</Typography>
+                  </AccordionDetails>
+                </Accordion>
               </div>
+
               <div className="list-group-item">
                 <BsPersonFill />
                 <span className="text-warning pl-2">
