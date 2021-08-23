@@ -12,6 +12,9 @@
 .nav-link {
   color: white !important;
 }
+a:hover {
+  color: orange !important;
+}
 .nav-link:hover {
   color: orange !important;
 }

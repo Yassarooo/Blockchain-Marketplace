@@ -7,6 +7,7 @@ import MyNavbar from "./Navbar/MyNavbar";
 import MyFooter from "./Footer/MyFooter";
 import Products from "./Products/Products";
 import AddProduct from "./AddProduct/AddProduct";
+import EditProduct from "./EditProduct/EditProduct";
 import AboutUs from "./AboutUs/AboutUs";
 import MyProducts from "./MyProducts/MyProducts";
 import TestPage from "./Products/Products";
@@ -23,6 +24,7 @@ class App extends Component {
     this.createProduct = this.createProduct.bind(this);
     this.purchaseProduct = this.purchaseProduct.bind(this);
     this.removeProduct = this.removeProduct.bind(this);
+    this.editProduct = this.editProduct.bind(this);
     this.registerCustomer = this.registerCustomer.bind(this);
     this.handleModal = this.handleModal.bind(this);
     this.handleLoading = this.handleLoading.bind(this);
@@ -36,7 +38,8 @@ class App extends Component {
       addressLUT: [],
       customers: [],
       loading: true,
-      successmessage: "",
+      addsuccessmessage: "",
+      editsuccessmessage: "",
     };
   }
 
@@ -48,7 +51,6 @@ class App extends Component {
   handleModal() {
     this.setState({ showModal: !this.state.showModal });
   }
-
   registerCustomer(name) {
     this.handleModal();
     this.setState({
@@ -176,9 +178,33 @@ class App extends Component {
       .once("receipt", (receipt) => {
         this.setState({
           loading: false,
-          successmessage: "Product Added Successfully !",
+          addsuccessmessage: "Product Added Successfully !",
         });
         toast.success("Product Added Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        this.loadBlockchainData();
+      });
+  }
+
+  editProduct(id, name, description, price, cat) {
+    this.setState({
+      loading: true,
+    });
+    console.log("name:", name + "desc:", description + "price:", price);
+
+    this.state.marketplace.methods
+      .editProduct(id, name, description, price, cat)
+      .send({
+        from: this.state.account,
+      })
+      .once("receipt", (receipt) => {
+        this.setState({
+          loading: false,
+          editsuccessmessage: "Product Edited Successfully !",
+        });
+        toast.success("Product Edited Successfully !", {
           position: "bottom-right",
           closeOnClick: true,
         });
@@ -250,6 +276,27 @@ class App extends Component {
     });
   };
 
+  EditProductRoutesGenerator = () => {
+    return this.state.products.map((product) => {
+      return (
+        <Route
+          exact
+          path={`/product/edit/${product.id}`}
+          key={product.id}
+          children={
+            <EditProduct
+              product={product}
+              account={this.state.account}
+              handleLoading={this.handleLoading}
+              editProduct={this.editProduct}
+              editsuccessmessage={this.state.editsuccessmessage}
+            />
+          }
+        />
+      );
+    });
+  };
+
   render() {
     return (
       <Router>
@@ -300,7 +347,7 @@ class App extends Component {
             <AddProduct
               handleLoading={this.handleLoading}
               createProduct={this.createProduct}
-              successmessage={this.state.successmessage}
+              addsuccessmessage={this.state.addsuccessmessage}
               products={this.state.products}
             />
           </Route>
@@ -312,6 +359,7 @@ class App extends Component {
             />
           </Route>
           {this.ProductRoutesGenerator()}
+          {this.EditProductRoutesGenerator()}
         </Switch>
 
         <MyFooter />

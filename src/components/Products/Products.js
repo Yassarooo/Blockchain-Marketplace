@@ -5,6 +5,7 @@ import { FaEthereum, FaChevronDown, FaSearch, FaEye } from "react-icons/fa";
 import { Categories, Colors } from "../Categories";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
+import { Link } from "react-router-dom";
 
 class Products extends Component {
   constructor() {
@@ -125,17 +126,16 @@ class Products extends Component {
           </div>
           <div className="card-footer pb-3 pt-0 border-top-0 bg-dark">
             <div className="text-center ">
-              <Button
-                className="btn btn-outline-light btn-dark stretched-link"
-                name={product.id}
-                value={product.price}
-                onClick={(event) =>
-                  (window.location.href = `/product/${product.id}`)
-                }
-              >
-                More Details {""}
-                <FaEye className="text-warning" />
-              </Button>
+              <Link to={"/product/" + product.id}>
+                <Button
+                  className="btn btn-outline-light btn-dark stretched-link"
+                  name={product.id}
+                  value={product.price}
+                >
+                  More Details {""}
+                  <FaEye className="text-warning" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

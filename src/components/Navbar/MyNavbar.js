@@ -3,6 +3,7 @@ import { Nav } from "react-bootstrap";
 import { Container } from "react-bootstrap";
 import { Navbar, NavDropdown } from "react-bootstrap";
 import { FaStore } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import "./MyNavbar.css";
 
 class MyNavbar extends Component {
@@ -16,12 +17,14 @@ class MyNavbar extends Component {
           </Navbar.Brand>
 
           <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link as={Link} to="/">
+              Home
+            </Nav.Link>
             <NavDropdown title="Products" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="/addproduct">
+              <NavDropdown.Item as={Link} to="/addproduct">
                 Sell Product
               </NavDropdown.Item>
-              <NavDropdown.Item href="/products">
+              <NavDropdown.Item as={Link} to="/products">
                 Explore Products
               </NavDropdown.Item>
               <NavDropdown.Divider />
@@ -30,7 +33,9 @@ class MyNavbar extends Component {
                 Most Sold Products
               </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link href="/aboutus"> About us </Nav.Link>
+            <Nav.Link as={Link} to="/aboutus">
+              About us
+            </Nav.Link>
             <NavDropdown
               alignRight
               title={
@@ -38,8 +43,8 @@ class MyNavbar extends Component {
               }
               id="navbarScrollingDropdown"
             >
-              <NavDropdown.Item href="/myaccount">My Account</NavDropdown.Item>
-              <NavDropdown.Item href="/myproducts">
+              <NavDropdown.Item>My Account</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/myproducts">
                 My Products
               </NavDropdown.Item>
             </NavDropdown>

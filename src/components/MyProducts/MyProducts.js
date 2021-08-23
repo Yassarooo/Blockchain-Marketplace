@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -11,11 +12,10 @@ class MyProducts extends Component {
     return (
       <div id="content" className="py-5 mr-5 ml-5 px-5">
         <h2 id="bloc1" className="pb-1">
-          {" "}
-          Your Products{" "}
+          Your Products
         </h2>
         <h2 id="bloc2" className="float-right pb-1">
-          Your Address: {""}
+          Your Address:
           <span id="bloc1" style={{ color: "orange" }}>
             {this.props.account}
           </span>
@@ -45,28 +45,26 @@ class MyProducts extends Component {
                   </td>
                   <td>{product.purchased ? <BsCheckCircle /> : null}</td>
                   <td>
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      data-toggle="tooltip"
-                      title="View product"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        window.location.href = "/product/" + product.id;
-                      }}
-                    >
-                      <GrView />
-                    </button>{" "}
-                    {""}
-                    <button
-                      type="button"
-                      className="btn btn-success"
-                      data-toggle="tooltip"
-                      title="Edit product"
-                    >
-                      <FaEdit />
-                    </button>{" "}
-                    {""}
+                    <Link to={"/product/" + product.id} className="px-2">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        data-toggle="tooltip"
+                        title="View product"
+                      >
+                        <GrView />
+                      </button>
+                    </Link>
+                    <Link to={"/product/edit/" + product.id} className="px-2">
+                      <button
+                        type="button"
+                        className="btn btn-success"
+                        data-toggle="tooltip"
+                        title="Edit product"
+                      >
+                        <FaEdit />
+                      </button>
+                    </Link>
                     <button
                       type="button"
                       className="btn btn-danger"

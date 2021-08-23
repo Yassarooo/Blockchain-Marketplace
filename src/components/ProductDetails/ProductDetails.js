@@ -10,6 +10,7 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import { MdExpandMore } from "react-icons/md";
+import { Row, Col, Collapse } from "react-bootstrap";
 
 class ProductDetails extends Component {
   render() {
@@ -25,15 +26,15 @@ class ProductDetails extends Component {
           />
         </MetaTags>
 
-        <div className="row">
-          <div className="col-md-4">
+        <Row>
+          <Col md="4">
             <img
               src={`https://ipfs.io/ipfs/${this.props.product.imgipfshash}`}
               alt={this.props.product.name}
               className="img-fluid"
             />
-          </div>
-          <div className="col-md-4">
+          </Col>
+          <Col md="4">
             <div className="list-group list-group-flush">
               <div className="list-group-item">
                 <h3 id="bloc1" className="pr-2">
@@ -47,7 +48,6 @@ class ProductDetails extends Component {
                     backgroundColor: Colors[this.props.product.categorie],
                   }}
                 >
-                  {/*product.owner.toString().substring(0, 8)*/}
                   {Categories[this.props.product.categorie]}
                 </div>
               </div>
@@ -104,45 +104,44 @@ class ProductDetails extends Component {
                 </span>
               </div>
             </div>
-          </div>
-          <div className="col-md-4">
+          </Col>
+          <Col md="4">
             <div className="card">
               <div className="list-group list-group-flush">
                 <div className="list-group-item">
-                  <div className="row">
-                    <div className="col">Price:</div>
-                    <div className="col">
+                  <Row>
+                    <Col>Price:</Col>
+                    <Col>
                       <strong>
                         <FaEthereum className="text-primary" />
-                        {""}{" "}
                         {window.web3.utils.fromWei(
                           this.props.product.price.toString(),
                           "Ether"
                         )}{" "}
                         Eth
                       </strong>
-                    </div>
-                  </div>
+                    </Col>
+                  </Row>
                 </div>
                 <div className="list-group-item">
-                  <div className="row">
-                    <div className="col">Uploaded On:</div>
-                    <div className="col">
+                  <Row>
+                    <Col>Uploaded On:</Col>
+                    <Col>
                       {Intl.DateTimeFormat("en-US", {
                         year: "numeric",
                         day: "2-digit",
                         month: "2-digit",
                       }).format(this.props.product.uploadedOn * 1000)}
-                    </div>
-                  </div>
+                    </Col>
+                  </Row>
                 </div>
                 <div className="list-group-item">
-                  <div className="row">
-                    <div className="col">Image IPFS Hash:</div>
-                    <div className="col text-warning">
+                  <Row>
+                    <Col>Image IPFS Hash:</Col>
+                    <Col className="text-warning">
                       {this.props.product.imgipfshash}
-                    </div>
-                  </div>
+                    </Col>
+                  </Row>
                 </div>
                 {this.props.product.owner === this.props.account ? (
                   <div className="list-group-item">
@@ -179,10 +178,10 @@ class ProductDetails extends Component {
                 )}
               </div>
             </div>
-          </div>
-        </div>
-        <div className="row py-4">
-          <div className="col-md-6">
+          </Col>
+        </Row>
+        <Row className="py-4">
+          <Col md="6">
             <h2>REVIEWS(7)</h2>
             <div className="list-group list-group-flush">
               <div className="list-group-item">
@@ -372,8 +371,8 @@ class ProductDetails extends Component {
                 <a href="/login">sign in</a> to write a review{" "}
               </div>
             </div>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </div>
     );
   }

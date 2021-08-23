@@ -82,7 +82,6 @@ class AddProduct extends Component {
   }
 
   onSubmit = async (event) => {
-    this.props.handleLoading();
     event.preventDefault();
     if (
       this.state.name.length > 20 &&
@@ -242,7 +241,7 @@ class AddProduct extends Component {
                     <option value="7">AudioBooks</option>
                     <option value="8">Images</option>
                     <option value="9"> Videos</option>
-                    <option selected value="10">
+                    <option defaultValue value="10">
                       {" "}
                       Other
                     </option>
@@ -295,9 +294,9 @@ class AddProduct extends Component {
                   </button>
                 </div>
               </form>
-              {this.props.successmessage !== "" ? (
+              {this.props.addsuccessmessage !== "" ? (
                 <div className="alert alert-info mt-5">
-                  {this.props.successmessage}
+                  {this.props.addsuccessmessage}
                 </div>
               ) : null}
             </div>
