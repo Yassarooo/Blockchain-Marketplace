@@ -74,7 +74,7 @@ contract Marketplace {
     // Add the struct to the mapping, and store it on the blockchain
     // Trigger an event that lets someone know a product was creatd
     function createProduct(string memory _name,string memory _description, uint _price,string memory _imgipfshash,string memory _fileipfshash , Categories _categorie ) public {
-        // Require a valid name
+        /*// Require a valid name
         require(bytes(_name).length > 0);
         // Require a valid description
         //require(bytes(_description).length > 0);
@@ -86,7 +86,7 @@ contract Marketplace {
         //require(bytes(_fileipfshash).length > 0);*/
         // Increment product count
         uint256 _uploadedOn = block.timestamp;
-        if(emptySpaces.length == 0 || emptySpaces[0]==0){
+        //if(emptySpaces.length == 0 || emptySpaces[0]==0){
                 productCount ++;
                 products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, _categorie , _uploadedOn);
                 categorieToProduct[_categorie].push(productCount);
@@ -103,7 +103,8 @@ contract Marketplace {
                 
             }));
             emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
-        }
+        //}
+        /*
         else{
             uint tmp = emptySpaces[0];
             products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender,  _categorie, _uploadedOn);
@@ -111,8 +112,7 @@ contract Marketplace {
             for(uint i = 0;i < emptySpaces.length - 1;i++){
                 emptySpaces[i] = emptySpaces[ i+1 ];
             }
-            emptySpaces.pop();
-            categorieToProduct[_categorie][tmp-1] = tmp;
+            emptySpaces.pop();            categorieToProduct[_categorie][tmp-1] = tmp;
             ownerToProducts[msg.sender][tmp] = Product(
                 tmp,
                 _name,
@@ -126,18 +126,18 @@ contract Marketplace {
                 );
                 emit ProductCreated(tmp, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         }
-        
+        */
     }
 
     function removeProduct(uint id1) public {
         if(msg.sender == products[id1].owner){
-            removeNestedProduct(id1);
+            //removeNestedProduct(id1);
             delete products [id1];
             delete productsRates[id1];
             delete productsReviews[id1];
-            Categories cat;
-            cat = products[id1].categorie;
-            delete categorieToProduct[cat][id1-1];
+            //Categories cat;
+            //cat = products[id1].categorie;
+            //delete categorieToProduct[cat][id1-1];
             emptySpaces.push(id1);
         }
     }
