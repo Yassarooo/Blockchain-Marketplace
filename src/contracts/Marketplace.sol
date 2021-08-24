@@ -17,6 +17,10 @@ contract Marketplace {
     mapping(uint => address) public addressLUT;
     // Maps owner to their images
     mapping (address => Product[]) public ownerToProducts;
+    //many owners
+    mapping (uint => address[]) public owners;
+    //all purchased products 
+    mapping (uint => Product[]) public purchasedProducts;
     uint[] public emptySpaces;
     uint public len; 
     uint public ftt = 0;
@@ -53,8 +57,6 @@ contract Marketplace {
         string imgipfshash;
         string fileipfshash;
         address owner;
-        bool purchased;
-        address[] owners;
         Categories categorie;
         uint256 uploadedOn;
     }
@@ -86,7 +88,7 @@ contract Marketplace {
         uint256 _uploadedOn = block.timestamp;
         if(emptySpaces.length == 0 || emptySpaces[0]==0){
                 productCount ++;
-                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, false ,new address[](0), _categorie , _uploadedOn);
+                products[productCount] = Product(productCount, _name , _description, _price , _imgipfshash , _fileipfshash ,msg.sender, _categorie , _uploadedOn);
                 categorieToProduct[_categorie].push(productCount);
                 ownerToProducts[msg.sender].push(Product({
                 id: productCount,
@@ -96,8 +98,6 @@ contract Marketplace {
                 imgipfshash: _imgipfshash,
                 fileipfshash:_fileipfshash,
                 owner: msg.sender,
-                purchased: false,
-                owners: new address[](0),
                 categorie: _categorie,
                 uploadedOn: _uploadedOn
                 
@@ -106,7 +106,7 @@ contract Marketplace {
         }
         else{
             uint tmp = emptySpaces[0];
-            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender, false,new address[](0), _categorie, _uploadedOn);
+            products[emptySpaces[0]] = Product(emptySpaces[0], _name , _description ,_price , _imgipfshash ,_fileipfshash, msg.sender,  _categorie, _uploadedOn);
             len = emptySpaces.length;
             for(uint i = 0;i < emptySpaces.length - 1;i++){
                 emptySpaces[i] = emptySpaces[ i+1 ];
@@ -121,8 +121,6 @@ contract Marketplace {
                 _imgipfshash,
                 _fileipfshash,
                 msg.sender,
-                false,
-                new address[](0),
                 _categorie,
                 _uploadedOn
                 );
@@ -132,14 +130,16 @@ contract Marketplace {
     }
 
     function removeProduct(uint id1) public {
-        removeNestedProduct(id1);
-        delete products [id1];
-        delete productsRates[id1];
-        delete productsReviews[id1];
-        Categories cat;
-        cat = products[id1].categorie;
-        delete categorieToProduct[cat][id1-1];
-        emptySpaces.push(id1);
+        if(msg.sender == products[id1].owner){
+            removeNestedProduct(id1);
+            delete products [id1];
+            delete productsRates[id1];
+            delete productsReviews[id1];
+            Categories cat;
+            cat = products[id1].categorie;
+            delete categorieToProduct[cat][id1-1];
+            emptySpaces.push(id1);
+        }
     }
     function removeNestedProduct(uint id1) public {
         delete ownerToProducts[msg.sender][id1];
@@ -160,7 +160,8 @@ contract Marketplace {
         // Transfer ownership to the buyer*/
         _product.owner = msg.sender;
         // Mark as purchased
-        _product.purchased = true;
+        purchasedProducts[_id].push(_product);
+        owners[_id].push(msg.sender);
         // Update the product
         products[_id] = _product;
         // Pay the seller by sending them Ether
@@ -170,18 +171,20 @@ contract Marketplace {
         emit ProductPurchased(productCount, _product.name,_product.description, _product.price, _product.imgipfshash, _product.fileipfshash, msg.sender, true);
     }
     function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , Categories _categorie) public{
-        Product memory _product = products[_id];
-        _product.name = _name;
-        _product.description = _des;
-        _product.price = _price;
-        _product.categorie = _categorie;
-        products[_id] = _product;
-        Product memory _ownerToProducts = ownerToProducts[msg.sender][_id];
-        _ownerToProducts.name = _name;
-        _ownerToProducts.description = _des;
-        _ownerToProducts.price = _price;
-        _ownerToProducts.categorie = _categorie;
-        ownerToProducts[msg.sender][_id] = _ownerToProducts;
+        if(msg.sender == products[_id].owner){
+            Product memory _product = products[_id];
+            _product.name = _name;
+            _product.description = _des;
+            _product.price = _price;
+            _product.categorie = _categorie;
+            products[_id] = _product;
+            Product memory _ownerToProducts = ownerToProducts[msg.sender][_id];
+            _ownerToProducts.name = _name;
+            _ownerToProducts.description = _des;
+            _ownerToProducts.price = _price;
+            _ownerToProducts.categorie = _categorie;
+            ownerToProducts[msg.sender][_id] = _ownerToProducts;
+        }
     }
     
     function giveRate(uint _rate ,uint pos_in_prod_mapping ) public {
@@ -240,8 +243,6 @@ contract Marketplace {
                 imgipfshash: "dummy",
                 fileipfshash:"dummy",
                 owner: 0x0000000000000000000000000000000000000000,
-                purchased: false,
-                owners: new address[](0),
                 categorie: Categories.Tech,
                 uploadedOn:0
         }));
@@ -264,6 +265,9 @@ contract Marketplace {
     {
         require(_owner != address(0));
         return ownerToProducts[_owner].length;
+    }
+    function getNumberOfOwners(uint _id) public view returns(uint){
+        return owners[_id].length;
     }
 
     function getProduct(address _owner, uint8 _index) view
