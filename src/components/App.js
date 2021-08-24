@@ -123,6 +123,9 @@ class App extends Component {
           products: [...this.state.products, product],
         });
       }
+      this.setState({
+        products: this.state.products.filter((product) => product.id !== "0"),
+      });
       if (customerCount > 0) {
         for (var j = 1; j <= customerCount; j++) {
           const adr = await marketplace.methods.addressLUT(j).call();
