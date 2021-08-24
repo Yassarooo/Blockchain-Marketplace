@@ -37,7 +37,7 @@ class ProductDetails extends Component {
           <Col md="4">
             <div className="list-group list-group-flush">
               <div className="list-group-item">
-                <h3 id="bloc1" className="pr-2">
+                <h3 id="bloc1" className="pr-2" style={{ fontSize: "larger" }}>
                   {this.props.product.name}
                 </h3>
                 <div

@@ -114,7 +114,7 @@ class Products extends Component {
           <div className="card-body bg-dark pb-0 mb-0">
             <div className="text-center">
               <h2 href={`/product/${product.id}`}>{product.name}</h2>
-              <h3 className="text-warning">
+              <h3 className="text-warning" style={{ fontSize: "larger" }}>
                 <FaEthereum className="text-primary pl-0 pr-2" />
                 {window.web3.utils.fromWei(
                   product.price.toString(),

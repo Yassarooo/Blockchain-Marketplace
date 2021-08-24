@@ -135,68 +135,68 @@ class EditProduct extends Component {
                         onChange={this.handleSelect}
                       >
                         <option
-                          defaultValue={this.props.product.categorie === 0}
+                          selected={this.props.product.categorie === 0}
                           value="0"
                         >
                           Tech
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 1}
+                          selected={this.props.product.categorie === 1}
                           value="1"
                         >
                           PC Games
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 2}
+                          selected={this.props.product.categorie === 2}
                           value="2"
                         >
                           PS4 Games
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 3}
+                          selected={this.props.product.categorie === 3}
                           value="3"
                         >
                           Xbox Games
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 4}
+                          selected={this.props.product.categorie === 4}
                           value="4"
                         >
                           Movies
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 5}
+                          selected={this.props.product.categorie === 5}
                           value="5"
                         >
                           Courses
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 6}
+                          selected={this.props.product.categorie === 6}
                           value="6"
                         >
                           Books
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 7}
+                          selected={this.props.product.categorie === 7}
                           value="7"
                         >
                           AudioBooks
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 8}
+                          selected={this.props.product.categorie === 8}
                           value="8"
                         >
                           Images
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 9}
+                          selected={this.props.product.categorie === 9}
                           value="9"
                         >
                           {" "}
                           Videos
                         </option>
                         <option
-                          defaultValue={this.props.product.categorie === 10}
+                          selected={this.props.product.categorie === 10}
                           value="10"
                         >
                           {" "}

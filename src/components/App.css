@@ -39,14 +39,6 @@ h2 {
   background-color: #222222 !important;
 }
 
-h3 {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  font-weight: 700 !important;
-  font-size: larger !important;
-  line-height: 50px !important;
-}
-
 hr {
   color: white;
   background-color: white;

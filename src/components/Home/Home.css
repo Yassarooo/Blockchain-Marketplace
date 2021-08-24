@@ -1,9 +1,12 @@
 h3 {
+  white-space: nowrap !important;
+  overflow: hidden !important;
   font-size: 50px;
-  font-weight: 300;
+  font-weight: 700 !important;
   margin-bottom: 10px;
-  line-height: 50px;
+  line-height: 60px;
 }
+
 /* 
 .highlight {
   color: orange;
