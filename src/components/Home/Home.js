@@ -12,6 +12,7 @@ import {
 import { IoSpeedometerSharp } from "react-icons/io5";
 import { GiBreakingChain, GiGroupedDrops } from "react-icons/gi";
 import "./Home.css";
+import { Link } from "react-router-dom";
 
 class Home extends Component {
   render() {
@@ -56,32 +57,28 @@ class Home extends Component {
         <Row className="pt-5 text-center ">
           <Col md="3">
             <h2 className="text-warning">
-              <a href="//">
-                <FaStore />
-              </a>
-              {"  "} Sell Product
+              <FaStore className="pr-1" />
+              Sell Product
             </h2>
             <p>
               You can sell your digital product and do not worry,Your data will
               be totaly safe with <a href="https://ipfs.io/">IPFS</a> blockchain
-              server .{" "}
+              server .
             </p>
             <p>
-              <a
-                href="/addproduct"
+              <Link
+                to="/addproduct"
                 className="btn btn-warning"
                 ui-sref="params"
                 role="button"
               >
                 Sell Product »
-              </a>
+              </Link>
             </p>
           </Col>
           <Col md="3">
             <h2 className="text-warning">
-              <a href="/products">
-                <FaEthereum />
-              </a>{" "}
+              <FaEthereum className="pr-1" />
               Buy Product
             </h2>
             <p>
@@ -89,21 +86,19 @@ class Home extends Component {
               & smart contracts.
             </p>
             <p>
-              <a
-                href="/products"
+              <Link
+                to="/products"
                 className="btn btn-warning"
                 ui-sref="cars"
                 role="button"
               >
                 Explore Products »
-              </a>
+              </Link>
             </p>
           </Col>
           <Col md="3">
             <h2 className="text-warning">
-              <a href="//">
-                <FaEye />
-              </a>{" "}
+              <FaEye className="pr-1" />
               View Uploaded Products
             </h2>
             <p>
@@ -111,21 +106,19 @@ class Home extends Component {
               statistics about them (number of purchases,owners...)
             </p>
             <p>
-              <a
-                href="/myproducts"
+              <Link
+                to="/myproducts"
                 className="btn btn-warning"
                 ui-sref="sellcar"
                 role="button"
               >
                 My Products »
-              </a>
+              </Link>
             </p>
           </Col>
           <div className="col-md-3">
             <h2 className="text-warning">
-              <a href="//">
-                <FaSearchPlus />
-              </a>{" "}
+              <FaSearchPlus className="pr-1" />
               Explore More !
             </h2>
             <p>
@@ -133,14 +126,14 @@ class Home extends Component {
               tabs !
             </p>
             <p>
-              <a
-                href="/products"
+              <Link
+                to="/products"
                 className="btn btn-warning"
                 ui-sref="MQ"
                 role="button"
               >
                 Start Exploring »
-              </a>
+              </Link>
             </p>
           </div>
           <Col sm="12" md="12" lg="12" className="text-center pt-5">

@@ -1,5 +1,5 @@
 h4 {
-  color: #f25507;
+  color: orange;
 }
 footer {
   font-size: small;
@@ -206,7 +206,7 @@ img {
 }
 
 .bg-black-light {
-  background-color: #222222 !important;
+  background-color: black !important;
 }
 
 .bg-black-lighter {

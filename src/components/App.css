@@ -13,10 +13,17 @@ body {
   display: inline;
 }
 .jumbotron {
-  background: #222222;
+  background: black;
 }
 .text-warning {
   color: orange !important;
+}
+.btn-warning {
+  background-color: orange !important;
+}
+.btn-warning:hover {
+  color: white !important;
+  background-color: rgba(255, 166, 0, 0.685) !important;
 }
 .btn-outline-light:hover {
   color: white !important;
@@ -36,7 +43,7 @@ h2 {
   color: white;
 }
 .bg-dark {
-  background-color: #222222 !important;
+  background-color: black !important;
 }
 
 hr {
@@ -45,12 +52,12 @@ hr {
 }
 
 .form-control {
-  background-color: #222222;
+  background-color: black;
   color: #ffffff;
 }
 
 .form-control-file {
-  background-color: #222222;
+  background-color: transparent !important;
   color: #ffffff;
 }
 

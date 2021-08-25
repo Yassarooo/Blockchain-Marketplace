@@ -1,18 +1,36 @@
 import React, { Component } from "react";
 import { FaStar, FaEthereum } from "react-icons/fa";
-import { BsPersonFill } from "react-icons/bs";
+import { BsPersonFill, BsFillStarFill } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import MetaTags from "react-meta-tags";
 import "./ProductDetails.css";
 import { Categories, Colors } from "../Categories";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
-import { MdExpandMore } from "react-icons/md";
-import { Row, Col, Collapse } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
+import Rating from "react-rating";
+import ReviewModal from "../ReviewModal/ReviewModal";
 
 class ProductDetails extends Component {
+  constructor() {
+    super();
+    this.handleReviewModal = this.handleReviewModal.bind(this);
+    this.reviewProduct = this.reviewProduct.bind(this);
+    this.state = {
+      showReviewModal: false,
+      initRate: 0,
+    };
+  }
+
+  reviewProduct(rate, review) {
+    this.props.reviewProduct(this.props.product.id, rate, review);
+  }
+
+  handleReviewModal(rate) {
+    this.setState({
+      showReviewModal: !this.state.showReviewModal,
+      initRate: rate,
+    });
+  }
+
   render() {
     return (
       <div id="content" className="pt-5 mr-5 ml-5 px-5">
@@ -54,19 +72,34 @@ class ProductDetails extends Component {
               <div className="list-group-item">
                 <div className="rating">
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span> 4 reviews</span>
                 </div>
@@ -83,18 +116,8 @@ class ProductDetails extends Component {
               </div>
 
               <div className="list-group-item">
-                <Accordion>
-                  <AccordionSummary
-                    expandIcon={<MdExpandMore />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
-                    <Typography>Description</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography>{this.props.product.description}</Typography>
-                  </AccordionDetails>
-                </Accordion>
+                <span className="text-warning">Description: </span>
+                {this.props.product.description}
               </div>
 
               <div className="list-group-item">
@@ -181,26 +204,43 @@ class ProductDetails extends Component {
           </Col>
         </Row>
         <Row className="py-4">
-          <Col md="6">
-            <h2>REVIEWS(7)</h2>
+          <Col md="6" className="bg-dark">
+            <header className="m-2 pt-2 pb-2">
+              <h2>REVIEWS(7)</h2>
+            </header>
             <div className="list-group list-group-flush">
               <div className="list-group-item">
                 <strong>Rajesh Khadka</strong>
                 <div className="rating">
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span></span>
                 </div>
@@ -211,19 +251,34 @@ class ProductDetails extends Component {
                 <strong>yan</strong>
                 <div className="rating">
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span></span>
                 </div>
@@ -234,24 +289,33 @@ class ProductDetails extends Component {
                 <strong>Umer</strong>
                 <div className="rating">
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
-                  </span>
-                  <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
-                  </span>
-                  <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
-                  </span>
-                  <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      className="far fa-star"
+                      className="fa fa-star"
                     ></i>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      className="far fa-star"
+                      className="fa fa-star"
+                    ></i>
+                  </span>
+                  <span>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
+                  </span>
+                  <span>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star-o"
+                    ></i>
+                  </span>
+                  <span>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star-o"
                     ></i>
                   </span>
                   <span></span>
@@ -263,30 +327,33 @@ class ProductDetails extends Component {
                 <strong>tfs123</strong>
                 <div className="rating">
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
-                  </span>
-                  <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      className="far fa-star"
+                      className="fa fa-star"
                     ></i>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      className="far fa-star"
+                      className="fa fa-star-o"
                     ></i>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      className="far fa-star"
+                      className="fa fa-star-o"
                     ></i>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      className="far fa-star"
+                      className="fa fa-star-o"
+                    ></i>
+                  </span>
+                  <span>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star-o"
                     ></i>
                   </span>
                   <span></span>
@@ -298,21 +365,33 @@ class ProductDetails extends Component {
                 <strong>test</strong>
                 <div className="rating">
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
-                  </span>
-                  <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
-                  </span>
-                  <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
-                  </span>
-                  <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
                     <i
                       style={{ color: "rgb(248, 232, 37)" }}
-                      className="far fa-star"
+                      className="fa fa-star"
+                    ></i>
+                  </span>
+                  <span>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
+                  </span>
+                  <span>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
+                  </span>
+                  <span>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star-o"
                     ></i>
                   </span>
                   <span></span>
@@ -324,19 +403,34 @@ class ProductDetails extends Component {
                 <strong>hassan</strong>
                 <div className="rating">
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span></span>
                 </div>
@@ -347,32 +441,150 @@ class ProductDetails extends Component {
                 <strong>Waleed Saifi</strong>
                 <div className="rating">
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span>
-                    <FaStar style={{ color: "rgb(248, 232, 37)" }}></FaStar>
+                    <i
+                      style={{ color: "rgb(248, 232, 37)" }}
+                      className="fa fa-star"
+                    ></i>
                   </span>
                   <span></span>
                 </div>
                 <p>2021-06-28</p>
                 <p>Great</p>
               </div>
-              <div className="list-group-item">
-                <h2>Write a Customer Review</h2>Please{" "}
-                <a href="/login">sign in</a> to write a review{" "}
+            </div>
+          </Col>
+          <Col md="6">
+            <div className="bg-dark rounded shadow-sm p-4 mb-4 clearfix graph-star-rating">
+              <h5 className="mb-4">Ratings and Reviews</h5>
+              <div className="graph-star-rating-header">
+                <div className="star-rating">
+                  <BsFillStarFill className="text-warning" />
+                  <BsFillStarFill className="text-warning" />
+                  <BsFillStarFill className="text-warning" />
+                  <BsFillStarFill className="text-warning" />
+                  <BsFillStarFill />
+                  <b className="ml-2">334</b>
+                </div>
+                <p className="mb-4 mt-2">Rated 3.5 out of 5</p>
+              </div>
+              <div className="graph-star-rating-body">
+                <div className="rating-list">
+                  <div className="rating-list-left">5 Star</div>
+                  <div className="rating-list-center">
+                    <div className="progress">
+                      <div
+                        style={{ width: "56%" }}
+                        aria-valuemax="5"
+                        aria-valuemin="0"
+                        aria-valuenow="5"
+                        role="progressbar"
+                        className="progress-bar bg-warning"
+                      >
+                        <span className="sr-only">80% Complete (danger)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rating-list-right">56%</div>
+                </div>
+                <div className="rating-list">
+                  <div className="rating-list-left">4 Star</div>
+                  <div className="rating-list-center">
+                    <div className="progress">
+                      <div
+                        style={{ width: "23%" }}
+                        aria-valuemax="5"
+                        aria-valuemin="0"
+                        aria-valuenow="5"
+                        role="progressbar"
+                        className="progress-bar bg-warning"
+                      >
+                        <span className="sr-only">80% Complete (danger)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rating-list-right">23%</div>
+                </div>
+                <div className="rating-list">
+                  <div className="rating-list-left ">3 Star</div>
+                  <div className="rating-list-center">
+                    <div className="progress">
+                      <div
+                        style={{ width: "11%" }}
+                        aria-valuemax="5"
+                        aria-valuemin="0"
+                        aria-valuenow="5"
+                        role="progressbar"
+                        className="progress-bar bg-warning"
+                      >
+                        <span className="sr-only">80% Complete (danger)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rating-list-right">11%</div>
+                </div>
+                <div className="rating-list">
+                  <div className="rating-list-left">2 Star</div>
+                  <div className="rating-list-center">
+                    <div className="progress">
+                      <div
+                        style={{ width: "2%" }}
+                        aria-valuemax="5"
+                        aria-valuemin="0"
+                        aria-valuenow="5"
+                        role="progressbar"
+                        className="progress-bar bg-warning"
+                      >
+                        <span className="sr-only">80% Complete (danger)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rating-list-right">02%</div>
+                </div>
+              </div>
+              <div className="graph-star-rating-footer text-center mt-3 mb-3">
+                <h5 className="mb-4">Rate This Product</h5>
+                <Rating
+                  emptySymbol="fa fa-star-o fa-2x"
+                  fullSymbol="fa fa-star fa-2x text-warning"
+                  fractions={2}
+                  onChange={(rate) => this.handleReviewModal(rate)}
+                />
               </div>
             </div>
           </Col>
         </Row>
+        {this.state.showReviewModal ? (
+          <ReviewModal
+            showReviewModal={this.state.showReviewModal}
+            handleReviewModal={this.handleReviewModal}
+            reviewProduct={this.reviewProduct}
+            initRate={this.state.initRate}
+          />
+        ) : null}
       </div>
     );
   }

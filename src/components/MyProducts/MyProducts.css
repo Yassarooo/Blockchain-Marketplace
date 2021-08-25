@@ -5,7 +5,7 @@
 }
 .table-striped > tbody > tr:nth-child(even) > td,
 .table-striped > tbody > tr:nth-child(even) > th {
-  background-color: #222222;
+  background-color: black;
   color: white;
 }
 .table-striped > thead {

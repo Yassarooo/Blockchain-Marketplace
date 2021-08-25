@@ -1,12 +1,12 @@
 .navbar {
-  background-color: #222222;
+  background-color: black;
 }
 .dropdown-menu {
-  background-color: #222222;
+  background-color: black !important;
   color: white;
 }
 .dropdown-item {
-  background-color: #222222;
+  background-color: black !important;
   color: white;
 }
 .nav-link {

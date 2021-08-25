@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import MyNavbar from "./Navbar/MyNavbar";
 import MyFooter from "./Footer/MyFooter";
 import Products from "./Products/Products";
@@ -14,8 +19,10 @@ import TestPage from "./Products/Products";
 import ProductDetails from "./ProductDetails/ProductDetails";
 import MyModal from "./MyModal/MyModal";
 import Home from "./Home/Home";
+import GenericNotFound from "./404/404";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "font-awesome/css/font-awesome.min.css";
 toast.configure();
 
 class App extends Component {
@@ -63,6 +70,28 @@ class App extends Component {
       })
       .once("receipt", (receipt) => {
         toast.success("Customer Registered Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        this.setState({
+          loading: false,
+        });
+        this.loadBlockchainData();
+      });
+  }
+
+  reviewProduct(id, rate, review) {
+    this.handleReviewModal();
+    this.setState({
+      loading: true,
+    });
+    this.state.marketplace.methods
+      .reviewProduct(id, rate, review)
+      .send({
+        from: this.state.account,
+      })
+      .once("receipt", (receipt) => {
+        toast.success("Review Posted Successfully !", {
           position: "bottom-right",
           closeOnClick: true,
         });
@@ -123,6 +152,9 @@ class App extends Component {
           products: [...this.state.products, product],
         });
       }
+      this.setState({
+        products: this.state.products.filter((product) => product.id !== "0"),
+      });
       if (customerCount > 0) {
         for (var j = 1; j <= customerCount; j++) {
           const adr = await marketplace.methods.addressLUT(j).call();
@@ -231,7 +263,7 @@ class App extends Component {
           position: "bottom-right",
           closeOnClick: true,
         });
-        window.location.reload();
+        this.loadBlockchainData();
       });
   }
 
@@ -252,7 +284,7 @@ class App extends Component {
           position: "bottom-right",
           closeOnClick: true,
         });
-        window.location.reload();
+        this.loadBlockchainData();
       });
   }
 
@@ -269,6 +301,7 @@ class App extends Component {
               account={this.state.account}
               products={this.state.products}
               purchaseProduct={this.purchaseProduct}
+              reviewProduct={this.reviewProduct}
             />
           }
         />
@@ -360,9 +393,10 @@ class App extends Component {
           </Route>
           {this.ProductRoutesGenerator()}
           {this.EditProductRoutesGenerator()}
-        </Switch>
+          <Route component={GenericNotFound} />
 
-        <MyFooter />
+          <MyFooter />
+        </Switch>
       </Router>
     );
   }
