@@ -2,7 +2,7 @@
   background-color: orange !important;
 }
 .disabled > .page-link {
-  background-color: #222222 !important;
+  background-color: black !important;
 }
 a {
   color: white;
@@ -46,4 +46,21 @@ input[type="tel"]:focus,
 input[type="color"]:focus,
 .uneditable-input:focus {
   background-color: #191c22;
+}
+
+.MuiSlider-thumb {
+  background-color: orange !important;
+}
+.MuiSlider-track {
+  background-color: orange !important;
+}
+.MuiSlider-rail {
+  background-color: orange !important;
+}
+.PrivateValueLabel-circle-4 {
+  background-color: orange !important;
+}
+
+.stretched-link:hover > .text-warning {
+  color: white !important;
 }

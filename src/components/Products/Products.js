@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 class Products extends Component {
   constructor() {
     super();
+    this.getCatCount = this.getCatCount.bind(this);
     this.state = {
       currentPage: 1,
       productsPerPage: 8,
@@ -141,6 +142,13 @@ class Products extends Component {
         </div>
       </Col>
     );
+  }
+
+  getCatCount(cat) {
+    const temp = this.props.products.filter(
+      (product) => product.categorie === cat.toString()
+    );
+    return temp.length;
   }
 
   render() {
@@ -294,8 +302,8 @@ class Products extends Component {
                         <div className="custom-control-label">
                           Tech
                           <b className="badge badge-pill badge-light float-right">
-                            120
-                          </b>{" "}
+                            {this.getCatCount(0)}
+                          </b>
                         </div>
                       </label>
                       <label className="custom-control custom-checkbox">
@@ -308,7 +316,7 @@ class Products extends Component {
                         <div className="custom-control-label">
                           PC
                           <b className="badge badge-pill badge-light float-right">
-                            15
+                            {this.getCatCount(1)}
                           </b>{" "}
                         </div>
                       </label>
@@ -322,7 +330,7 @@ class Products extends Component {
                         <div className="custom-control-label">
                           PS4 Games
                           <b className="badge badge-pill badge-light float-right">
-                            35
+                            {this.getCatCount(2)}
                           </b>{" "}
                         </div>
                       </label>
@@ -336,8 +344,8 @@ class Products extends Component {
                         <div className="custom-control-label">
                           Xbox Games
                           <b className="badge badge-pill badge-light float-right">
-                            89
-                          </b>{" "}
+                            {this.getCatCount(3)}
+                          </b>
                         </div>
                       </label>
                       <label className="custom-control custom-checkbox">
@@ -350,8 +358,8 @@ class Products extends Component {
                         <div className="custom-control-label">
                           Movies
                           <b className="badge badge-pill badge-light float-right">
-                            30
-                          </b>{" "}
+                            {this.getCatCount(4)}
+                          </b>
                         </div>
                       </label>
                       <label className="custom-control custom-checkbox">
@@ -364,7 +372,7 @@ class Products extends Component {
                         <div className="custom-control-label">
                           Courses
                           <b className="badge badge-pill badge-light float-right">
-                            30
+                            {this.getCatCount(5)}
                           </b>{" "}
                         </div>
                       </label>
@@ -378,8 +386,8 @@ class Products extends Component {
                         <div className="custom-control-label">
                           Books
                           <b className="badge badge-pill badge-light float-right">
-                            30
-                          </b>{" "}
+                            {this.getCatCount(6)}
+                          </b>
                         </div>
                       </label>
                       <label className="custom-control custom-checkbox">
@@ -392,8 +400,8 @@ class Products extends Component {
                         <div className="custom-control-label">
                           Audio Books
                           <b className="badge badge-pill badge-light float-right">
-                            30
-                          </b>{" "}
+                            {this.getCatCount(7)}
+                          </b>
                         </div>
                       </label>
                       <label className="custom-control custom-checkbox">
@@ -406,7 +414,7 @@ class Products extends Component {
                         <div className="custom-control-label">
                           Images
                           <b className="badge badge-pill badge-light float-right">
-                            30
+                            {this.getCatCount(8)}
                           </b>{" "}
                         </div>
                       </label>
@@ -420,7 +428,7 @@ class Products extends Component {
                         <div className="custom-control-label">
                           Videos
                           <b className="badge badge-pill badge-light float-right">
-                            30
+                            {this.getCatCount(9)}
                           </b>{" "}
                         </div>
                       </label>
@@ -434,7 +442,7 @@ class Products extends Component {
                         <div className="custom-control-label">
                           Other
                           <b className="badge badge-pill badge-light float-right">
-                            30
+                            {this.getCatCount(10)}
                           </b>{" "}
                         </div>
                       </label>

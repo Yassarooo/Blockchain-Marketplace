@@ -18,7 +18,7 @@ export const Colors = {
   2: "blue",
   3: "darkgreen",
   4: "orangered",
-  5: "pink",
+  5: "darkorchid",
   6: "darkorange",
   7: "olive",
   8: "rebeccapurple",

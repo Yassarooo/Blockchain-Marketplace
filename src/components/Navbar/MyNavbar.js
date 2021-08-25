@@ -29,9 +29,7 @@ class MyNavbar extends Component {
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action5">Categories</NavDropdown.Item>
-              <NavDropdown.Item href="#action5">
-                Most Sold Products
-              </NavDropdown.Item>
+              <NavDropdown.Item href="#action5">Best Seller</NavDropdown.Item>
             </NavDropdown>
             <Nav.Link as={Link} to="/aboutus">
               About us

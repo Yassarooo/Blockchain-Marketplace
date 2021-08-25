@@ -185,7 +185,7 @@ class AddProduct extends Component {
                     className="form-control"
                     id="name"
                     name="name"
-                    placeholder="Ex:(Idm Source Code, Photoshop Subscription...)"
+                    placeholder="Ex: The Last Of Us II, GTA V..."
                     value={this.state.name}
                     onChange={this.handleChange}
                     required
@@ -218,7 +218,7 @@ class AddProduct extends Component {
                     name="price"
                     value={this.state.price}
                     onChange={this.handleChange}
-                    placeholder="Product Price in Ethereum"
+                    placeholder="Price in Ethereum"
                     required
                   />
                   <div className="invalid-feedback">Price is required.</div>
