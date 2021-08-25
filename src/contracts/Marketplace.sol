@@ -9,8 +9,6 @@ contract Marketplace {
     //to store the products on blockchain
     bool public flag = false;
     mapping(uint => Product) public products;
-    //mapping(uint => uint[]) public productsRates;
-    //mapping(uint => string[]) public productsReviews;
     mapping(Categories => uint[]) public categorieToProduct;
     //to store the customers on blockchain
     mapping(address  => Customer) public customers;
