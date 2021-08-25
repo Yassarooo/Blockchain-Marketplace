@@ -97,8 +97,7 @@ contract Marketplace {
 
             emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender, false);
         
-            emptySpaces.push(id1);
-        }
+            //emptySpaces.push(id1);
     }
 
     function purchaseProduct(uint _id) public payable {
