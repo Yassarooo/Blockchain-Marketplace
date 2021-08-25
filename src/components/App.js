@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import MyNavbar from "./Navbar/MyNavbar";
 import MyFooter from "./Footer/MyFooter";
 import Products from "./Products/Products";
@@ -14,6 +19,7 @@ import TestPage from "./Products/Products";
 import ProductDetails from "./ProductDetails/ProductDetails";
 import MyModal from "./MyModal/MyModal";
 import Home from "./Home/Home";
+import GenericNotFound from "./404/404";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "font-awesome/css/font-awesome.min.css";
@@ -70,6 +76,7 @@ class App extends Component {
         this.setState({
           loading: false,
         });
+        this.loadBlockchainData();
       });
   }
 
@@ -386,9 +393,10 @@ class App extends Component {
           </Route>
           {this.ProductRoutesGenerator()}
           {this.EditProductRoutesGenerator()}
-        </Switch>
+          <Route component={GenericNotFound} />
 
-        <MyFooter />
+          <MyFooter />
+        </Switch>
       </Router>
     );
   }

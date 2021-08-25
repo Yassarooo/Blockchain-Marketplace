@@ -443,7 +443,7 @@ class Products extends Component {
                           Other
                           <b className="badge badge-pill badge-light float-right">
                             {this.getCatCount(10)}
-                          </b>{" "}
+                          </b>
                         </div>
                       </label>
                     </div>
