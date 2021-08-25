@@ -295,5 +295,4 @@ contract Marketplace {
             product.fileipfshash
         );
     }
-
 }
