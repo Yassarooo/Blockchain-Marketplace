@@ -582,6 +582,7 @@ class ProductDetails extends Component {
             showReviewModal={this.state.showReviewModal}
             handleReviewModal={this.handleReviewModal}
             reviewProduct={this.reviewProduct}
+            generateScore={this.props.generateScore}
             initRate={this.state.initRate}
           />
         ) : null}

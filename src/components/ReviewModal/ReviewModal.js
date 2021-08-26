@@ -6,6 +6,7 @@ class ReviewModal extends Component {
   state = {
     rate: this.props.initRate,
     review: "",
+    score: 0,
   };
 
   handleChange = (e) => {
@@ -14,6 +15,12 @@ class ReviewModal extends Component {
       disabled: e.target.value.length >= 5 ? false : true,
     });
   };
+
+  async onSubmit() {
+    console.log(this.state.review);
+    const score = await this.props.generateScore(this.state.review);
+    this.setState({ score: score });
+  }
 
   render() {
     return (
@@ -25,7 +32,7 @@ class ReviewModal extends Component {
         onHide={() => this.props.handleReviewModal()}
       >
         <Modal.Header id="contained-modal-title-vcenter">
-          <h4>Rate this product</h4>
+          <h4>Rate this product Score: {this.state.score}</h4>
         </Modal.Header>
         <Modal.Body>
           <Rating
@@ -47,8 +54,9 @@ class ReviewModal extends Component {
         <Modal.Footer>
           <Button
             className="btn btn-out btn-warning btn-square"
-            onClick={() =>
-              this.props.reviewProduct(this.state.rate, this.state.review)
+            onClick={(e) =>
+              //this.props.reviewProduct(this.state.rate, this.state.review)
+              this.onSubmit(e)
             }
           >
             Post Review
