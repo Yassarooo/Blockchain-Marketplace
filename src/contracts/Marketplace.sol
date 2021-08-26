@@ -145,6 +145,24 @@ contract Marketplace {
             products[id1].removed = true;
         }
     }
+    /*
+        function removeProduct(uint id1) public {
+        if(msg.sender == products[id1].owner){
+            delete products [id1];
+            Categories cat;
+            cat = products[id1].categorie;
+            delete categorieToProduct[cat][id1-1];
+            address add = products[id1].raters[products[id1].reviewsCount];
+            delete products[id1].raters[products[id1].reviewsCount];
+            delete products[id1].productUserReview[add];
+            for(uint i=0;i<productCount;i++){
+                if(customers[msg.sender].ownedProducts[i] == id1){
+                    delete customers[msg.sender].ownedProducts[i];
+                }
+            }
+        }
+    }
+    */
     function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , Categories _categorie) public{
         if(msg.sender == products[_id].owner){
             products[_id].name = _name;
