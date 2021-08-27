@@ -25,7 +25,7 @@ class ReviewModal extends Component {
       .reviewProduct(
         this.props.product.id,
         this.state.rate,
-        Number(scr),
+        scr,
         this.state.review
       )
       .send({

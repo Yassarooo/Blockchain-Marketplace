@@ -20,6 +20,7 @@ class ProductDetails extends Component {
       purchased: false,
       initRate: 0,
       revs: [],
+      rev: "",
     };
   }
 
@@ -55,9 +56,18 @@ class ProductDetails extends Component {
     });
   }
 
+  async getproductUserReview() {
+    const review = this.state.revs.find((rev) => {
+      return rev.adr === this.props.account;
+    });
+    this.setState({
+      rev: review,
+    });
+  }
+
   async componentDidMount() {
     await this.getReviews();
-    console.log(this.state.revs.length);
+    await this.getproductUserReview();
   }
 
   async downloadFile() {
@@ -121,9 +131,8 @@ class ProductDetails extends Component {
                     emptySymbol="fa fa-star-o"
                     fullSymbol="fa fa-star text-warning"
                     fractions={2}
+                    readonly={true}
                     initialRating={this.props.product.rate}
-                    fontSize="3px"
-                    //onChange={(rate) => this.handleReviewModal(rate)}
                   />
                   <span> {this.props.product.reviewsCount} reviews</span>
                 </div>
@@ -237,12 +246,13 @@ class ProductDetails extends Component {
             <div className="list-group list-group-flush">
               {this.state.revs.map((rev, key) => {
                 return (
-                  <div className="list-group-item">
+                  <div className="list-group-item" key={key}>
                     <strong>{rev.name}</strong>
                     <div className="rating">
                       <Rating
-                        emptySymbol="fa fa-star-o fa-2x"
-                        fullSymbol="fa fa-star fa-2x text-warning"
+                        emptySymbol="fa fa-star-o"
+                        fullSymbol="fa fa-star text-warning"
+                        readonly={true}
                         fractions={2}
                         initialRating={rev.rate}
                         //onChange={(rate) => this.handleReviewModal(rate)}
@@ -266,12 +276,16 @@ class ProductDetails extends Component {
               <h5 className="mb-4">Ratings and Reviews</h5>
               <div className="graph-star-rating-header">
                 <div className="star-rating">
-                  <BsFillStarFill className="text-warning" />
-                  <BsFillStarFill className="text-warning" />
-                  <BsFillStarFill className="text-warning" />
-                  <BsFillStarFill className="text-warning" />
-                  <BsFillStarFill />
-                  <b className="ml-2">{this.props.product.reviewsCount}</b>
+                  <Rating
+                    emptySymbol="fa fa-star-o fa-2x"
+                    fullSymbol="fa fa-star fa-2x text-warning"
+                    fractions={2}
+                    readonly={true}
+                    initialRating={this.props.product.rate}
+                  />
+                  <b className="ml-2" style={{ fontSize: "10px" }}>
+                    {this.props.product.reviewsCount}
+                  </b>
                 </div>
                 <p className="mb-4 mt-2">
                   Rated {this.props.product.rate} out of 5
@@ -352,7 +366,9 @@ class ProductDetails extends Component {
                 </div>
               </div>
               <div
-                hidden={!this.checkProductPurchase()}
+                hidden={
+                  !this.checkProductPurchase() || this.state.rev === "undefined"
+                }
                 className="graph-star-rating-footer text-center mt-3 mb-3"
               >
                 <h5 className="mb-4">Rate This Product</h5>

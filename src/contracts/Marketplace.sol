@@ -33,6 +33,7 @@ contract Marketplace {
     struct Review{
         bool isBuy;
         bool isReview;
+        address adr;
         string name;
         uint256 rate;
         string reviewDescription;
@@ -161,6 +162,7 @@ contract Marketplace {
            if (products[_id].productUserReview[msg.sender].isReview == false){ //only once
                products[_id].productUserReview[msg.sender].isReview = true;
 
+               products[_id].productUserReview[msg.sender].adr = msg.sender;
                products[_id].productUserReview[msg.sender].name = customers[msg.sender].name;
                products[_id].productUserReview[msg.sender].rate = _rate;
                products[_id].productUserReview[msg.sender].reviewDescription = _review;
