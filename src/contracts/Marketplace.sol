@@ -35,6 +35,7 @@ contract Marketplace {
         bool isBuy;
         bool isReview;
         string reviewDescription;
+        uint256 score;
         uint timeStamp;
     }
     struct Customer {
@@ -175,13 +176,14 @@ contract Marketplace {
             
         }
     }
-    function reviewProduct(uint _id,uint256 _rate, string memory _review) public
+    function reviewProduct(uint _id,uint256 _rate,uint256 _score, string memory _review) public
     {
            require(products[_id].productUserReview[msg.sender].isBuy == true, "You are not eligible to review this product");
            if (products[_id].productUserReview[msg.sender].isReview == false){ //only once
                products[_id].productUserReview[msg.sender].isReview = true;
                //should update rate
                products[_id].productUserReview[msg.sender].reviewDescription = _review;
+               products[_id].productUserReview[msg.sender].score = _score;
                products[_id].productUserReview[msg.sender].timeStamp = block.timestamp;
     
                products[_id].raters[products[_id].reviewsCount] = msg.sender;
@@ -252,18 +254,23 @@ contract Marketplace {
     function getReport(uint _id) public view returns(uint){
         return products[_id].report;
     }
-    // function getProductReviews(uint _id) public view returns (Review[] memory){
-    //     return products[_id].reviews;
-    // }
+
+    function getProductReviews(uint _id) public view returns (Review[] memory){
+        return products[_id].reviews;
+    }
     function getProductBuyers(uint _id) public view returns(address[] memory){
         return products[_id].buyers;
     }
     function getProductfile(uint _id) public view returns(string memory){
-        if(products[_id].buyers.length > 0)
+        if(products[_id].owner == msg.sender){
+            return files[_id];
+        }
+        else if(products[_id].buyers.length > 0)
         for(uint i=0;i<products[_id].buyers.length;i++){
             if(products[_id].buyers[i] == msg.sender)
                 return files[_id];
         }
+        else
         return "";
     }
     function getPurchasedProducts(address adr) public view returns( uint256[] memory){

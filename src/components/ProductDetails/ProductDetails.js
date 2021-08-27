@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FaStar, FaEthereum } from "react-icons/fa";
+import { FaEthereum } from "react-icons/fa";
 import { BsPersonFill, BsFillStarFill } from "react-icons/bs";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import MetaTags from "react-meta-tags";
@@ -19,6 +19,7 @@ class ProductDetails extends Component {
       showReviewModal: false,
       purchased: false,
       initRate: 0,
+      revs: [],
     };
   }
 
@@ -52,6 +53,16 @@ class ProductDetails extends Component {
     window.open(`https://ipfs.io/ipfs/${hash}`, "_blank");
     this.props.handleLoading();
     //window.location.href = `https://ipfs.io/ipfs/${hash}`;
+  }
+
+  async getReviews() {
+    const reviews = await this.props.marketplace.methods
+      .getProductReviews(this.props.product.id)
+      .call();
+    this.setState({
+      revs: reviews,
+    });
+    console.log(reviews.length);
   }
 
   render() {
@@ -237,7 +248,7 @@ class ProductDetails extends Component {
         <Row className="py-4">
           <Col md="6" className="bg-dark">
             <header className="m-2 pt-2 pb-2">
-              <h2>REVIEWS(7)</h2>
+              <h2>REVIEWS({this.props.product.reviewsCount})</h2>
             </header>
             <div className="list-group list-group-flush">
               <div className="list-group-item">
@@ -615,6 +626,8 @@ class ProductDetails extends Component {
             reviewProduct={this.reviewProduct}
             generateScore={this.props.generateScore}
             initRate={this.state.initRate}
+            marketplace={this.props.marketplace}
+            product={this.props.product}
           />
         ) : null}
       </div>

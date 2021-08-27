@@ -214,6 +214,7 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
+    this.handleLoading();
     tf.ready().then(() => {
       this.loadModel(url);
       this.loadMetadata(url);
@@ -410,13 +411,13 @@ class App extends Component {
             <ProductDetails
               product={product}
               account={this.state.account}
-              products={this.state.products}
               purchaseProduct={this.purchaseProduct}
               reviewProduct={this.reviewProduct}
               generateScore={this.generateScore}
               purchasedProducts={this.state.purchasedProducts}
               marketplace={this.state.marketplace}
               handleLoading={this.handleLoading}
+              loadBlockchainData={this.loadBlockchainData}
             />
           }
         />
