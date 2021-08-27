@@ -19,16 +19,22 @@ class ReviewModal extends Component {
   async onSubmit() {
     console.log(this.state.review);
     const score = await this.props.generateScore(this.state.review);
+    var scr = parseInt(score * 100);
+    console.log(score, ":", scr);
     await this.props.marketplace.methods
       .reviewProduct(
         this.props.product.id,
         this.state.rate,
-        score,
+        Number(scr),
         this.state.review
       )
-      .call();
+      .send({
+        from: this.props.account,
+      })
+      .once("receipt", (receipt) => {
+        this.loadBlockchainData();
+      });
     this.setState({ score: score });
-    await this.props.loadBlockchainData();
   }
 
   render() {

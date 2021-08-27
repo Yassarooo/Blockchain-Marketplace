@@ -11,7 +11,6 @@ contract Marketplace {
     mapping(uint => Product) public products;
     //mapping(uint => uint[]) public productsRates;
     //mapping(uint => string[]) public productsReviews;
-    mapping(Categories => uint[]) public categorieToProduct;
     //to store the customers on blockchain
     mapping(address  => Customer) public customers;
     mapping(uint => address) public addressLUT;
@@ -34,6 +33,8 @@ contract Marketplace {
     struct Review{
         bool isBuy;
         bool isReview;
+        string name;
+        uint256 rate;
         string reviewDescription;
         uint256 score;
         uint timeStamp;
@@ -41,7 +42,6 @@ contract Marketplace {
     struct Customer {
         address adr;
         string name;
-        uint256[] ownedProducts;
         uint256[] purchasedProducts;
         Cart cart;
         
@@ -61,7 +61,7 @@ contract Marketplace {
         address owner;
         Categories categorie;
         uint256 uploadedOn;
-        //uint256 rate;
+        uint256 rate;
         uint256 reviewsCount;
         address[] buyers;
         uint256 totalSold;
@@ -115,10 +115,7 @@ contract Marketplace {
         products[productCount].totalSold = 0;
         products[productCount].buyers = new address[](0);
         //products[productCount].removed = false;
-        //add this product to it's categorie
-        categorieToProduct[_categorie].push(productCount);
         //add this product to the customer's owned product
-        customers[msg.sender].ownedProducts.push(productCount);
         //create an event
         emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender);
     }
@@ -151,20 +148,9 @@ contract Marketplace {
              products[id1].removed = true;
          }
      }*/
-        function removeProduct(uint id1) public {
+    function removeProduct(uint id1) public {
         if(msg.sender == products[id1].owner){
             delete products [id1];
-            Categories cat;
-            cat = products[id1].categorie;
-            delete categorieToProduct[cat][id1-1];
-            address add = products[id1].raters[products[id1].reviewsCount];
-            delete products[id1].raters[products[id1].reviewsCount];
-            delete products[id1].productUserReview[add];
-            for(uint i=0;i<productCount;i++){
-                if(customers[msg.sender].ownedProducts[i] == id1){
-                    delete customers[msg.sender].ownedProducts[i];
-                }
-            }
         }
     }
     function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , Categories _categorie) public{
@@ -181,15 +167,25 @@ contract Marketplace {
            require(products[_id].productUserReview[msg.sender].isBuy == true, "You are not eligible to review this product");
            if (products[_id].productUserReview[msg.sender].isReview == false){ //only once
                products[_id].productUserReview[msg.sender].isReview = true;
-               //should update rate
+
+               products[_id].productUserReview[msg.sender].name = customers[msg.sender].name;
+               products[_id].productUserReview[msg.sender].rate = _rate;
                products[_id].productUserReview[msg.sender].reviewDescription = _review;
                products[_id].productUserReview[msg.sender].score = _score;
                products[_id].productUserReview[msg.sender].timeStamp = block.timestamp;
+
     
                products[_id].raters[products[_id].reviewsCount] = msg.sender;
                   products[_id].reviews.push(products[_id].productUserReview[msg.sender]);
     
                products[_id].reviewsCount ++;
+               
+               //calculate and update product rate
+               uint sum=0;
+               for(uint i=0;i<products[_id].reviews.length;i++){
+               sum+=products[_id].reviews[i].rate;
+               }
+               products[_id].rate = sum/products[_id].reviewsCount;
            }
 
     }
@@ -235,7 +231,7 @@ contract Marketplace {
 */
     function registerCustomer(address _address, string memory _name)
                                         public returns (bool success) {
-        Customer memory customer = Customer(_address, _name,new uint256[](0),new uint256[](0),Cart(new uint256[](0),0));
+        Customer memory customer = Customer(_address, _name,new uint256[](0),Cart(new uint256[](0),0));
         customerCount++;
         addressLUT[customerCount]=customer.adr;
         customers[_address] = customer;
@@ -254,7 +250,6 @@ contract Marketplace {
     function getReport(uint _id) public view returns(uint){
         return products[_id].report;
     }
-
     function getProductReviews(uint _id) public view returns (Review[] memory){
         return products[_id].reviews;
     }

@@ -114,6 +114,7 @@ class EditProduct extends Component {
                       <label htmlFor="tags">Price *</label>
                       <input
                         type="number"
+                        step="any"
                         className="form-control"
                         id="price"
                         name="price"

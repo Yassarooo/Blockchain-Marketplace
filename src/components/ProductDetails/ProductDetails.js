@@ -39,9 +39,25 @@ class ProductDetails extends Component {
       this.props.purchasedProducts.find((prod) => {
         return prod.id === this.props.product.id;
       })
-    )
+    ) {
       return true;
-    else return false;
+    } else {
+      return false;
+    }
+  }
+
+  async getReviews() {
+    const reviews = await this.props.marketplace.methods
+      .getProductReviews(this.props.product.id)
+      .call({ from: this.state.account });
+    this.setState({
+      revs: reviews,
+    });
+  }
+
+  async componentDidMount() {
+    await this.getReviews();
+    console.log(this.state.revs.length);
   }
 
   async downloadFile() {
@@ -53,16 +69,6 @@ class ProductDetails extends Component {
     window.open(`https://ipfs.io/ipfs/${hash}`, "_blank");
     this.props.handleLoading();
     //window.location.href = `https://ipfs.io/ipfs/${hash}`;
-  }
-
-  async getReviews() {
-    const reviews = await this.props.marketplace.methods
-      .getProductReviews(this.props.product.id)
-      .call();
-    this.setState({
-      revs: reviews,
-    });
-    console.log(reviews.length);
   }
 
   render() {
@@ -111,37 +117,15 @@ class ProductDetails extends Component {
               </div>
               <div className="list-group-item">
                 <div className="rating">
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span> 4 reviews</span>
+                  <Rating
+                    emptySymbol="fa fa-star-o"
+                    fullSymbol="fa fa-star text-warning"
+                    fractions={2}
+                    initialRating={this.props.product.rate}
+                    fontSize="3px"
+                    //onChange={(rate) => this.handleReviewModal(rate)}
+                  />
+                  <span> {this.props.product.reviewsCount} reviews</span>
                 </div>
               </div>
               <div className="list-group-item">
@@ -251,272 +235,30 @@ class ProductDetails extends Component {
               <h2>REVIEWS({this.props.product.reviewsCount})</h2>
             </header>
             <div className="list-group list-group-flush">
-              <div className="list-group-item">
-                <strong>Rajesh Khadka</strong>
-                <div className="rating">
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span></span>
-                </div>
-                <p>2020-10-30</p>
-                <p>This is a amazing site</p>
-              </div>
-              <div className="list-group-item">
-                <strong>yan</strong>
-                <div className="rating">
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span></span>
-                </div>
-                <p>2020-10-30</p>
-                <p>yfgyfy</p>
-              </div>
-              <div className="list-group-item">
-                <strong>Umer</strong>
-                <div className="rating">
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star-o"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star-o"
-                    ></i>
-                  </span>
-                  <span></span>
-                </div>
-                <p>2020-11-07</p>
-                <p>s</p>
-              </div>
-              <div className="list-group-item">
-                <strong>tfs123</strong>
-                <div className="rating">
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star-o"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star-o"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star-o"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star-o"
-                    ></i>
-                  </span>
-                  <span></span>
-                </div>
-                <p>2020-12-14</p>
-                <p>ghh</p>
-              </div>
-              <div className="list-group-item">
-                <strong>test</strong>
-                <div className="rating">
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star-o"
-                    ></i>
-                  </span>
-                  <span></span>
-                </div>
-                <p>2021-03-04</p>
-                <p>jhhhkhkh</p>
-              </div>
-              <div className="list-group-item">
-                <strong>hassan</strong>
-                <div className="rating">
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span></span>
-                </div>
-                <p>2021-03-26</p>
-                <p>assasd</p>
-              </div>
-              <div className="list-group-item">
-                <strong>Waleed Saifi</strong>
-                <div className="rating">
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span>
-                    <i
-                      style={{ color: "rgb(248, 232, 37)" }}
-                      className="fa fa-star"
-                    ></i>
-                  </span>
-                  <span></span>
-                </div>
-                <p>2021-06-28</p>
-                <p>Great</p>
-              </div>
+              {this.state.revs.map((rev, key) => {
+                return (
+                  <div className="list-group-item">
+                    <strong>{rev.name}</strong>
+                    <div className="rating">
+                      <Rating
+                        emptySymbol="fa fa-star-o fa-2x"
+                        fullSymbol="fa fa-star fa-2x text-warning"
+                        fractions={2}
+                        initialRating={rev.rate}
+                        //onChange={(rate) => this.handleReviewModal(rate)}
+                      />
+                    </div>
+                    <p>
+                      {Intl.DateTimeFormat("en-US", {
+                        year: "numeric",
+                        day: "2-digit",
+                        month: "2-digit",
+                      }).format(rev.timeStamp * 1000)}
+                    </p>
+                    <p>{rev.reviewDescription}</p>
+                  </div>
+                );
+              })}
             </div>
           </Col>
           <Col md="6">
@@ -529,9 +271,11 @@ class ProductDetails extends Component {
                   <BsFillStarFill className="text-warning" />
                   <BsFillStarFill className="text-warning" />
                   <BsFillStarFill />
-                  <b className="ml-2">334</b>
+                  <b className="ml-2">{this.props.product.reviewsCount}</b>
                 </div>
-                <p className="mb-4 mt-2">Rated 3.5 out of 5</p>
+                <p className="mb-4 mt-2">
+                  Rated {this.props.product.rate} out of 5
+                </p>
               </div>
               <div className="graph-star-rating-body">
                 <div className="rating-list">
@@ -607,7 +351,10 @@ class ProductDetails extends Component {
                   <div className="rating-list-right">02%</div>
                 </div>
               </div>
-              <div className="graph-star-rating-footer text-center mt-3 mb-3">
+              <div
+                hidden={!this.checkProductPurchase()}
+                className="graph-star-rating-footer text-center mt-3 mb-3"
+              >
                 <h5 className="mb-4">Rate This Product</h5>
                 <Rating
                   emptySymbol="fa fa-star-o fa-2x"
@@ -628,6 +375,7 @@ class ProductDetails extends Component {
             initRate={this.state.initRate}
             marketplace={this.props.marketplace}
             product={this.props.product}
+            account={this.props.account}
           />
         ) : null}
       </div>
