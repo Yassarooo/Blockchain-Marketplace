@@ -11,10 +11,10 @@ class MyProducts extends Component {
   render() {
     return (
       <div id="content" className="py-5 mr-5 ml-5 px-5">
-        <h2 id="bloc1" className="pb-1">
+        <h2 id="bloc1" className="pb-1 text-success">
           Your Products
         </h2>
-        <h2 id="bloc2" className="float-right pb-1">
+        <h2 id="bloc2" className="float-right pb-1 pr-2 text-success">
           Your Address:
           <span id="bloc1" style={{ color: "orange" }}>
             {this.props.account}
@@ -80,6 +80,46 @@ class MyProducts extends Component {
                   </td>
                 </tr>
               ) : null;
+            })}
+          </tbody>
+        </Table>
+        <h2 className="pb-1 text-success">Purchased Products</h2>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th scope="col"> # </th>
+              <th scope="col"> Name </th>
+              <th scope="col"> Price </th>
+              <th scope="col"> Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productList">
+            {this.props.purchasedProducts.map((product, key) => {
+              return (
+                <tr key={key}>
+                  <th scope="row"> {product.id.toString()}</th>
+                  <td>{product.name} </td>
+                  <td>
+                    {window.web3.utils.fromWei(
+                      product.price.toString(),
+                      "Ether"
+                    )}
+                    {""} Eth
+                  </td>
+                  <td>
+                    <Link to={"/product/" + product.id} className="px-2">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        data-toggle="tooltip"
+                        title="View product"
+                      >
+                        <GrView />
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              );
             })}
           </tbody>
         </Table>

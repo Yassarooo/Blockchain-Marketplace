@@ -15,6 +15,7 @@ contract Marketplace {
     //to store the customers on blockchain
     mapping(address  => Customer) public customers;
     mapping(uint => address) public addressLUT;
+    mapping(uint => string) public files;
     uint256 MAXREPORT = 100;
     
     enum Categories {
@@ -56,23 +57,23 @@ contract Marketplace {
         string description;
         uint price;
         string imgipfshash;
-        string fileipfshash;
         address owner;
         Categories categorie;
         uint256 uploadedOn;
         //uint256 rate;
         uint256 reviewsCount;
-        Customer[] buyers;
+        address[] buyers;
+        uint256 totalSold;
         Review [] reviews;
         mapping (uint=>address) raters; //address of reviewers
         mapping (address=>Review) productUserReview;
         mapping (address => bool)hasReported;
         uint report;
-        bool removed;
+        //bool removed;
     }
 
     event ProductCreated(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner);
-    event ProductPurchased(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner);
+    event ProductPurchased(uint id, string name, string description, uint price, string imgipfshash, address owner);
     event CustomerRegistered(address customer);
     event CustomerRegistrationFailed(address customer);
     event CartProductInserted(address customer, uint256 prodId, uint256 prodPrice, uint256 completeSum);
@@ -104,13 +105,15 @@ contract Marketplace {
         products[productCount].description = _description;
         products[productCount].price = _price;
         products[productCount].imgipfshash = _imgipfshash;
-        products[productCount].fileipfshash = _fileipfshash;
+        files[productCount] = _fileipfshash;
         products[productCount].owner = msg.sender;
         products[productCount].categorie = _categorie;
         products[productCount].uploadedOn = _uploadedOn;
         products[productCount].reviewsCount = 0;
         products[productCount].report = 0;
-        products[productCount].removed = false;
+        products[productCount].totalSold = 0;
+        products[productCount].buyers = new address[](0);
+        //products[productCount].removed = false;
         //add this product to it's categorie
         categorieToProduct[_categorie].push(productCount);
         //add this product to the customer's owned product
@@ -132,20 +135,21 @@ contract Marketplace {
         //add to products a user can revie
         products[_id].productUserReview[msg.sender].isBuy = true;
         //add this customer to the people who bought this product
-        products[_id].buyers.push(customers[msg.sender]);
+        products[_id].buyers.push(msg.sender);
+        //update total purchases
+        products[_id].totalSold++;
         //add to the products owners
         customers[msg.sender].purchasedProducts.push(_id);
         // Pay the seller by sending them Ether
         payable(_seller).transfer(msg.value);
         // Trigger an event
-        emit ProductPurchased(productCount, products[_id].name,products[_id].description, products[_id].price, products[_id].imgipfshash, products[_id].fileipfshash, msg.sender);
+        emit ProductPurchased(productCount, products[_id].name,products[_id].description, products[_id].price, products[_id].imgipfshash, msg.sender);
     }
-    function removeProduct(uint id1) public {
-        if(msg.sender == products[id1].owner){
-            products[id1].removed = true;
-        }
-    }
-    /*
+    /* function removeProduct(uint id1) public {
+         if(msg.sender == products[id1].owner){
+             products[id1].removed = true;
+         }
+     }*/
         function removeProduct(uint id1) public {
         if(msg.sender == products[id1].owner){
             delete products [id1];
@@ -162,7 +166,6 @@ contract Marketplace {
             }
         }
     }
-    */
     function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , Categories _categorie) public{
         if(msg.sender == products[_id].owner){
             products[_id].name = _name;
@@ -246,21 +249,25 @@ contract Marketplace {
             }
         }
     }
-    function returnProduct(uint _id) public {
-        
-    }
     function getReport(uint _id) public view returns(uint){
         return products[_id].report;
     }
-    function getProductReviews(uint _id) public view returns (Review[] memory){
-        return products[_id].reviews;
+    // function getProductReviews(uint _id) public view returns (Review[] memory){
+    //     return products[_id].reviews;
+    // }
+    function getProductBuyers(uint _id) public view returns(address[] memory){
+        return products[_id].buyers;
     }
-    function getCustomer(address _adr) view public returns(Customer memory){
-        return customers[_adr];
+    function getProductfile(uint _id) public view returns(string memory){
+        if(products[_id].buyers.length > 0)
+        for(uint i=0;i<products[_id].buyers.length;i++){
+            if(products[_id].buyers[i] == msg.sender)
+                return files[_id];
+        }
+        return "";
     }
-    function getNumberOfOwners(uint _id) public view returns(uint){
-        return products[_id].buyers.length;
+    function getPurchasedProducts(address adr) public view returns( uint256[] memory){
+        return customers[adr].purchasedProducts;
     }
-
 
 }

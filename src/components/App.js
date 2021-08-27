@@ -51,6 +51,7 @@ class App extends Component {
       productCount: 0,
       customerCount: 0,
       products: [],
+      purchasedProducts: [],
       addressLUT: [],
       customers: [],
       loading: true,
@@ -276,6 +277,19 @@ class App extends Component {
         this.state.customer = await marketplace.methods
           .customers(this.state.account)
           .call();
+
+        //load purchased products
+        const purchased = await marketplace.methods
+          .getPurchasedProducts(this.state.account)
+          .call();
+        purchased.forEach((e) => {
+          const prod = this.state.products.find((product) => {
+            return product.id === e;
+          });
+          this.setState({
+            purchasedProducts: [...this.state.purchasedProducts, prod],
+          });
+        });
       } else {
         this.handleModal();
       }
@@ -400,6 +414,9 @@ class App extends Component {
               purchaseProduct={this.purchaseProduct}
               reviewProduct={this.reviewProduct}
               generateScore={this.generateScore}
+              purchasedProducts={this.state.purchasedProducts}
+              marketplace={this.state.marketplace}
+              handleLoading={this.handleLoading}
             />
           }
         />
@@ -431,13 +448,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <MyNavbar
-          loading={this.state.loading}
-          account={this.state.account}
-          products={this.state.products}
-          createProduct={this.state.createProduct}
-          purchaseProduct={this.state.purchaseProduct}
-        />
+        <MyNavbar loading={this.state.loading} account={this.state.account} />
         <MyModal
           showModal={this.state.showModal}
           handleModal={this.handleModal}
@@ -464,6 +475,7 @@ class App extends Component {
               account={this.state.account}
               products={this.state.products}
               removeProduct={this.removeProduct}
+              purchasedProducts={this.state.purchasedProducts}
             />
           </Route>
           <Route path="/products">

@@ -14,8 +14,10 @@ class ProductDetails extends Component {
     super();
     this.handleReviewModal = this.handleReviewModal.bind(this);
     this.reviewProduct = this.reviewProduct.bind(this);
+    this.checkProductPurchase = this.checkProductPurchase.bind(this);
     this.state = {
       showReviewModal: false,
+      purchased: false,
       initRate: 0,
     };
   }
@@ -29,6 +31,27 @@ class ProductDetails extends Component {
       showReviewModal: !this.state.showReviewModal,
       initRate: rate,
     });
+  }
+
+  checkProductPurchase() {
+    if (
+      this.props.purchasedProducts.find((prod) => {
+        return prod.id === this.props.product.id;
+      })
+    )
+      return true;
+    else return false;
+  }
+
+  async downloadFile() {
+    this.props.handleLoading();
+    const hash = await this.props.marketplace.methods
+      .getProductfile(this.props.product.id)
+      .call({ from: this.state.account });
+    console.log(hash);
+    window.open(`https://ipfs.io/ipfs/${hash}`, "_blank");
+    this.props.handleLoading();
+    //window.location.href = `https://ipfs.io/ipfs/${hash}`;
   }
 
   render() {
@@ -68,6 +91,12 @@ class ProductDetails extends Component {
                 >
                   {Categories[this.props.product.categorie]}
                 </div>
+              </div>
+              <div className="list-group-item">
+                <span className="text-warning pr-3">
+                  <BsPersonFill />
+                </span>
+                {this.props.product.totalSold}
               </div>
               <div className="list-group-item">
                 <div className="rating">
@@ -121,9 +150,9 @@ class ProductDetails extends Component {
               </div>
 
               <div className="list-group-item">
-                <BsPersonFill />
-                <span className="text-warning pl-2">
-                  {this.props.product.owner.substring(0, 15)}
+                <span className="text-warning">Owner: </span>
+                <span className="text-success pl-2">
+                  {this.props.product.owner.substring(0, 25)}
                 </span>
               </div>
             </div>
@@ -166,7 +195,8 @@ class ProductDetails extends Component {
                     </Col>
                   </Row>
                 </div>
-                {this.props.product.owner === this.props.account ? (
+                {this.props.product.owner === this.props.account ||
+                this.checkProductPurchase() ? (
                   <div className="list-group-item">
                     <button
                       className="btn btn-lg btn-block btn-success"
@@ -177,7 +207,8 @@ class ProductDetails extends Component {
                     <button
                       className="btn btn-lg btn-block btn-warning"
                       onClick={(event) => {
-                        window.location.href = `https://ipfs.io/ipfs/${this.props.product.fileipfshash}`;
+                        this.downloadFile();
+                        //window.location.href = `https://ipfs.io/ipfs/${this.props.product.fileipfshash}`;
                       }}
                     >
                       <AiOutlineCloudDownload />
