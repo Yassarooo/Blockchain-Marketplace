@@ -43,13 +43,7 @@ contract Marketplace {
         address adr;
         string name;
         uint256[] purchasedProducts;
-        Cart cart;
         
-    }
-
-    struct Cart {
-      uint256[] products;
-      uint256 completeSum;
     }
 
     struct Product {
@@ -66,7 +60,6 @@ contract Marketplace {
         address[] buyers;
         uint256 totalSold;
         Review [] reviews;
-        mapping (uint=>address) raters; //address of reviewers
         mapping (address=>Review) productUserReview;
         mapping (address => bool)hasReported;
         uint report;
@@ -175,8 +168,7 @@ contract Marketplace {
                products[_id].productUserReview[msg.sender].timeStamp = block.timestamp;
 
     
-               products[_id].raters[products[_id].reviewsCount] = msg.sender;
-                  products[_id].reviews.push(products[_id].productUserReview[msg.sender]);
+               products[_id].reviews.push(products[_id].productUserReview[msg.sender]);
     
                products[_id].reviewsCount ++;
                
@@ -190,48 +182,9 @@ contract Marketplace {
 
     }
 
-    /*function insertProductIntoCart(uint256 id) public returns (bool success,
-                                                  uint256 pos_in_prod_mapping) {
-        Customer storage cust = customers[msg.sender];
-        Product memory prod = products[id];
-        uint256 prods_prev_len = cust.cart.products.length;
-        cust.cart.products.push(prod.id);
-        uint256 current_sum = cust.cart.completeSum;
-        cust.cart.completeSum = current_sum + prod.price;
-        if (cust.cart.products.length > prods_prev_len) {
-          emit CartProductInserted(msg.sender, id, prod.price, cust.cart.completeSum);
-          return (true, cust.cart.products.length - 1);
-        }
-        emit CartProductInsertionFailed(msg.sender, id);
-        return (false, 0);
-    }*/
-
-    /*function removeProductFromCart(uint256 prod_pos_in_mapping) public {
-        uint256[] memory new_product_list = new uint256[](customers[msg.sender]
-                                                    .cart.products.length - 1);
-        uint256[] memory customerProds = customers[msg.sender].cart.products;
-        for (uint256 i = 0; i < customerProds.length; i++) {
-          if (i != prod_pos_in_mapping) {
-            new_product_list[i] = customerProds[i];
-          } else {
-            customers[msg.sender].cart.completeSum -=
-                                               products[customerProds[i]].price;
-            emit CartProductRemoved(msg.sender, customerProds[i]);
-          }
-        }
-        customers[msg.sender].cart.products = new_product_list;
-    }
-*/
-    /*function emptyCart() public returns (bool success) {
-        Customer storage customer = customers[msg.sender];
-        customer.cart = Cart(new uint256[](0), 0);
-        emit CartEmptied(customer.adr);
-        return true;
-    }
-*/
     function registerCustomer(address _address, string memory _name)
                                         public returns (bool success) {
-        Customer memory customer = Customer(_address, _name,new uint256[](0),Cart(new uint256[](0),0));
+        Customer memory customer = Customer(_address, _name,new uint256[](0));
         customerCount++;
         addressLUT[customerCount]=customer.adr;
         customers[_address] = customer;
