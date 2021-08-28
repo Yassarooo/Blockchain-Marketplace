@@ -131,86 +131,23 @@ class EditProduct extends Component {
                     <div className="form-group">
                       <label htmlFor="tags">Category *</label>
                       <select
+                        defaultValue={this.props.product.categorie}
                         className="form-control"
                         name="city"
                         onChange={this.handleSelect}
                       >
-                        <option
-                          selected={this.props.product.categorie === 0}
-                          value="0"
-                        >
-                          Tech
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 1}
-                          value="1"
-                        >
-                          PC Games
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 2}
-                          value="2"
-                        >
-                          PS4 Games
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 3}
-                          value="3"
-                        >
-                          Xbox Games
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 4}
-                          value="4"
-                        >
-                          Movies
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 5}
-                          value="5"
-                        >
-                          Courses
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 6}
-                          value="6"
-                        >
-                          Books
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 7}
-                          value="7"
-                        >
-                          AudioBooks
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 8}
-                          value="8"
-                        >
-                          Images
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 9}
-                          value="9"
-                        >
-                          {" "}
-                          Videos
-                        </option>
-                        <option
-                          selected={this.props.product.categorie === 10}
-                          value="10"
-                        >
-                          {" "}
-                          Other
-                        </option>
+                        <option value="0">Tech</option>
+                        <option value="1">PC Games</option>
+                        <option value="2">PS4 Games</option>
+                        <option value="3">Xbox Games</option>
+                        <option value="4">Movies</option>
+                        <option value="5">Courses</option>
+                        <option value="6">Books</option>
+                        <option value="7">AudioBooks</option>
+                        <option value="8">Images</option>
+                        <option value="9"> Videos</option>
+                        <option value="10"> Other</option>
                       </select>
-
-                      <div
-                        className="text-danger"
-                        hidden={this.state.caterror === "" ? true : false}
-                      >
-                        {this.state.caterror}
-                      </div>
                     </div>
 
                     <small className="d-block pb-3">* = required fields</small>

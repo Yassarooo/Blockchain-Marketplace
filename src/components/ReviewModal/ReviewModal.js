@@ -6,7 +6,6 @@ class ReviewModal extends Component {
   state = {
     rate: this.props.initRate,
     review: "",
-    score: 0,
   };
 
   handleChange = (e) => {
@@ -18,23 +17,11 @@ class ReviewModal extends Component {
 
   async onSubmit() {
     console.log(this.state.review);
+    this.props.handleReviewModal(this.state.rate);
     const score = await this.props.generateScore(this.state.review);
     var scr = parseInt(score * 100);
     console.log(score, ":", scr);
-    await this.props.marketplace.methods
-      .reviewProduct(
-        this.props.product.id,
-        this.state.rate,
-        scr,
-        this.state.review
-      )
-      .send({
-        from: this.props.account,
-      })
-      .once("receipt", (receipt) => {
-        this.loadBlockchainData();
-      });
-    this.setState({ score: score });
+    await this.props.reviewProduct(this.state.rate, scr, this.state.review);
   }
 
   render() {
@@ -47,14 +34,13 @@ class ReviewModal extends Component {
         onHide={() => this.props.handleReviewModal()}
       >
         <Modal.Header id="contained-modal-title-vcenter">
-          <h4>Rate this product Score: {this.state.score}</h4>
+          <h4>Rate this product</h4>
         </Modal.Header>
         <Modal.Body>
           <Rating
             className="mb-4"
             emptySymbol="fa fa-star-o fa-2x"
             fullSymbol="fa fa-star fa-2x text-warning"
-            fractions={2}
             initialRating={this.state.rate}
             onChange={(rate) => this.setState({ rate: rate })}
           />

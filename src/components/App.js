@@ -42,6 +42,7 @@ class App extends Component {
     this.loadModel = this.loadModel.bind(this);
     this.loadMetadata = this.loadMetadata.bind(this);
     this.generateScore = this.generateScore.bind(this);
+    this.reviewProduct = this.reviewProduct.bind(this);
     this.state = {
       model: null,
       metadata: null,
@@ -175,12 +176,9 @@ class App extends Component {
     return score;
   }
 
-  reviewProduct(id, rate, review) {
-    this.setState({
-      loading: true,
-    });
-    this.state.marketplace.methods
-      .reviewProduct(id, rate, review)
+  async reviewProduct(id, rate, score, review) {
+    await this.state.marketplace.methods
+      .reviewProduct(id, rate, score, review)
       .send({
         from: this.state.account,
       })
@@ -188,9 +186,6 @@ class App extends Component {
         toast.success("Review Posted Successfully !", {
           position: "bottom-right",
           closeOnClick: true,
-        });
-        this.setState({
-          loading: false,
         });
       });
   }

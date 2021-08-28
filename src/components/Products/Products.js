@@ -173,8 +173,9 @@ class Products extends Component {
       )
       .filter(
         (product) =>
-          Number(window.web3.utils.fromWei(product.price.toString(), "Ether")) <
-          Number(this.state.max)
+          Number(
+            window.web3.utils.fromWei(product.price.toString(), "Ether")
+          ) <= Number(this.state.max)
       )
       .reverse();
 
