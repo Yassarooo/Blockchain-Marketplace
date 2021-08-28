@@ -118,13 +118,13 @@ contract Marketplace {
     function purchaseProduct(uint _id) public payable {
         // Fetch the owner
         address _seller = products[_id].owner;
-        /*require(products[_id].owner != msg.sender, "You cannot buy your own product");
+        require(products[_id].owner != msg.sender, "You cannot buy your own product");
         // Make sure the product has a valid id
         require(products[_id].id > 0 && products[_id].id <= productCount);
         // Require that there is enough Ether in the transaction
         require(msg.value >= products[_id].price, "Insufficient Ether");
         // Require that the buyer is not the seller
-        require(_seller != msg.sender);*/
+        require(_seller != msg.sender);
         //add to products a user can revie
         products[_id].productUserReview[msg.sender].isBuy = true;
         //add this customer to the people who bought this product
@@ -176,11 +176,9 @@ contract Marketplace {
                products[_id].reviewsCount ++;
                
                //calculate and update product rate
-               uint sum=0;
-               for(uint i=0;i<products[_id].reviews.length;i++){
-               sum+=products[_id].reviews[i].rate;
-               }
-               products[_id].rate = sum/products[_id].reviewsCount;
+                uint avg = (products[_id].rate) * (products[_id].reviewsCount - 1);
+                avg += _rate;
+                products[_id].rate = avg / products[_id].reviewsCount;
            }
 
     }
