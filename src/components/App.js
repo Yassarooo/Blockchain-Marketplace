@@ -2,12 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import Web3 from "web3";
 import Marketplace from "../abis/Marketplace.json";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MyNavbar from "./Navbar/MyNavbar";
 import MyFooter from "./Footer/MyFooter";
 import Products from "./Products/Products";
@@ -23,7 +18,16 @@ import GenericNotFound from "./404/404";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "font-awesome/css/font-awesome.min.css";
+import * as tf from "@tensorflow/tfjs";
 toast.configure();
+
+//Model and metadata URL
+const url = {
+  model:
+    "https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/model.json",
+  metadata:
+    "https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json",
+};
 
 class App extends Component {
   constructor(props) {
@@ -35,19 +39,49 @@ class App extends Component {
     this.registerCustomer = this.registerCustomer.bind(this);
     this.handleModal = this.handleModal.bind(this);
     this.handleLoading = this.handleLoading.bind(this);
+    this.loadModel = this.loadModel.bind(this);
+    this.loadMetadata = this.loadMetadata.bind(this);
+    this.generateScore = this.generateScore.bind(this);
+    this.reviewProduct = this.reviewProduct.bind(this);
     this.state = {
+      model: null,
+      metadata: null,
       showModal: false,
       account: "",
       customer: null,
       productCount: 0,
       customerCount: 0,
       products: [],
+      purchasedProducts: [],
       addressLUT: [],
       customers: [],
       loading: true,
       addsuccessmessage: "",
       editsuccessmessage: "",
     };
+  }
+
+  async loadModel(url) {
+    try {
+      const model = await tf.loadLayersModel(url.model);
+      this.setState({
+        model: model,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async loadMetadata(url) {
+    try {
+      const metadataJson = await fetch(url.metadata);
+      const metadata = await metadataJson.json();
+      this.setState({
+        metadata: metadata,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   handleLoading() {
@@ -80,13 +114,71 @@ class App extends Component {
       });
   }
 
-  reviewProduct(id, rate, review) {
-    this.handleReviewModal();
-    this.setState({
-      loading: true,
+  async generateScore(review) {
+    const inputText = review
+      .trim()
+      .toLowerCase()
+      .replace(/(\.|\,|\!)/g, "")
+      .split(" ");
+    const OOV_INDEX = 2;
+    const sequence = inputText.map((word) => {
+      let wordIndex =
+        this.state.metadata.word_index[word] + this.state.metadata.index_from;
+      if (wordIndex > this.state.metadata.vocabulary_size) {
+        wordIndex = OOV_INDEX;
+      }
+      return wordIndex;
     });
-    this.state.marketplace.methods
-      .reviewProduct(id, rate, review)
+
+    //Fix the sequence into fix length (truncation and padding) via a padSequences function
+    const PAD_INDEX = 0;
+    const padSequences = (
+      sequences,
+      maxLen,
+      padding = "pre",
+      truncating = "pre",
+      value = PAD_INDEX
+    ) => {
+      return sequences.map((seq) => {
+        if (seq.length > maxLen) {
+          if (truncating === "pre") {
+            seq.splice(0, seq.length - maxLen);
+          } else {
+            seq.splice(maxLen, seq.length - maxLen);
+          }
+        }
+        if (seq.length < maxLen) {
+          const pad = [];
+          for (let i = 0; i < maxLen - seq.length; ++i) {
+            pad.push(value);
+          }
+          if (padding === "pre") {
+            seq = pad.concat(seq);
+          } else {
+            seq = seq.concat(pad);
+          }
+        }
+        return seq;
+      });
+    };
+    const paddedSequence = padSequences(
+      [sequence],
+      this.state.metadata.max_len
+    );
+
+    //Lastly, convert the paddedSequence into our tensor2D matrix
+    const input = tf.tensor2d(paddedSequence, [1, this.state.metadata.max_len]);
+
+    const predictOut = this.state.model.predict(input);
+    const score = predictOut.dataSync()[0];
+    predictOut.dispose();
+
+    return score;
+  }
+
+  async reviewProduct(id, rate, score, review) {
+    await this.state.marketplace.methods
+      .reviewProduct(id, rate, score, review)
       .send({
         from: this.state.account,
       })
@@ -94,9 +186,6 @@ class App extends Component {
         toast.success("Review Posted Successfully !", {
           position: "bottom-right",
           closeOnClick: true,
-        });
-        this.setState({
-          loading: false,
         });
       });
   }
@@ -120,6 +209,11 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
+    this.handleLoading();
+    tf.ready().then(() => {
+      this.loadModel(url);
+      this.loadMetadata(url);
+    });
     this.state.products = [];
     this.state.customers = [];
     const web3 = window.web3;
@@ -179,6 +273,19 @@ class App extends Component {
         this.state.customer = await marketplace.methods
           .customers(this.state.account)
           .call();
+
+        //load purchased products
+        const purchased = await marketplace.methods
+          .getPurchasedProducts(this.state.account)
+          .call();
+        purchased.forEach((e) => {
+          const prod = this.state.products.find((product) => {
+            return product.id === e;
+          });
+          this.setState({
+            purchasedProducts: [...this.state.purchasedProducts, prod],
+          });
+        });
       } else {
         this.handleModal();
       }
@@ -299,9 +406,13 @@ class App extends Component {
             <ProductDetails
               product={product}
               account={this.state.account}
-              products={this.state.products}
               purchaseProduct={this.purchaseProduct}
               reviewProduct={this.reviewProduct}
+              generateScore={this.generateScore}
+              purchasedProducts={this.state.purchasedProducts}
+              marketplace={this.state.marketplace}
+              handleLoading={this.handleLoading}
+              loadBlockchainData={this.loadBlockchainData}
             />
           }
         />
@@ -333,13 +444,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <MyNavbar
-          loading={this.state.loading}
-          account={this.state.account}
-          products={this.state.products}
-          createProduct={this.state.createProduct}
-          purchaseProduct={this.state.purchaseProduct}
-        />
+        <MyNavbar loading={this.state.loading} account={this.state.account} />
         <MyModal
           showModal={this.state.showModal}
           handleModal={this.handleModal}
@@ -366,6 +471,7 @@ class App extends Component {
               account={this.state.account}
               products={this.state.products}
               removeProduct={this.removeProduct}
+              purchasedProducts={this.state.purchasedProducts}
             />
           </Route>
           <Route path="/products">

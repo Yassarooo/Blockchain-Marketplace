@@ -83,6 +83,7 @@ class AddProduct extends Component {
 
   onSubmit = async (event) => {
     event.preventDefault();
+    this.props.handleLoading();
     if (
       this.state.name.length > 20 &&
       (this.state.price.toString() > 999999) &

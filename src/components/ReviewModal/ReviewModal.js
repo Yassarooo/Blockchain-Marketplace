@@ -15,6 +15,15 @@ class ReviewModal extends Component {
     });
   };
 
+  async onSubmit() {
+    console.log(this.state.review);
+    this.props.handleReviewModal(this.state.rate);
+    const score = await this.props.generateScore(this.state.review);
+    var scr = parseInt(score * 100);
+    console.log(score, ":", scr);
+    await this.props.reviewProduct(this.state.rate, scr, this.state.review);
+  }
+
   render() {
     return (
       <Modal
@@ -32,7 +41,6 @@ class ReviewModal extends Component {
             className="mb-4"
             emptySymbol="fa fa-star-o fa-2x"
             fullSymbol="fa fa-star fa-2x text-warning"
-            fractions={2}
             initialRating={this.state.rate}
             onChange={(rate) => this.setState({ rate: rate })}
           />
@@ -47,8 +55,9 @@ class ReviewModal extends Component {
         <Modal.Footer>
           <Button
             className="btn btn-out btn-warning btn-square"
-            onClick={() =>
-              this.props.reviewProduct(this.state.rate, this.state.review)
+            onClick={(e) =>
+              //this.props.reviewProduct(this.state.rate, this.state.review)
+              this.onSubmit(e)
             }
           >
             Post Review

@@ -6,27 +6,19 @@
 strong {
   color: orange;
 }
-
-.MuiAccordionDetails-root {
-  background-color: #0f0f0f;
-  color: white;
+.custom-shining {
+  box-shadow: 0 1px 1px rgba(255, 115, 0, 0.247) inset,
+    0 0 8px rgba(255, 153, 0, 0.671) !important;
 }
-
-.MuiAccordionSummary-root {
-  background-color: black !important;
-  color: orange !important;
+.list-group-flush {
+  box-shadow: 0 !important;
 }
-
-.MuiIconButton-label {
-  color: white !important;
-}
-
 .col-md-6 > .list-group > .list-group-item {
-  background-color: black !important;
+  background-color: #191c22 !important;
 }
 
 .graph-star-rating {
-  background-color: black !important;
+  background-color: #191c22 !important;
   border-radius: 50 !important;
 }
 .graph-star-rating-header .star-rating {
