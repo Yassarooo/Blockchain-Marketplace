@@ -14,12 +14,10 @@ class MyProducts extends Component {
     this.props.marketplace.methods
       .removeProduct(id)
       .send({
-        from: this.state.account,
+        from: this.props.account,
       })
       .once("receipt", (receipt) => {
-        this.setState({
-          loading: false,
-        });
+        this.props.handleLoading();
         toast.success("Product removed Successfully !", {
           position: "bottom-right",
           closeOnClick: true,
@@ -32,12 +30,10 @@ class MyProducts extends Component {
     this.props.marketplace.methods
       .restoreProduct(id)
       .send({
-        from: this.state.account,
+        from: this.props.account,
       })
       .once("receipt", (receipt) => {
-        this.setState({
-          loading: false,
-        });
+        this.props.handleLoading();
         toast.success("Product restored Successfully !", {
           position: "bottom-right",
           closeOnClick: true,
@@ -103,7 +99,7 @@ class MyProducts extends Component {
                         <FaEdit />
                       </button>
                     </Link>
-                    {product.removed ? (
+                    {product.removed === "1" ? (
                       <button
                         type="button"
                         className="btn btn-danger"

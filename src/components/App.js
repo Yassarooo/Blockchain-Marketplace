@@ -32,6 +32,7 @@ const url = {
 class App extends Component {
   constructor(props) {
     super(props);
+    this.loadBlockchainData = this.loadBlockchainData.bind(this);
     this.createProduct = this.createProduct.bind(this);
     this.purchaseProduct = this.purchaseProduct.bind(this);
     this.editProduct = this.editProduct.bind(this);
@@ -382,6 +383,9 @@ class App extends Component {
           children={
             <ProductDetails
               product={product}
+              products={this.state.products.filter(
+                (product) => product.removed !== "2"
+              )}
               account={this.state.account}
               purchaseProduct={this.purchaseProduct}
               reviewProduct={this.reviewProduct}
@@ -441,9 +445,10 @@ class App extends Component {
             <MyProducts
               account={this.state.account}
               products={this.state.products.filter(
-                (product) => product.removed !== 2
+                (product) => product.removed !== "2"
               )}
               marketplace={this.state.marketplace}
+              purchasedProducts={this.state.purchasedProducts}
               handleLoading={this.handleLoading}
               loadBlockchainData={this.loadBlockchainData}
             />
@@ -452,7 +457,7 @@ class App extends Component {
             <Products
               account={this.state.account}
               products={this.state.products.filter(
-                (product) => product.removed === 0
+                (product) => product.removed === "0"
               )}
               purchaseProduct={this.purchaseProduct}
               loading={this.state.loading}

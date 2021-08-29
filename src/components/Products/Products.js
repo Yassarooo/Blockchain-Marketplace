@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 class Products extends Component {
   constructor() {
     super();
+    super();
     this.getCatCount = this.getCatCount.bind(this);
     this.state = {
       currentPage: 1,

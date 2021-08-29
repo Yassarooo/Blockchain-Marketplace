@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import { FaEthereum } from "react-icons/fa";
+import { FaEthereum, FaEye } from "react-icons/fa";
 import { BsPersonFill } from "react-icons/bs";
 import { AiOutlineCloudDownload, AiOutlineInfoCircle } from "react-icons/ai";
 import { toast } from "react-toastify";
 import MetaTags from "react-meta-tags";
 import "./ProductDetails.css";
 import { Categories, Colors } from "../Categories";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import Rating from "react-rating";
 import ReviewModal from "../ReviewModal/ReviewModal";
+import { Link } from "react-router-dom";
 
 class ProductDetails extends Component {
   constructor() {
@@ -17,12 +18,66 @@ class ProductDetails extends Component {
     this.reviewProduct = this.reviewProduct.bind(this);
     this.checkProductPurchase = this.checkProductPurchase.bind(this);
     this.calcPercentage = this.calcPercentage.bind(this);
+    this.renderCard = this.renderCard.bind(this);
     this.state = {
       showReviewModal: false,
       initRate: 0,
       revs: [],
       rev: "",
     };
+  }
+
+  renderCard(product, index) {
+    return (
+      <Col md="3" className="pt-3" key={index}>
+        <div className="card card h-100 rounded card ">
+          <div
+            className="badge text-white position-absolute"
+            style={{
+              top: "0.5rem",
+              right: "0.5rem",
+              fontSize: "15px",
+              backgroundColor: Colors[product.categorie],
+            }}
+          >
+            {/*product.owner.toString().substring(0, 8)*/}
+            {Categories[product.categorie]}
+          </div>
+          <img
+            className="card-img-top centered-and-cropped"
+            src={`https://ipfs.io/ipfs/${product.imgipfshash}`}
+            alt="..."
+          />
+          <div className="card-body bg-dark pb-0 mb-0">
+            <div className="text-center">
+              <h2 href={`/product/${product.id}`}>{product.name}</h2>
+              <h3 className="text-warning" style={{ fontSize: "larger" }}>
+                <FaEthereum className="text-primary pl-0 pr-2" />
+                {window.web3.utils.fromWei(
+                  product.price.toString(),
+                  "Ether"
+                )}{" "}
+                Eth
+              </h3>
+            </div>
+          </div>
+          <div className="card-footer pb-3 pt-0 border-top-0 bg-dark">
+            <div className="text-center ">
+              <Link to={"/product/" + product.id}>
+                <Button
+                  className="btn btn-outline-light stretched-link"
+                  name={product.id}
+                  value={product.price}
+                >
+                  More Details {""}
+                  <FaEye />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </Col>
+    );
   }
 
   async reviewProduct(rate, score, review) {
@@ -129,6 +184,11 @@ class ProductDetails extends Component {
     });
     const fivestars = this.state.revs.filter((r) => {
       return r.rate > 4;
+    });
+    const cat = this.props.product.categorie;
+    const id = this.props.product.id;
+    const catproducts = this.props.products.filter(function (prod) {
+      return prod.categorie === cat && prod.id !== id;
     });
 
     return (
@@ -476,6 +536,7 @@ class ProductDetails extends Component {
             </div>
           </header>
         </Row>
+        <Row>{catproducts.map(this.renderCard)}</Row>
 
         {this.state.showReviewModal ? (
           <ReviewModal
