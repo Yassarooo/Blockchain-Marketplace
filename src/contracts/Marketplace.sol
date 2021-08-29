@@ -66,6 +66,7 @@ contract Marketplace {
         mapping (address => bool)hasReported;
         uint report;
         bool removed;
+        bool forbidden;
     }
 
     event ProductCreated(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner);
@@ -203,7 +204,7 @@ contract Marketplace {
             products[_id].report++;
             products[_id].hasReported[msg.sender] = true;
             if(products[_id].report >= MAXREPORT){
-                removeProduct(_id);
+                products[_id].forbidden = true;
             }
         }
     }
