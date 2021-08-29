@@ -107,6 +107,7 @@ contract Marketplace {
         products[productCount].uploadedOn = _uploadedOn;
         products[productCount].reviewsCount = 0;
         products[productCount].report = 0;
+        products[productCount].hasReported[msg.sender] = false;
         products[productCount].totalSold = 0;
         products[productCount].buyers = new address[](0);
         //products[productCount].removed = false;
@@ -193,6 +194,7 @@ contract Marketplace {
         return true;
     }
     function report(uint _id) public {
+        require(products[_id].hasReported[msg.sender] == true , "You have already reported!");
         if(products[_id].hasReported[msg.sender] == false){
             products[_id].report++;
             products[_id].hasReported[msg.sender] = true;
