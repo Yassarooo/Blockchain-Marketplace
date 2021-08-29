@@ -129,12 +129,12 @@ class Products extends Component {
             <div className="text-center ">
               <Link to={"/product/" + product.id}>
                 <Button
-                  className="btn btn-outline-light btn-dark stretched-link"
+                  className="btn btn-outline-light stretched-link"
                   name={product.id}
                   value={product.price}
                 >
                   More Details {""}
-                  <FaEye className="text-warning" />
+                  <FaEye />
                 </Button>
               </Link>
             </div>

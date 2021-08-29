@@ -1,13 +1,51 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Table } from "react-bootstrap";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaRedo } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { GrView } from "react-icons/gr";
 import { BsCheckCircle } from "react-icons/bs";
+import { toast } from "react-toastify";
 import "./MyProducts.css";
 
 class MyProducts extends Component {
+  removeProduct(id) {
+    this.props.handleLoading();
+    this.props.marketplace.methods
+      .removeProduct(id)
+      .send({
+        from: this.state.account,
+      })
+      .once("receipt", (receipt) => {
+        this.setState({
+          loading: false,
+        });
+        toast.success("Product removed Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        this.props.loadBlockchainData();
+      });
+  }
+  restoreProduct(id) {
+    this.props.handleLoading();
+    this.props.marketplace.methods
+      .restoreProduct(id)
+      .send({
+        from: this.state.account,
+      })
+      .once("receipt", (receipt) => {
+        this.setState({
+          loading: false,
+        });
+        toast.success("Product restored Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        this.props.loadBlockchainData();
+      });
+  }
+
   render() {
     return (
       <div id="content" className="py-5 mr-5 ml-5 px-5">
@@ -65,18 +103,33 @@ class MyProducts extends Component {
                         <FaEdit />
                       </button>
                     </Link>
-                    <button
-                      type="button"
-                      className="btn btn-danger"
-                      data-toggle="tooltip"
-                      title="Delete product"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        this.props.removeProduct(product.id);
-                      }}
-                    >
-                      <MdDelete />
-                    </button>
+                    {product.removed ? (
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        data-toggle="tooltip"
+                        title="ٌRestore product"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          this.restoreProduct(product.id);
+                        }}
+                      >
+                        <FaRedo />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        data-toggle="tooltip"
+                        title="Delete product"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          this.removeProduct(product.id);
+                        }}
+                      >
+                        <MdDelete />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : null;

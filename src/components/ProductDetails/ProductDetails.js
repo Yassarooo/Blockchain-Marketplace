@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { FaEthereum } from "react-icons/fa";
-import { BsPersonFill, BsFillStarFill } from "react-icons/bs";
-import { AiOutlineCloudDownload } from "react-icons/ai";
+import { BsPersonFill } from "react-icons/bs";
+import { AiOutlineCloudDownload, AiOutlineInfoCircle } from "react-icons/ai";
+import { toast } from "react-toastify";
 import MetaTags from "react-meta-tags";
 import "./ProductDetails.css";
 import { Categories, Colors } from "../Categories";
@@ -59,6 +60,31 @@ class ProductDetails extends Component {
       revs: reviews,
     });
   }
+  async report() {
+    const hasreported = await this.props.marketplace.methods
+      .hasReported(this.props.product.id)
+      .call({
+        from: this.props.account,
+      });
+    if (hasreported) {
+      toast.error("You can only report once !", {
+        position: "bottom-right",
+        closeOnClick: true,
+      });
+    } else {
+      await this.props.marketplace.methods
+        .report(this.props.product.id)
+        .send({
+          from: this.props.account,
+        })
+        .once("receipt", (receipt) => {
+          toast.success("Product Reported !", {
+            position: "bottom-right",
+            closeOnClick: true,
+          });
+        });
+    }
+  }
 
   async getproductUserReview() {
     const review = this.state.revs.find((rev) => {
@@ -70,10 +96,8 @@ class ProductDetails extends Component {
   }
 
   async componentDidMount() {
-    this.props.handleLoading();
     await this.getReviews();
     await this.getproductUserReview();
-    this.props.handleLoading();
   }
 
   async downloadFile() {
@@ -184,6 +208,16 @@ class ProductDetails extends Component {
                   {this.props.product.owner.substring(0, 25)}
                 </span>
               </div>
+              <button
+                className="btn btn-sm btn-secondary"
+                onClick={(event) => {
+                  this.report();
+                }}
+                hidden={this.props.product.owner === this.props.account}
+              >
+                <AiOutlineInfoCircle />
+                <span className="pl-2">Report Product</span>
+              </button>
             </div>
           </Col>
           <Col md="4">
@@ -231,7 +265,7 @@ class ProductDetails extends Component {
                       className="btn btn-lg btn-block btn-success"
                       disabled
                     >
-                      <span>Purchased</span>
+                      <span>Owned</span>
                     </button>
                     <button
                       className="btn btn-lg btn-block btn-warning"
@@ -411,7 +445,10 @@ class ProductDetails extends Component {
               </div>
 
               <div
-                hidden={this.checkProductPurchase()}
+                hidden={
+                  this.checkProductPurchase() ||
+                  this.props.account === this.props.product.owner
+                }
                 className="graph-star-rating-footer text-center mt-3 mb-3"
               >
                 <h5 className="mb-4">Buy This Product to Review</h5>
@@ -432,6 +469,14 @@ class ProductDetails extends Component {
             </div>
           </Col>
         </Row>
+        <Row className="py-4">
+          <header className="border-bottom mb-2 pb-3">
+            <div className="form-inline">
+              <span className="mr-md-auto">Similar Products</span>
+            </div>
+          </header>
+        </Row>
+
         {this.state.showReviewModal ? (
           <ReviewModal
             showReviewModal={this.state.showReviewModal}

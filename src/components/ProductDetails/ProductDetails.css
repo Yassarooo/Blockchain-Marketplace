@@ -7,8 +7,8 @@ strong {
   color: orange;
 }
 .custom-shining {
-  box-shadow: 0 1px 1px rgba(255, 115, 0, 0.247) inset,
-    0 0 8px rgba(255, 153, 0, 0.671) !important;
+  box-shadow: 0 1px 1px rgba(255, 166, 0, 0.445) inset,
+    0 0 8px rgba(255, 218, 163, 0.671) !important;
 }
 .list-group-flush {
   box-shadow: 0 !important;

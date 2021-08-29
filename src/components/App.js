@@ -34,7 +34,6 @@ class App extends Component {
     super(props);
     this.createProduct = this.createProduct.bind(this);
     this.purchaseProduct = this.purchaseProduct.bind(this);
-    this.removeProduct = this.removeProduct.bind(this);
     this.editProduct = this.editProduct.bind(this);
     this.registerCustomer = this.registerCustomer.bind(this);
     this.handleModal = this.handleModal.bind(this);
@@ -209,7 +208,9 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
-    this.handleLoading();
+    this.setState({
+      loading: true,
+    });
     tf.ready().then(() => {
       this.loadModel(url);
       this.loadMetadata(url);
@@ -246,9 +247,6 @@ class App extends Component {
           products: [...this.state.products, product],
         });
       }
-      this.setState({
-        products: this.state.products.filter((product) => product.id !== "0"),
-      });
       if (customerCount > 0) {
         for (var j = 1; j <= customerCount; j++) {
           const adr = await marketplace.methods.addressLUT(j).call();
@@ -374,27 +372,6 @@ class App extends Component {
       });
   }
 
-  removeProduct(id) {
-    this.setState({
-      loading: true,
-    });
-    this.state.marketplace.methods
-      .removeProduct(id)
-      .send({
-        from: this.state.account,
-      })
-      .once("receipt", (receipt) => {
-        this.setState({
-          loading: false,
-        });
-        toast.success("Product removed Successfully !", {
-          position: "bottom-right",
-          closeOnClick: true,
-        });
-        this.loadBlockchainData();
-      });
-  }
-
   ProductRoutesGenerator = () => {
     return this.state.products.map((product) => {
       return (
@@ -452,13 +429,7 @@ class App extends Component {
         />
         <Switch>
           <Route exact path="/">
-            <Home
-              account={this.state.account}
-              products={this.state.products}
-              createProduct={this.createProduct}
-              purchaseProduct={this.purchaseProduct}
-              customer={this.state.customer}
-            />
+            <Home account={this.state.account} customer={this.state.customer} />
           </Route>
           <Route path="/aboutus">
             <AboutUs
@@ -469,15 +440,20 @@ class App extends Component {
           <Route path="/myproducts">
             <MyProducts
               account={this.state.account}
-              products={this.state.products}
-              removeProduct={this.removeProduct}
-              purchasedProducts={this.state.purchasedProducts}
+              products={this.state.products.filter(
+                (product) => product.removed !== 2
+              )}
+              marketplace={this.state.marketplace}
+              handleLoading={this.handleLoading}
+              loadBlockchainData={this.loadBlockchainData}
             />
           </Route>
           <Route path="/products">
             <Products
               account={this.state.account}
-              products={this.state.products}
+              products={this.state.products.filter(
+                (product) => product.removed === 0
+              )}
               purchaseProduct={this.purchaseProduct}
               loading={this.state.loading}
             />
