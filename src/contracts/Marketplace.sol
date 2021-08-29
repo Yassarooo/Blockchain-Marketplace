@@ -193,9 +193,13 @@ contract Marketplace {
         emit CustomerRegistered(_address);
         return true;
     }
+    function hasReported(uint _id) public view returns(bool){
+        if(products[_id].hasReported[msg.sender] == false)
+            return false;
+        return true;
+    } 
     function report(uint _id) public {
-        require(products[_id].hasReported[msg.sender] == false , "You have already reported!");
-        if(products[_id].hasReported[msg.sender] == false){
+        if(!hasReported(_id)){
             products[_id].report++;
             products[_id].hasReported[msg.sender] = true;
             if(products[_id].report >= MAXREPORT){
