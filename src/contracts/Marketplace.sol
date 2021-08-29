@@ -65,8 +65,7 @@ contract Marketplace {
         mapping (address=>Review) productUserReview;
         mapping (address => bool)hasReported;
         uint report;
-        bool removed;
-        bool forbidden;
+        uint removed;
     }
 
     event ProductCreated(uint id, string name, string description, uint price, string imgipfshash, string fileipfshash, address owner);
@@ -111,7 +110,7 @@ contract Marketplace {
         products[productCount].hasReported[msg.sender] = false;
         products[productCount].totalSold = 0;
         products[productCount].buyers = new address[](0);
-        products[productCount].removed = false;
+        products[productCount].removed = 0;
         //add this product to the customer's owned product
         //create an event
         emit ProductCreated(productCount, _name, _description, _price, _imgipfshash,_fileipfshash, msg.sender);
@@ -141,13 +140,13 @@ contract Marketplace {
         emit ProductPurchased(productCount, products[_id].name,products[_id].description, products[_id].price, products[_id].imgipfshash, msg.sender);
     }
     function removeProduct(uint id1) public {
-        if(msg.sender == products[id1].owner && products[id1].removed == false){
-            products[id1].removed = true;
+        if(msg.sender == products[id1].owner && products[id1].removed == 0){
+            products[id1].removed = 1;
         }
     }
     function restoreProduct(uint id1) public {
-        if(msg.sender == products[id1].owner && products[id1].removed == true){
-            products[id1].removed = false;
+        if(msg.sender == products[id1].owner && products[id1].removed == 1){
+            products[id1].removed = 0;
         }
     }
     function editProduct(uint256 _id , string memory _name , string memory _des , uint _price , Categories _categorie) public{
@@ -204,7 +203,7 @@ contract Marketplace {
             products[_id].report++;
             products[_id].hasReported[msg.sender] = true;
             if(products[_id].report >= MAXREPORT){
-                products[_id].forbidden = true;
+                products[_id].removed = 2;
             }
         }
     }
