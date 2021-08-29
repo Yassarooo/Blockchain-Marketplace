@@ -194,7 +194,7 @@ contract Marketplace {
         return true;
     }
     function report(uint _id) public {
-        require(products[_id].hasReported[msg.sender] == true , "You have already reported!");
+        require(products[_id].hasReported[msg.sender] == false , "You have already reported!");
         if(products[_id].hasReported[msg.sender] == false){
             products[_id].report++;
             products[_id].hasReported[msg.sender] = true;
