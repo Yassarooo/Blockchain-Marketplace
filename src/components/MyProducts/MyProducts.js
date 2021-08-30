@@ -102,7 +102,7 @@ class MyProducts extends Component {
                     {product.removed === "1" ? (
                       <button
                         type="button"
-                        className="btn btn-danger"
+                        className="btn btn-warning"
                         data-toggle="tooltip"
                         title="ٌRestore product"
                         onClick={(e) => {

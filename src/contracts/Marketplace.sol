@@ -193,6 +193,15 @@ contract Marketplace {
         emit CustomerRegistered(_address);
         return true;
     }
+    function hasRegistered(address _adr) public view returns(bool){
+        if(customerCount>0){
+            for(uint i=1;i<customerCount;i++){
+                if(addressLUT[i] == _adr)
+                    return true;
+            }
+        }
+        return false;
+    } 
     function hasReported(uint _id) public view returns(bool){
         if(products[_id].hasReported[msg.sender] == false)
             return false;

@@ -1,12 +1,32 @@
 import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
-import "./MyModal.css";
+import { toast } from "react-toastify";
+import "./RegisterModal.css";
 
-class MyModal extends Component {
+class RegisterModal extends Component {
   state = {
     name: "",
     disabled: true,
   };
+
+  registerCustomer(name) {
+    this.props.handleLoading();
+    this.props.handleRegisterModal();
+    this.props.marketplace.methods
+      .registerCustomer(this.props.account, name)
+      .send({
+        from: this.props.account,
+      })
+      .once("receipt", (receipt) => {
+        toast.success("Customer Registered Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+
+        this.props.handleLoading();
+        this.props.loadBlockchainData();
+      });
+  }
 
   handleChange = (e) => {
     this.setState({
@@ -24,7 +44,7 @@ class MyModal extends Component {
         aria-labelledby="contained-modal-title-vcenter"
         centered
         show={this.props.showModal}
-        onHide={() => this.props.handleModal()}
+        onHide={() => this.props.handleRegisterModal()}
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
@@ -67,7 +87,7 @@ class MyModal extends Component {
               size="lg"
               className="btn create "
               onClick={() => {
-                this.props.registerCustomer(this.state.name);
+                this.registerCustomer(this.state.name);
               }}
               disabled={this.state.disabled}
             >
@@ -80,4 +100,4 @@ class MyModal extends Component {
   }
 }
 
-export default MyModal;
+export default RegisterModal;

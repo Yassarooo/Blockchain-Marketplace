@@ -16,8 +16,37 @@ class AddProduct extends Component {
     filebuffer: null,
     validFile: false,
     fileErrorMessage: "",
+    addsuccessmessage: "",
     caterror: "",
   };
+
+  createProduct(name, description, price, cat, imgipfshash, fileipfshash) {
+    this.props.handleLoading();
+    console.log(
+      "name:",
+      name + "desc:",
+      description + "price:",
+      price + "imgipfshash:",
+      imgipfshash + "fileipfshash:",
+      fileipfshash
+    );
+    this.props.marketplace.methods
+      .createProduct(name, description, price, imgipfshash, fileipfshash, cat)
+      .send({
+        from: this.props.account,
+      })
+      .once("receipt", (receipt) => {
+        this.props.handleLoading();
+        this.setState({
+          addsuccessmessage: "Product Added Successfully !",
+        });
+        toast.success("Product Added Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        this.props.loadBlockchainData();
+      });
+  }
 
   handleChange = (e) => {
     this.setState({
@@ -136,7 +165,7 @@ class AddProduct extends Component {
           });
           this.CheckIPFS();
           if (this.state.validFile) {
-            this.props.createProduct(
+            this.createProduct(
               this.state.name,
               this.state.description,
               window.web3.utils.toWei(this.state.price.toString(), "Ether"),
@@ -295,9 +324,9 @@ class AddProduct extends Component {
                   </button>
                 </div>
               </form>
-              {this.props.addsuccessmessage !== "" ? (
+              {this.addsuccessmessage !== "" ? (
                 <div className="alert alert-info mt-5">
-                  {this.props.addsuccessmessage}
+                  {this.addsuccessmessage}
                 </div>
               ) : null}
             </div>

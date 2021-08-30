@@ -11,7 +11,6 @@ class Products extends Component {
   constructor() {
     super();
     super();
-    this.getCatCount = this.getCatCount.bind(this);
     this.state = {
       currentPage: 1,
       productsPerPage: 8,
@@ -20,14 +19,15 @@ class Products extends Component {
       max: 20,
       cheapest: false,
       latest: true,
+      section: "latest",
     };
+    this.getCatCount = this.getCatCount.bind(this);
     this.rangeSelector = this.rangeSelector.bind(this);
     this.handleMaxChange = this.handleMaxChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleCheck = this.handleCheck.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
-    this.handleSelect = this.handleSelect.bind(this);
   }
 
   rangeSelector = (event, newValue) => {
@@ -47,7 +47,7 @@ class Products extends Component {
     });
     if (event.target.id === "prev") {
       this.setState({
-        currentPage: Number(this.state.currentPage - 1),
+        currentPage: parseInt(this.state.currentPage - 1),
       });
     }
     if (event.target.id === "next") {
@@ -85,11 +85,6 @@ class Products extends Component {
   handleSearch(event) {
     event.preventDefault();
     console.log("Searching...");
-  }
-
-  handleSelect(event) {
-    event.preventDefault();
-    console.log("Selected...", event.target.name);
   }
 
   renderCards(product, index) {
@@ -179,6 +174,12 @@ class Products extends Component {
           ) <= Number(this.state.max)
       )
       .reverse();
+
+    const handleSelect = (e) => {
+      e.preventDefault();
+      console.log("Selected...", e.target.value);
+      this.props.handleSection(e.target.value);
+    };
 
     const currentProducts = filteredProducts.slice(
       indexOfFirstProduct,
@@ -499,13 +500,17 @@ class Products extends Component {
                   <span className="mr-md-auto">
                     {filteredProducts.length.toString()} Items found{" "}
                   </span>
-                  <select className="mr-0 form-control bg-dark">
-                    <option name="latest" onSelect={this.handleSelect}>
-                      Latest items
-                    </option>
-                    <option>Trending</option>
-                    <option>Most Popular</option>
-                    <option>Cheapest</option>
+                  <select
+                    className="mr-0 form-control bg-dark"
+                    defaultValue={this.state.section}
+                    onChange={(e) => {
+                      handleSelect(e);
+                    }}
+                  >
+                    <option value="latest">Latest items</option>
+                    <option value="trending">Trending</option>
+                    <option value="bestseller">Best Seller</option>
+                    <option value="cheapest">Cheapest</option>
                   </select>
                 </div>
               </header>
