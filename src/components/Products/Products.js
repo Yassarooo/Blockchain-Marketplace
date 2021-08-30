@@ -19,7 +19,6 @@ class Products extends Component {
       max: 20,
       cheapest: false,
       latest: true,
-      section: "latest",
     };
     this.getCatCount = this.getCatCount.bind(this);
     this.rangeSelector = this.rangeSelector.bind(this);
@@ -502,7 +501,7 @@ class Products extends Component {
                   </span>
                   <select
                     className="mr-0 form-control bg-dark"
-                    defaultValue={this.state.section}
+                    defaultValue={this.props.section}
                     onChange={(e) => {
                       handleSelect(e);
                     }}

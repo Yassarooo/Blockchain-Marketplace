@@ -260,6 +260,7 @@ class AddProduct extends Component {
                     className="form-control"
                     name="city"
                     onChange={this.handleSelect}
+                    defaultValue="10"
                   >
                     <option value="0">Tech</option>
                     <option value="1">PC Games</option>
@@ -271,10 +272,7 @@ class AddProduct extends Component {
                     <option value="7">AudioBooks</option>
                     <option value="8">Images</option>
                     <option value="9"> Videos</option>
-                    <option defaultValue value="10">
-                      {" "}
-                      Other
-                    </option>
+                    <option value="10"> Other</option>
                   </select>
 
                   <div

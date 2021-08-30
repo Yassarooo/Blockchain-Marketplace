@@ -5,7 +5,7 @@ import "./MyFooter.css";
 class MyFooter extends Component {
   render() {
     return (
-      <footer className="text-center pb-3 pt-3">
+      <footer className="text-center pb-3 pt-0 mt-5">
         Copyright &copy;2021 | Designed With{" "}
         <FaHeart style={{ color: "red" }}></FaHeart> by{" "}
         <a className="text-warning" href="/aboutus">

@@ -35,6 +35,7 @@ contract Marketplace {
         bool isBuy;
         bool isReview;
         address adr;
+        uint pid;
         string name;
         uint256 rate;
         string reviewDescription;
@@ -45,7 +46,7 @@ contract Marketplace {
         address adr;
         string name;
         uint256[] purchasedProducts;
-        
+        Review[] reviews;
     }
 
     struct Product {
@@ -165,6 +166,7 @@ contract Marketplace {
                products[_id].productUserReview[msg.sender].isReview = true;
 
                products[_id].productUserReview[msg.sender].adr = msg.sender;
+               products[_id].productUserReview[msg.sender].pid = _id;
                products[_id].productUserReview[msg.sender].name = customers[msg.sender].name;
                products[_id].productUserReview[msg.sender].rate = _rate;
                products[_id].productUserReview[msg.sender].reviewDescription = _review;
@@ -173,7 +175,7 @@ contract Marketplace {
 
     
                products[_id].reviews.push(products[_id].productUserReview[msg.sender]);
-    
+               customers[msg.sender].reviews.push(products[_id].productUserReview[msg.sender]);
                products[_id].reviewsCount ++;
                
                //calculate and update product rate
@@ -186,10 +188,10 @@ contract Marketplace {
 
     function registerCustomer(address _address, string memory _name)
                                         public returns (bool success) {
-        Customer memory customer = Customer(_address, _name,new uint256[](0));
         customerCount++;
-        addressLUT[customerCount]=customer.adr;
-        customers[_address] = customer;
+        addressLUT[customerCount]=_address;
+        customers[_address].adr = _address;
+        customers[_address].name = _name;
         emit CustomerRegistered(_address);
         return true;
     }
@@ -218,6 +220,9 @@ contract Marketplace {
     }
     function getReport(uint _id) public view returns(uint){
         return products[_id].report;
+    }
+    function getUserReviews(address _adr) public view returns (Review[] memory){
+        return customers[_adr].reviews;
     }
     function getProductReviews(uint _id) public view returns (Review[] memory){
         return products[_id].reviews;

@@ -50,7 +50,9 @@ class App extends Component {
       products: [],
       filteredProducts: [],
       purchasedProducts: [],
+      customerReviews: [],
       loading: true,
+      section: "latest",
     };
   }
 
@@ -87,6 +89,9 @@ class App extends Component {
   }
 
   handleSection(value) {
+    this.setState({
+      section: value,
+    });
     if (value === "latest") {
       this.setState({
         filteredProducts: this.state.products.filter(
@@ -259,6 +264,16 @@ class App extends Component {
             purchasedProducts: [...this.state.purchasedProducts, prod],
           });
         });
+
+        //load all customer reviews
+        const customerReviews = await marketplace.methods
+          .getUserReviews(this.state.account)
+          .call();
+        customerReviews.forEach((e) => {
+          this.setState({
+            customerReviews: [...this.state.customerReviews, e],
+          });
+        });
       } else {
         this.handleRegisterModal();
       }
@@ -357,6 +372,7 @@ class App extends Component {
               handleSection={this.handleSection}
               purchaseProduct={this.purchaseProduct}
               loading={this.state.loading}
+              section={this.state.section}
             />
           </Route>
           <Route path="/addproduct">
@@ -378,9 +394,9 @@ class App extends Component {
           {this.ProductRoutesGenerator()}
           {this.EditProductRoutesGenerator()}
           <Route component={GenericNotFound} />
-
-          <MyFooter />
         </Switch>
+
+        <MyFooter />
       </Router>
     );
   }
