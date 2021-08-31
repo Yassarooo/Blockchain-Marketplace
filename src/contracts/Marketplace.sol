@@ -15,6 +15,7 @@ contract Marketplace {
     mapping(uint => address) public addressLUT;
     mapping(uint => string) public files;
     uint256 MAXREPORT = 100;
+    bool public ftt =false;
     
     enum Categories {
         Tech,
@@ -195,7 +196,7 @@ contract Marketplace {
     }
     function hasRegistered(address _adr) public view returns(bool){
         if(customerCount>0){
-            for(uint i=1;i<customerCount;i++){
+            for(uint i=1;i<=customerCount;i++){
                 if(addressLUT[i] == _adr)
                     return true;
             }
