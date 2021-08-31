@@ -16,8 +16,37 @@ class AddProduct extends Component {
     filebuffer: null,
     validFile: false,
     fileErrorMessage: "",
+    addsuccessmessage: "",
     caterror: "",
   };
+
+  createProduct(name, description, price, cat, imgipfshash, fileipfshash) {
+    this.props.handleLoading();
+    console.log(
+      "name:",
+      name + "desc:",
+      description + "price:",
+      price + "imgipfshash:",
+      imgipfshash + "fileipfshash:",
+      fileipfshash
+    );
+    this.props.marketplace.methods
+      .createProduct(name, description, price, imgipfshash, fileipfshash, cat)
+      .send({
+        from: this.props.account,
+      })
+      .once("receipt", (receipt) => {
+        this.props.handleLoading();
+        this.setState({
+          addsuccessmessage: "Product Added Successfully !",
+        });
+        toast.success("Product Added Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        this.props.loadBlockchainData();
+      });
+  }
 
   handleChange = (e) => {
     this.setState({
@@ -136,7 +165,7 @@ class AddProduct extends Component {
           });
           this.CheckIPFS();
           if (this.state.validFile) {
-            this.props.createProduct(
+            this.createProduct(
               this.state.name,
               this.state.description,
               window.web3.utils.toWei(this.state.price.toString(), "Ether"),
@@ -231,6 +260,7 @@ class AddProduct extends Component {
                     className="form-control"
                     name="city"
                     onChange={this.handleSelect}
+                    defaultValue="10"
                   >
                     <option value="0">Tech</option>
                     <option value="1">PC Games</option>
@@ -242,10 +272,7 @@ class AddProduct extends Component {
                     <option value="7">AudioBooks</option>
                     <option value="8">Images</option>
                     <option value="9"> Videos</option>
-                    <option defaultValue value="10">
-                      {" "}
-                      Other
-                    </option>
+                    <option value="10"> Other</option>
                   </select>
 
                   <div
@@ -295,9 +322,9 @@ class AddProduct extends Component {
                   </button>
                 </div>
               </form>
-              {this.props.addsuccessmessage !== "" ? (
+              {this.addsuccessmessage !== "" ? (
                 <div className="alert alert-info mt-5">
-                  {this.props.addsuccessmessage}
+                  {this.addsuccessmessage}
                 </div>
               ) : null}
             </div>

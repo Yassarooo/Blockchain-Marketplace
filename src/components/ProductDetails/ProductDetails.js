@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import { FaEthereum } from "react-icons/fa";
+import { FaEthereum, FaEye } from "react-icons/fa";
 import { BsPersonFill } from "react-icons/bs";
 import { AiOutlineCloudDownload, AiOutlineInfoCircle } from "react-icons/ai";
 import { toast } from "react-toastify";
 import MetaTags from "react-meta-tags";
 import "./ProductDetails.css";
 import { Categories, Colors } from "../Categories";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import Rating from "react-rating";
 import ReviewModal from "../ReviewModal/ReviewModal";
+import { Link } from "react-router-dom";
+import Slider from "react-slick";
 
 class ProductDetails extends Component {
   constructor() {
@@ -17,6 +19,7 @@ class ProductDetails extends Component {
     this.reviewProduct = this.reviewProduct.bind(this);
     this.checkProductPurchase = this.checkProductPurchase.bind(this);
     this.calcPercentage = this.calcPercentage.bind(this);
+    this.renderCard = this.renderCard.bind(this);
     this.state = {
       showReviewModal: false,
       initRate: 0,
@@ -25,12 +28,95 @@ class ProductDetails extends Component {
     };
   }
 
+  renderCard(product, index) {
+    return (
+      <Col md="2" className="pt-1" key={index}>
+        <div className="card card h-100 rounded card ">
+          <div
+            className="badge text-white position-absolute"
+            style={{
+              top: "0.5rem",
+              right: "0.5rem",
+              fontSize: "15px",
+              backgroundColor: Colors[product.categorie],
+            }}
+          >
+            {/*product.owner.toString().substring(0, 8)*/}
+            {Categories[product.categorie]}
+          </div>
+          <img
+            className="card-img-top centered-and-cropped"
+            src={`https://ipfs.io/ipfs/${product.imgipfshash}`}
+            style={{ height: "20vh" }}
+            alt="..."
+          />
+          <div className="card-body bg-dark pb-0 mb-0">
+            <div className="text-center">
+              <h6 href={`/product/${product.id}`}>{product.name}</h6>
+              <h4 className="text-warning" style={{ fontSize: "larger" }}>
+                <FaEthereum className="text-primary pl-0 pr-2" />
+                {window.web3.utils.fromWei(
+                  product.price.toString(),
+                  "Ether"
+                )}{" "}
+                Eth
+              </h4>
+            </div>
+          </div>
+          <div className="card-footer pb-3 pt-0 border-top-0 bg-dark">
+            <div className="text-center ">
+              <Link to={"/product/" + product.id}>
+                <Button
+                  className="btn btn-sm btn-outline-light stretched-link"
+                  name={product.id}
+                  value={product.price}
+                >
+                  More Details {""}
+                  <FaEye />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </Col>
+    );
+  }
+
+  async purchaseProduct(id, price) {
+    console.log("id= ", id, price);
+    this.props.handleLoading();
+    await this.props.marketplace.methods
+      .purchaseProduct(id)
+      .send({
+        from: this.props.account,
+        value: price,
+      })
+      .once("receipt", (receipt) => {
+        this.props.handleLoading();
+        toast.success("Product Purchased Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        this.props.loadBlockchainData();
+      });
+  }
+
   async reviewProduct(rate, score, review) {
     this.props.handleLoading();
-    await this.props.reviewProduct(this.props.product.id, rate, score, review);
+    await this.props.marketplace.methods
+      .reviewProduct(this.props.product.id, rate, score, review)
+      .send({
+        from: this.props.account,
+      })
+      .once("receipt", (receipt) => {
+        toast.success("Review Posted Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+      });
     await this.getReviews();
     await this.getproductUserReview();
-    this.props.handleLoading();
+    await this.props.loadBlockchainData();
   }
 
   handleReviewModal(rate) {
@@ -130,6 +216,19 @@ class ProductDetails extends Component {
     const fivestars = this.state.revs.filter((r) => {
       return r.rate > 4;
     });
+    const cat = this.props.product.categorie;
+    const id = this.props.product.id;
+    const catproducts = this.props.products.filter(function (prod) {
+      return prod.categorie === cat && prod.id !== id;
+    });
+
+    const settings = {
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+    };
 
     return (
       <div id="content" className="pt-5 mr-5 ml-5 px-5">
@@ -283,7 +382,7 @@ class ProductDetails extends Component {
                     <button
                       className="btn btn-lg btn-block btn-success"
                       onClick={async (event) => {
-                        this.props.purchaseProduct(
+                        this.purchaseProduct(
                           this.props.product.id,
                           this.props.product.price
                         );
@@ -469,7 +568,7 @@ class ProductDetails extends Component {
             </div>
           </Col>
         </Row>
-        <Row className="py-4">
+        <Row className="pt-4">
           <header className="border-bottom mb-2 pb-3">
             <div className="form-inline">
               <span className="mr-md-auto">Similar Products</span>
@@ -477,6 +576,7 @@ class ProductDetails extends Component {
           </header>
         </Row>
 
+        <Row>{catproducts.slice(0, 6).map(this.renderCard)}</Row>
         {this.state.showReviewModal ? (
           <ReviewModal
             showReviewModal={this.state.showReviewModal}

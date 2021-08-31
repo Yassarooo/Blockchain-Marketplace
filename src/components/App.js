@@ -12,7 +12,7 @@ import AboutUs from "./AboutUs/AboutUs";
 import MyProducts from "./MyProducts/MyProducts";
 import TestPage from "./Products/Products";
 import ProductDetails from "./ProductDetails/ProductDetails";
-import MyModal from "./MyModal/MyModal";
+import RegisterModal from "./RegisterModal/RegisterModal";
 import Home from "./Home/Home";
 import GenericNotFound from "./404/404";
 import { toast } from "react-toastify";
@@ -32,16 +32,13 @@ const url = {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.createProduct = this.createProduct.bind(this);
-    this.purchaseProduct = this.purchaseProduct.bind(this);
-    this.editProduct = this.editProduct.bind(this);
-    this.registerCustomer = this.registerCustomer.bind(this);
-    this.handleModal = this.handleModal.bind(this);
+    this.loadBlockchainData = this.loadBlockchainData.bind(this);
+    this.handleRegisterModal = this.handleRegisterModal.bind(this);
     this.handleLoading = this.handleLoading.bind(this);
+    this.handleSection = this.handleSection.bind(this);
     this.loadModel = this.loadModel.bind(this);
     this.loadMetadata = this.loadMetadata.bind(this);
     this.generateScore = this.generateScore.bind(this);
-    this.reviewProduct = this.reviewProduct.bind(this);
     this.state = {
       model: null,
       metadata: null,
@@ -51,12 +48,11 @@ class App extends Component {
       productCount: 0,
       customerCount: 0,
       products: [],
+      filteredProducts: [],
       purchasedProducts: [],
-      addressLUT: [],
-      customers: [],
+      customerReviews: [],
       loading: true,
-      addsuccessmessage: "",
-      editsuccessmessage: "",
+      section: "latest",
     };
   }
 
@@ -88,29 +84,39 @@ class App extends Component {
       loading: !this.state.loading,
     });
   }
-  handleModal() {
+  handleRegisterModal() {
     this.setState({ showModal: !this.state.showModal });
   }
-  registerCustomer(name) {
-    this.handleModal();
+
+  handleSection(value) {
     this.setState({
-      loading: true,
+      section: value,
     });
-    this.state.marketplace.methods
-      .registerCustomer(this.state.account, name)
-      .send({
-        from: this.state.account,
-      })
-      .once("receipt", (receipt) => {
-        toast.success("Customer Registered Successfully !", {
-          position: "bottom-right",
-          closeOnClick: true,
-        });
-        this.setState({
-          loading: false,
-        });
-        this.loadBlockchainData();
+    if (value === "latest") {
+      this.setState({
+        filteredProducts: this.state.products.filter(
+          (product) => product.removed === "0"
+        ),
       });
+    } else if (value === "cheapest") {
+      this.setState({
+        filteredProducts: this.state.filteredProducts.sort((a, b) =>
+          b.price > a.price ? 1 : -1
+        ),
+      });
+    } else if (value === "bestseller") {
+      this.setState({
+        filteredProducts: this.state.filteredProducts.sort((a, b) =>
+          a.totalSold > b.totalSold ? 1 : -1
+        ),
+      });
+    } else if (value === "trending") {
+      this.setState({
+        filteredProducts: this.state.filteredProducts.sort((a, b) =>
+          a.reviewsCount > b.reviewsCount ? 1 : -1
+        ),
+      });
+    }
   }
 
   async generateScore(review) {
@@ -174,21 +180,6 @@ class App extends Component {
 
     return score;
   }
-
-  async reviewProduct(id, rate, score, review) {
-    await this.state.marketplace.methods
-      .reviewProduct(id, rate, score, review)
-      .send({
-        from: this.state.account,
-      })
-      .once("receipt", (receipt) => {
-        toast.success("Review Posted Successfully !", {
-          position: "bottom-right",
-          closeOnClick: true,
-        });
-      });
-  }
-
   async componentWillMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
@@ -216,7 +207,6 @@ class App extends Component {
       this.loadMetadata(url);
     });
     this.state.products = [];
-    this.state.customers = [];
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
     this.setState({
@@ -247,30 +237,20 @@ class App extends Component {
           products: [...this.state.products, product],
         });
       }
-      if (customerCount > 0) {
-        for (var j = 1; j <= customerCount; j++) {
-          const adr = await marketplace.methods.addressLUT(j).call();
-          this.setState({
-            addressLUT: [...this.state.addressLUT, adr],
-          });
-        }
-        for (var k = 0; k < customerCount; k++) {
-          const cust = await marketplace.methods
-            .customers(this.state.addressLUT[k])
-            .call();
-          this.setState({
-            customers: [...this.state.customers, cust],
-          });
-        }
-      }
-      if (
-        this.state.addressLUT.find((element) => {
-          return element === this.state.account;
-        })
-      ) {
-        this.state.customer = await marketplace.methods
-          .customers(this.state.account)
-          .call();
+      this.setState({
+        filteredProducts: this.state.products.filter(
+          (product) => product.removed === "0"
+        ),
+      });
+      const hasregistered = await marketplace.methods
+        .hasRegistered(this.state.account)
+        .call();
+      if (hasregistered) {
+        this.setState({
+          customer: await marketplace.methods
+            .customers(this.state.account)
+            .call(),
+        });
 
         //load purchased products
         const purchased = await marketplace.methods
@@ -284,8 +264,18 @@ class App extends Component {
             purchasedProducts: [...this.state.purchasedProducts, prod],
           });
         });
+
+        //load all customer reviews
+        const customerReviews = await marketplace.methods
+          .getUserReviews(this.state.account)
+          .call();
+        customerReviews.forEach((e) => {
+          this.setState({
+            customerReviews: [...this.state.customerReviews, e],
+          });
+        });
       } else {
-        this.handleModal();
+        this.handleRegisterModal();
       }
       this.setState({
         loading: false,
@@ -293,83 +283,6 @@ class App extends Component {
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
     }
-  }
-
-  createProduct(name, description, price, cat, imgipfshash, fileipfshash) {
-    this.setState({
-      loading: true,
-    });
-    console.log(
-      "name:",
-      name + "desc:",
-      description + "price:",
-      price + "imgipfshash:",
-      imgipfshash + "fileipfshash:",
-      fileipfshash
-    );
-    this.state.marketplace.methods
-      .createProduct(name, description, price, imgipfshash, fileipfshash, cat)
-      .send({
-        from: this.state.account,
-      })
-      .once("receipt", (receipt) => {
-        this.setState({
-          loading: false,
-          addsuccessmessage: "Product Added Successfully !",
-        });
-        toast.success("Product Added Successfully !", {
-          position: "bottom-right",
-          closeOnClick: true,
-        });
-        this.loadBlockchainData();
-      });
-  }
-
-  editProduct(id, name, description, price, cat) {
-    this.setState({
-      loading: true,
-    });
-    console.log("name:", name + "desc:", description + "price:", price);
-
-    this.state.marketplace.methods
-      .editProduct(id, name, description, price, cat)
-      .send({
-        from: this.state.account,
-      })
-      .once("receipt", (receipt) => {
-        this.setState({
-          loading: false,
-          editsuccessmessage: "Product Edited Successfully !",
-        });
-        toast.success("Product Edited Successfully !", {
-          position: "bottom-right",
-          closeOnClick: true,
-        });
-        this.loadBlockchainData();
-      });
-  }
-
-  purchaseProduct(id, price) {
-    console.log("id= ", id, price);
-    this.setState({
-      loading: true,
-    });
-    this.state.marketplace.methods
-      .purchaseProduct(id)
-      .send({
-        from: this.state.account,
-        value: price,
-      })
-      .once("receipt", (receipt) => {
-        this.setState({
-          loading: false,
-        });
-        toast.success("Product Purchased Successfully !", {
-          position: "bottom-right",
-          closeOnClick: true,
-        });
-        this.loadBlockchainData();
-      });
   }
 
   ProductRoutesGenerator = () => {
@@ -382,8 +295,10 @@ class App extends Component {
           children={
             <ProductDetails
               product={product}
+              products={this.state.products.filter(
+                (product) => product.removed !== "2"
+              )}
               account={this.state.account}
-              purchaseProduct={this.purchaseProduct}
               reviewProduct={this.reviewProduct}
               generateScore={this.generateScore}
               purchasedProducts={this.state.purchasedProducts}
@@ -409,8 +324,7 @@ class App extends Component {
               product={product}
               account={this.state.account}
               handleLoading={this.handleLoading}
-              editProduct={this.editProduct}
-              editsuccessmessage={this.state.editsuccessmessage}
+              marketplace={this.state.marketplace}
             />
           }
         />
@@ -422,10 +336,12 @@ class App extends Component {
     return (
       <Router>
         <MyNavbar loading={this.state.loading} account={this.state.account} />
-        <MyModal
+        <RegisterModal
           showModal={this.state.showModal}
-          handleModal={this.handleModal}
-          registerCustomer={this.registerCustomer}
+          handleRegisterModal={this.handleRegisterModal}
+          marketplace={this.state.marketplace}
+          account={this.state.account}
+          handleLoading={this.handleLoading}
         />
         <Switch>
           <Route exact path="/">
@@ -441,9 +357,10 @@ class App extends Component {
             <MyProducts
               account={this.state.account}
               products={this.state.products.filter(
-                (product) => product.removed !== 2
+                (product) => product.removed !== "2"
               )}
               marketplace={this.state.marketplace}
+              purchasedProducts={this.state.purchasedProducts}
               handleLoading={this.handleLoading}
               loadBlockchainData={this.loadBlockchainData}
             />
@@ -451,19 +368,20 @@ class App extends Component {
           <Route path="/products">
             <Products
               account={this.state.account}
-              products={this.state.products.filter(
-                (product) => product.removed === 0
-              )}
+              products={this.state.filteredProducts}
+              handleSection={this.handleSection}
               purchaseProduct={this.purchaseProduct}
               loading={this.state.loading}
+              section={this.state.section}
             />
           </Route>
           <Route path="/addproduct">
             <AddProduct
               handleLoading={this.handleLoading}
-              createProduct={this.createProduct}
-              addsuccessmessage={this.state.addsuccessmessage}
+              marketplace={this.state.marketplace}
+              loadBlockchainData={this.loadBlockchainData}
               products={this.state.products}
+              account={this.state.account}
             />
           </Route>
           <Route path="/test">
@@ -476,9 +394,9 @@ class App extends Component {
           {this.ProductRoutesGenerator()}
           {this.EditProductRoutesGenerator()}
           <Route component={GenericNotFound} />
-
-          <MyFooter />
         </Switch>
+
+        <MyFooter />
       </Router>
     );
   }

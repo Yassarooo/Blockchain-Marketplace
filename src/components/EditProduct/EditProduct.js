@@ -14,6 +14,7 @@ class EditProduct extends Component {
       "Ether"
     ),
     cat: this.props.product.categorie,
+    editsuccessmessage: "",
   };
 
   handleChange = (e) => {
@@ -22,6 +23,28 @@ class EditProduct extends Component {
       [e.target.name]: e.target.value,
     });
   };
+
+  editProduct(id, name, description, price, cat) {
+    this.props.handleLoading();
+    console.log("name:", name + "desc:", description + "price:", price);
+
+    this.props.marketplace.methods
+      .editProduct(id, name, description, price, cat)
+      .send({
+        from: this.props.account,
+      })
+      .once("receipt", (receipt) => {
+        this.props.handleLoading();
+        this.setState({
+          editsuccessmessage: "Product Edited Successfully !",
+        });
+        toast.success("Product Edited Successfully !", {
+          position: "bottom-right",
+          closeOnClick: true,
+        });
+        this.props.loadBlockchainData();
+      });
+  }
 
   onSubmit = async (event) => {
     event.preventDefault();
@@ -35,7 +58,7 @@ class EditProduct extends Component {
         closeOnClick: true,
       });
     } else {
-      this.props.editProduct(
+      this.editProduct(
         this.state.id,
         this.state.name,
         this.state.description,
@@ -161,9 +184,9 @@ class EditProduct extends Component {
                       </button>
                     </div>
                   </form>
-                  {this.props.editsuccessmessage !== "" ? (
+                  {this.state.editsuccessmessage !== "" ? (
                     <div className="alert alert-info mt-5">
-                      {this.props.editsuccessmessage}
+                      {this.state.editsuccessmessage}
                     </div>
                   ) : null}
                 </Col>
