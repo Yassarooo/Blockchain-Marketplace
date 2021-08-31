@@ -1,11 +1,19 @@
 import React, { Component } from "react";
 import "./Products.css";
 import { Row, Col, Pagination, Button } from "react-bootstrap";
-import { FaEthereum, FaChevronDown, FaSearch, FaEye } from "react-icons/fa";
+import {
+  FaEthereum,
+  FaChevronDown,
+  FaSearch,
+  FaEye,
+  FaStar,
+} from "react-icons/fa";
 import { Categories, Colors } from "../Categories";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
 import { Link } from "react-router-dom";
+import { BsFillStarFill } from "react-icons/bs";
+import Rating from "react-rating";
 
 class Products extends Component {
   constructor() {
@@ -88,7 +96,7 @@ class Products extends Component {
 
   renderCards(product, index) {
     return (
-      <Col md="3" className="pt-3" key={index}>
+      <Col md="3" className={index < 4 ? "pt-2" : "pt-3"} key={index}>
         <div className="card card h-100 rounded card ">
           <div
             className="badge text-white position-absolute"
@@ -109,22 +117,34 @@ class Products extends Component {
           />
           <div className="card-body bg-dark pb-0 mb-0">
             <div className="text-center">
-              <h2 href={`/product/${product.id}`}>{product.name}</h2>
-              <h3 className="text-warning" style={{ fontSize: "larger" }}>
+              <Rating
+                //className="position-absolute"
+                style={{
+                  fontSize: "15px",
+                  paddingBottom: "5px",
+                }}
+                emptySymbol="fa fa-star-o"
+                fullSymbol="fa fa-star text-warning"
+                fractions={2}
+                readonly={true}
+                initialRating={product.rate}
+              />
+              <h2>{product.name}</h2>
+              <h2 className="text-warning" style={{ fontSize: "larger" }}>
                 <FaEthereum className="text-primary pl-0 pr-2" />
                 {window.web3.utils.fromWei(
                   product.price.toString(),
                   "Ether"
                 )}{" "}
                 Eth
-              </h3>
+              </h2>
             </div>
           </div>
           <div className="card-footer pb-3 pt-0 border-top-0 bg-dark">
             <div className="text-center ">
               <Link to={"/product/" + product.id}>
                 <Button
-                  className="btn btn-outline-light stretched-link"
+                  className="btn btn-outline-light btn-sm stretched-link"
                   name={product.id}
                   value={product.price}
                 >
@@ -209,7 +229,7 @@ class Products extends Component {
 
     return (
       <div>
-        <section className="section-content pt-4 px-3">
+        <section className="section-content pt-2 px-3">
           <div className="row">
             <aside className="col-md-3">
               <div className="card bg-dark">
@@ -507,8 +527,9 @@ class Products extends Component {
                     }}
                   >
                     <option value="latest">Latest items</option>
-                    <option value="trending">Trending</option>
                     <option value="bestseller">Best Seller</option>
+                    <option value="popular">Popular</option>
+                    <option value="trending">Trending</option>
                     <option value="cheapest">Cheapest</option>
                   </select>
                 </div>
@@ -534,6 +555,30 @@ class Products extends Component {
                   next
                 </Pagination.Item>
               </Pagination>
+
+              <header className="border-bottom mb-2 pb-3 pt-3">
+                <div className="form-inline">
+                  <span className="mr-md-auto">
+                    <BsFillStarFill className="mr-2" />
+                    Recommended for you
+                  </span>
+                </div>
+              </header>
+              <Row>
+                {this.props.recommendedProducts
+                  .filter(
+                    (ele, ind) =>
+                      ind ===
+                        this.props.recommendedProducts.findIndex(
+                          (elem) => elem.id === ele.id
+                        ) &&
+                      !this.props.checkProductPurchase(ele.id) &&
+                      this.props.account !== ele.owner
+                  )
+                  .slice(0, 5)
+                  .reverse()
+                  .map(this.renderCards)}
+              </Row>
             </main>
           </div>
         </section>

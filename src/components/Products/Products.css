@@ -61,3 +61,8 @@ input[type="color"]:focus,
 .stretched-link:hover > .text-warning {
   color: white !important;
 }
+
+.card-body {
+  padding-bottom: 0px !important;
+  margin-bottom: 0px !important;
+}

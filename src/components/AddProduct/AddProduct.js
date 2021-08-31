@@ -322,9 +322,9 @@ class AddProduct extends Component {
                   </button>
                 </div>
               </form>
-              {this.addsuccessmessage !== "" ? (
+              {this.state.addsuccessmessage !== "" ? (
                 <div className="alert alert-info mt-5">
-                  {this.addsuccessmessage}
+                  {this.state.addsuccessmessage}
                 </div>
               ) : null}
             </div>

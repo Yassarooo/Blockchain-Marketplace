@@ -10,14 +10,12 @@ import { Row, Col, Button } from "react-bootstrap";
 import Rating from "react-rating";
 import ReviewModal from "../ReviewModal/ReviewModal";
 import { Link } from "react-router-dom";
-import Slider from "react-slick";
 
 class ProductDetails extends Component {
   constructor() {
     super();
     this.handleReviewModal = this.handleReviewModal.bind(this);
     this.reviewProduct = this.reviewProduct.bind(this);
-    this.checkProductPurchase = this.checkProductPurchase.bind(this);
     this.calcPercentage = this.calcPercentage.bind(this);
     this.renderCard = this.renderCard.bind(this);
     this.state = {
@@ -126,18 +124,6 @@ class ProductDetails extends Component {
     });
   }
 
-  checkProductPurchase() {
-    if (
-      this.props.purchasedProducts.find((prod) => {
-        return prod.id === this.props.product.id;
-      })
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   async getReviews() {
     const reviews = await this.props.marketplace.methods
       .getProductReviews(this.props.product.id)
@@ -171,7 +157,6 @@ class ProductDetails extends Component {
         });
     }
   }
-
   async getproductUserReview() {
     const review = this.state.revs.find((rev) => {
       return rev.adr === this.props.account;
@@ -315,7 +300,7 @@ class ProductDetails extends Component {
                 hidden={this.props.product.owner === this.props.account}
               >
                 <AiOutlineInfoCircle />
-                <span className="pl-2">Report Product</span>
+                <span className="pl-2">Report Abuse</span>
               </button>
             </div>
           </Col>
@@ -358,7 +343,7 @@ class ProductDetails extends Component {
                   </Row>
                 </div>
                 {this.props.product.owner === this.props.account ||
-                this.checkProductPurchase() ? (
+                this.props.checkProductPurchase(this.props.product.id) ? (
                   <div className="list-group-item">
                     <button
                       className="btn btn-lg btn-block btn-success"
@@ -386,7 +371,7 @@ class ProductDetails extends Component {
                           this.props.product.id,
                           this.props.product.price
                         );
-                        this.checkProductPurchase();
+                        this.props.checkProductPurchase(this.props.product.id);
                       }}
                     >
                       <span>Buy Product</span>
@@ -545,7 +530,7 @@ class ProductDetails extends Component {
 
               <div
                 hidden={
-                  this.checkProductPurchase() ||
+                  this.props.checkProductPurchase(this.props.product.id) ||
                   this.props.account === this.props.product.owner
                 }
                 className="graph-star-rating-footer text-center mt-3 mb-3"
@@ -554,7 +539,8 @@ class ProductDetails extends Component {
               </div>
               <div
                 hidden={
-                  !this.checkProductPurchase() || this.state.rev !== undefined
+                  !this.props.checkProductPurchase(this.props.product.id) ||
+                  this.state.rev !== undefined
                 }
                 className="graph-star-rating-footer text-center mt-3 mb-3"
               >

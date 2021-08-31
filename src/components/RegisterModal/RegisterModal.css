@@ -28,9 +28,7 @@ input {
   color: orange;
 }
 .create {
-  border: 0.5px solid orange;
   background: #151414;
-  color: orange;
   width: 30%;
 }
 .create:hover {

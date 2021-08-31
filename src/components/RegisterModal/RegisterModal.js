@@ -7,32 +7,43 @@ class RegisterModal extends Component {
   state = {
     name: "",
     disabled: true,
+    error: "",
   };
 
-  registerCustomer(name) {
+  async registerCustomer() {
     this.props.handleLoading();
-    this.props.handleRegisterModal();
-    this.props.marketplace.methods
-      .registerCustomer(this.props.account, name)
-      .send({
-        from: this.props.account,
-      })
-      .once("receipt", (receipt) => {
-        toast.success("Customer Registered Successfully !", {
-          position: "bottom-right",
-          closeOnClick: true,
+    if (this.state.name.length >= 5 && this.state.name.length < 15) {
+      this.props.marketplace.methods
+        .registerCustomer(this.props.account, this.state.name)
+        .send({
+          from: this.props.account,
+        })
+        .once("receipt", (receipt) => {
+          toast.success("Customer Registered Successfully !", {
+            position: "bottom-right",
+            closeOnClick: true,
+          });
+          this.props.handleLoading();
+          this.props.handleRegisterModal();
+          this.props.loadBlockchainData();
         });
-
-        this.props.handleLoading();
-        this.props.loadBlockchainData();
+    } else {
+      this.setState({
+        error: "name must be betwen 5 to 15 characters",
       });
+    }
   }
 
   handleChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-      disabled: e.target.value.length >= 5 ? false : true,
-    });
+    e.target.value.length >= 5 && e.target.value.length < 15
+      ? this.setState({
+          [e.target.name]: e.target.value,
+          disabled: false,
+        })
+      : this.setState({
+          [e.target.name]: e.target.value,
+          disabled: true,
+        });
   };
 
   render() {
@@ -68,26 +79,41 @@ class RegisterModal extends Component {
               instead of your account address.
             </p>
           </div>
-
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={this.state.name}
-            onChange={this.handleChange}
-            className="border-2 mb-2"
-            placeholder="Enter your name"
-            autoFocus
-            required
-          />
+          <form
+            className="needs-validation"
+            onSubmit={(e) => {
+              e.preventDefault();
+              this.registerCustomer();
+            }}
+          >
+            <div className="form-group">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={this.state.name}
+                onChange={this.handleChange}
+                className="border-2 mb-2"
+                placeholder="Enter your name"
+                autoFocus
+                required
+              />
+              <div
+                className="text-danger"
+                hidden={this.state.error === "" ? true : false}
+              >
+                {this.state.error}
+              </div>
+            </div>
+          </form>
         </Modal.Body>
         <Modal.Footer>
           <div className="col-md-12 text-center">
             <Button
               size="lg"
-              className="btn create "
+              className="btn create btn-warning "
               onClick={() => {
-                this.registerCustomer(this.state.name);
+                this.registerCustomer();
               }}
               disabled={this.state.disabled}
             >

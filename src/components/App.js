@@ -36,6 +36,8 @@ class App extends Component {
     this.handleRegisterModal = this.handleRegisterModal.bind(this);
     this.handleLoading = this.handleLoading.bind(this);
     this.handleSection = this.handleSection.bind(this);
+    this.checkProductPurchase = this.checkProductPurchase.bind(this);
+    this.generateRecommended = this.generateRecommended.bind(this);
     this.loadModel = this.loadModel.bind(this);
     this.loadMetadata = this.loadMetadata.bind(this);
     this.generateScore = this.generateScore.bind(this);
@@ -49,6 +51,7 @@ class App extends Component {
       customerCount: 0,
       products: [],
       filteredProducts: [],
+      recommendedProducts: [],
       purchasedProducts: [],
       customerReviews: [],
       loading: true,
@@ -78,7 +81,6 @@ class App extends Component {
       console.log(err);
     }
   }
-
   handleLoading() {
     this.setState({
       loading: !this.state.loading,
@@ -116,6 +118,24 @@ class App extends Component {
           a.reviewsCount > b.reviewsCount ? 1 : -1
         ),
       });
+    } else if (value === "popular") {
+      this.setState({
+        filteredProducts: this.state.filteredProducts.sort((a, b) =>
+          a.rate > b.rate ? 1 : -1
+        ),
+      });
+    }
+  }
+
+  checkProductPurchase(id) {
+    if (
+      this.state.purchasedProducts.find((prod) => {
+        return prod.id === id;
+      })
+    ) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -180,6 +200,31 @@ class App extends Component {
 
     return score;
   }
+
+  generateRecommended() {
+    const sorted = this.state.customerReviews.sort((a, b) =>
+      a.score > b.score ? 1 : -1
+    );
+
+    sorted.forEach((e) => {
+      const cat = this.state.filteredProducts.find((product) => {
+        return product.id === e.pid;
+      }).categorie;
+
+      this.state.filteredProducts
+        .filter((product) => {
+          return product.categorie === cat && product.id !== e.pid;
+        })
+        .slice(0, 4)
+        .forEach((el) => {
+          this.setState({
+            recommendedProducts: [...this.state.recommendedProducts, el],
+          });
+        });
+    });
+    console.log(this.state.recommendedProducts.length);
+  }
+
   async componentWillMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
@@ -207,6 +252,9 @@ class App extends Component {
       this.loadMetadata(url);
     });
     this.state.products = [];
+    this.state.recommendedProducts = [];
+    this.state.purchasedProducts = [];
+    this.state.customerReviews = [];
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
     this.setState({
@@ -243,9 +291,10 @@ class App extends Component {
         ),
       });
       const hasregistered = await marketplace.methods
-        .hasRegistered(this.state.account)
+        .hasRegistered(accounts[0])
         .call();
       if (hasregistered) {
+        console.log("registered");
         this.setState({
           customer: await marketplace.methods
             .customers(this.state.account)
@@ -274,7 +323,11 @@ class App extends Component {
             customerReviews: [...this.state.customerReviews, e],
           });
         });
+
+        //generate recommended products
+        this.generateRecommended();
       } else {
+        console.log("unregistered");
         this.handleRegisterModal();
       }
       this.setState({
@@ -301,7 +354,7 @@ class App extends Component {
               account={this.state.account}
               reviewProduct={this.reviewProduct}
               generateScore={this.generateScore}
-              purchasedProducts={this.state.purchasedProducts}
+              checkProductPurchase={this.checkProductPurchase}
               marketplace={this.state.marketplace}
               handleLoading={this.handleLoading}
               loadBlockchainData={this.loadBlockchainData}
@@ -342,6 +395,7 @@ class App extends Component {
           marketplace={this.state.marketplace}
           account={this.state.account}
           handleLoading={this.handleLoading}
+          loadBlockchainData={this.handleLoading}
         />
         <Switch>
           <Route exact path="/">
@@ -370,9 +424,10 @@ class App extends Component {
               account={this.state.account}
               products={this.state.filteredProducts}
               handleSection={this.handleSection}
-              purchaseProduct={this.purchaseProduct}
+              checkProductPurchase={this.checkProductPurchase}
               loading={this.state.loading}
               section={this.state.section}
+              recommendedProducts={this.state.recommendedProducts}
             />
           </Route>
           <Route path="/addproduct">

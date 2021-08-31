@@ -4,7 +4,7 @@ import { Table } from "react-bootstrap";
 import { FaEdit, FaRedo } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { GrView } from "react-icons/gr";
-import { BsCheckCircle } from "react-icons/bs";
+import Rating from "react-rating";
 import { toast } from "react-toastify";
 import "./MyProducts.css";
 
@@ -60,7 +60,9 @@ class MyProducts extends Component {
               <th scope="col"> # </th>
               <th scope="col"> Name </th>
               <th scope="col"> Price </th>
-              <th scope="col"> Purchased </th>
+              <th scope="col"> Sold </th>
+              <th scope="col"> Uploaded On</th>
+              <th scope="col"> Rate </th>
               <th scope="col"> Actions</th>
             </tr>
           </thead>
@@ -77,7 +79,24 @@ class MyProducts extends Component {
                     )}
                     {""} Eth
                   </td>
-                  <td>{product.purchased ? <BsCheckCircle /> : null}</td>
+                  <td>{product.totalSold}</td>
+                  <td>
+                    {Intl.DateTimeFormat("en-US", {
+                      year: "numeric",
+                      day: "2-digit",
+                      month: "2-digit",
+                    }).format(product.uploadedOn * 1000)}
+                  </td>
+                  <td>
+                    <Rating
+                      emptySymbol="fa fa-star-o"
+                      fullSymbol="fa fa-star text-warning"
+                      readonly={true}
+                      fractions={2}
+                      initialRating={product.rate}
+                      //onChange={(rate) => this.handleReviewModal(rate)}
+                    />
+                  </td>
                   <td>
                     <Link to={"/product/" + product.id} className="px-2">
                       <button
