@@ -55,7 +55,7 @@ class App extends Component {
       purchasedProducts: [],
       customerReviews: [],
       loading: true,
-      section: "latest",
+      section: "bestseller",
     };
   }
 
@@ -290,6 +290,7 @@ class App extends Component {
           (product) => product.removed === "0"
         ),
       });
+      this.handleSection(this.state.section);
       const hasregistered = await marketplace.methods
         .hasRegistered(accounts[0])
         .call();
@@ -388,14 +389,18 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <MyNavbar loading={this.state.loading} account={this.state.account} />
+        <MyNavbar
+          loading={this.state.loading}
+          account={this.state.account}
+          customer={this.state.customer}
+        />
         <RegisterModal
           showModal={this.state.showModal}
           handleRegisterModal={this.handleRegisterModal}
           marketplace={this.state.marketplace}
           account={this.state.account}
           handleLoading={this.handleLoading}
-          loadBlockchainData={this.handleLoading}
+          loadBlockchainData={this.loadBlockchainData}
         />
         <Switch>
           <Route exact path="/">

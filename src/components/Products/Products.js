@@ -132,10 +132,9 @@ class Products extends Component {
               <h2>{product.name}</h2>
               <h2 className="text-warning" style={{ fontSize: "larger" }}>
                 <FaEthereum className="text-primary pl-0 pr-2" />
-                {window.web3.utils.fromWei(
-                  product.price.toString(),
-                  "Ether"
-                )}{" "}
+                {window.web3.utils
+                  .fromWei(product.price.toString(), "Ether")
+                  .substring(0, 7)}{" "}
                 Eth
               </h2>
             </div>
@@ -575,8 +574,7 @@ class Products extends Component {
                       !this.props.checkProductPurchase(ele.id) &&
                       this.props.account !== ele.owner
                   )
-                  .slice(0, 5)
-                  .reverse()
+                  .slice(0, 8)
                   .map(this.renderCards)}
               </Row>
             </main>

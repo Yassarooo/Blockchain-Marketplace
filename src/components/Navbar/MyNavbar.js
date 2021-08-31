@@ -21,15 +21,13 @@ class MyNavbar extends Component {
               Home
             </Nav.Link>
             <NavDropdown title="Products" id="navbarScrollingDropdown">
-              <NavDropdown.Item as={Link} to="/addproduct">
-                Sell Product
-              </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/products">
                 Explore Products
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">Categories</NavDropdown.Item>
-              <NavDropdown.Item href="#action5">Best Seller</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/addproduct">
+                Sell Product
+              </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link as={Link} to="/aboutus">
               About us
@@ -41,7 +39,6 @@ class MyNavbar extends Component {
               }
               id="navbarScrollingDropdown"
             >
-              <NavDropdown.Item>My Account</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/myproducts">
                 My Products
               </NavDropdown.Item>

@@ -50,15 +50,26 @@ class ProductDetails extends Component {
           />
           <div className="card-body bg-dark pb-0 mb-0">
             <div className="text-center">
-              <h6 href={`/product/${product.id}`}>{product.name}</h6>
-              <h4 className="text-warning" style={{ fontSize: "larger" }}>
+              <Rating
+                //className="position-absolute"
+                style={{
+                  fontSize: "15px",
+                  paddingBottom: "5px",
+                }}
+                emptySymbol="fa fa-star-o"
+                fullSymbol="fa fa-star text-warning"
+                fractions={2}
+                readonly={true}
+                initialRating={product.rate}
+              />
+              <h2 href={`/product/${product.id}`}>{product.name}</h2>
+              <h2 className="text-warning" style={{ fontSize: "larger" }}>
                 <FaEthereum className="text-primary pl-0 pr-2" />
-                {window.web3.utils.fromWei(
-                  product.price.toString(),
-                  "Ether"
-                )}{" "}
+                {window.web3.utils
+                  .fromWei(product.price.toString(), "Ether")
+                  .substring(0, 6)}{" "}
                 Eth
-              </h4>
+              </h2>
             </div>
           </div>
           <div className="card-footer pb-3 pt-0 border-top-0 bg-dark">
@@ -189,8 +200,11 @@ class ProductDetails extends Component {
   }
 
   render() {
+    const onestar = this.state.revs.filter((r) => {
+      return r.rate === 1;
+    });
     const twostars = this.state.revs.filter((r) => {
-      return r.rate <= 2;
+      return r.rate <= 2 && r.rate > 1;
     });
     const threestars = this.state.revs.filter((r) => {
       return r.rate > 2 && r.rate <= 3;
@@ -206,14 +220,6 @@ class ProductDetails extends Component {
     const catproducts = this.props.products.filter(function (prod) {
       return prod.categorie === cat && prod.id !== id;
     });
-
-    const settings = {
-      dots: true,
-      infinite: true,
-      speed: 500,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-    };
 
     return (
       <div id="content" className="pt-5 mr-5 ml-5 px-5">
@@ -524,6 +530,30 @@ class ProductDetails extends Component {
                   </div>
                   <div className="rating-list-right">
                     {this.calcPercentage(twostars)}%
+                  </div>
+                </div>
+                <div className="rating-list">
+                  <div className="rating-list-left">1 Star</div>
+                  <div className="rating-list-center">
+                    <div className="progress">
+                      <div
+                        style={{
+                          width:
+                            (this.state.revs.length / onestar.length) * 10 +
+                            "%",
+                        }}
+                        aria-valuemax="5"
+                        aria-valuemin="0"
+                        aria-valuenow="5"
+                        role="progressbar"
+                        className="progress-bar bg-warning"
+                      >
+                        <span className="sr-only">80% Complete (danger)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rating-list-right">
+                    {this.calcPercentage(onestar)}%
                   </div>
                 </div>
               </div>

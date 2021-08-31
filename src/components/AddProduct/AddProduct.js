@@ -36,7 +36,6 @@ class AddProduct extends Component {
         from: this.props.account,
       })
       .once("receipt", (receipt) => {
-        this.props.handleLoading();
         this.setState({
           addsuccessmessage: "Product Added Successfully !",
         });

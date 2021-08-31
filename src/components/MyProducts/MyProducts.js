@@ -155,7 +155,7 @@ class MyProducts extends Component {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th scope="col"> # </th>
+              <th scope="col"> ID </th>
               <th scope="col"> Name </th>
               <th scope="col"> Price </th>
               <th scope="col"> Actions</th>
