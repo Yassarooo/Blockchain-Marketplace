@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Col, Row } from "react-bootstrap";
+import MetaTags from "react-meta-tags";
 import {
   FaBalanceScale,
   FaEthereum,
@@ -18,7 +19,10 @@ class Home extends Component {
   render() {
     return (
       <section className="pt-3 mx-5">
-        {" "}
+        <MetaTags>
+          <title>Jazara Blockchain Marketplace</title>
+          <meta property="og:title" content="Jazara Blockchain Marketplace" />
+        </MetaTags>
         <header className="bg-dark py-2">
           <div className="container px-4 px-lg-5 my-5">
             <h1 className="display-3 fw-bolder">

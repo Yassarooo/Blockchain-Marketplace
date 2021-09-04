@@ -1,13 +1,8 @@
 import React, { Component } from "react";
 import "./Products.css";
 import { Row, Col, Pagination, Button } from "react-bootstrap";
-import {
-  FaEthereum,
-  FaChevronDown,
-  FaSearch,
-  FaEye,
-  FaStar,
-} from "react-icons/fa";
+import MetaTags from "react-meta-tags";
+import { FaEthereum, FaChevronDown, FaSearch, FaEye } from "react-icons/fa";
 import { Categories, Colors } from "../Categories";
 import Typography from "@material-ui/core/Typography";
 import Slider from "@material-ui/core/Slider";
@@ -97,6 +92,11 @@ class Products extends Component {
   renderCards(product, index) {
     return (
       <Col md="3" className={index < 4 ? "pt-2" : "pt-3"} key={index}>
+        <MetaTags>
+          <title>Explore Products : Jazara Marketplace</title>
+          <meta property="og:title" content="Jazara Blockchain Marketplace" />
+        </MetaTags>
+
         <div className="card card h-100 rounded card ">
           <div
             className="badge text-white position-absolute"
